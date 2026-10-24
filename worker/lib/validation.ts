@@ -50,7 +50,7 @@ export const checkoutSchema = z.object({
   }),
   paymentMethod: z.enum(['razorpay', 'cod']),
   turnstileToken: z.string().max(2048).optional(),
-  consent: z.literal(true, { errorMap: () => ({ message: 'Please accept the terms and privacy policy' }) }),
+  consent: z.literal(true, { error: 'Please accept the terms and privacy policy' }),
 });
 export type CheckoutInput = z.infer<typeof checkoutSchema>;
 
@@ -104,12 +104,12 @@ export const pushSubscriptionSchema = z.object({
   keys: z.object({ p256dh: z.string().max(200), auth: z.string().max(100) }).optional(),
 });
 
-export function parse<T>(schema: z.ZodType<T, z.ZodTypeDef, unknown>, data: unknown): T {
+export function parse<S extends z.ZodType>(schema: S, data: unknown): z.output<S> {
   const r = schema.safeParse(data);
   if (!r.success) {
     const first = r.error.issues[0];
-    throw new ApiError(400, 'invalid_input', first ? `${first.path.join('.') || 'input'}: ${first.message}` : 'Invalid input', {
-      fields: r.error.issues.slice(0, 10).map((i) => ({ path: i.path.join('.'), message: i.message })),
+    throw new ApiError(400, 'invalid_input', first ? `${first.path.map(String).join('.') || 'input'}: ${first.message}` : 'Invalid input', {
+      fields: r.error.issues.slice(0, 10).map((i) => ({ path: i.path.map(String).join('.'), message: i.message })),
     });
   }
   return r.data;

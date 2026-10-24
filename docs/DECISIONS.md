@@ -192,6 +192,11 @@ Last updated: 24 Oct 2026 · Code version 0.2.0
 - **Replaces:** the earlier `DEV_ADMIN_EMAIL` auto-login (now it only pre-selects the email on the sign-in page).
 - **Cause of the original problem:** the first upload to GitHub didn't include hidden files (`.dev.vars.example`, `.github/`). Without `.dev.vars`, the app ran with live settings locally and asked for Cloudflare Access. Both are restored, and `npm run setup:local` creates `.dev.vars` in one step.
 
+### D35. CI blocks known-vulnerable dependencies
+- CI runs `npm audit --omit=dev --audit-level=high`; a high-severity advisory in any production dependency fails the build.
+- **24 Oct 2026:** it caught GHSA-mrhx-c7xc-m3w5 in `zod` 3.x (memory exhaustion when validating oversized collections). Upgraded to **zod 4.6.7**. Two code changes: the consent error message syntax and the shared `parse()` helper type. Validation messages shown to customers are unchanged. The app was already partly protected (request bodies are capped at 32 KB before validation), but the upgrade removes the issue.
+- Dependabot opens weekly update PRs so fixes like this arrive automatically.
+
 ### D33. Not built yet (later phases)
 - GST invoices (waiting on GST registration answer).
 - Courier integration (Shiprocket etc.) — tracking numbers are typed in by the admin for now.
