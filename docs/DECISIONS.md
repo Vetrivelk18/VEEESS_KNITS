@@ -36,7 +36,7 @@ Last updated: 24 Oct 2026 · Code version 0.2.0
 ## 2. Catalogue and pricing
 
 ### D6. Sample catalogue — ASSUMPTION
-- 8 sample products across both brands and all 6 categories, with **sample prices, MRPs, stock levels and descriptions**. The product photos are the generated mock-up images.
+- 8 sample products (originally across Wordle and Max8; all Wordle since D36) and all 6 categories, with **sample prices, MRPs, stock levels and descriptions**. The product photos are the generated mock-up images.
 - **Replace** all of these in the admin panel before launch (open question in the HLD: real photos, prices, size charts).
 
 ### D7. Shipping charge — ASSUMPTION
@@ -196,6 +196,16 @@ Last updated: 24 Oct 2026 · Code version 0.2.0
 - CI runs `npm audit --omit=dev --audit-level=high`; a high-severity advisory in any production dependency fails the build.
 - **24 Oct 2026:** it caught GHSA-mrhx-c7xc-m3w5 in `zod` 3.x (memory exhaustion when validating oversized collections). Upgraded to **zod 4.6.7**. Two code changes: the consent error message syntax and the shared `parse()` helper type. Validation messages shown to customers are unchanged. The app was already partly protected (request bodies are capped at 32 KB before validation), but the upgrade removes the issue.
 - Dependabot opens weekly update PRs so fixes like this arrive automatically.
+
+### D36. Wordle is the only brand; logo and Wordle artwork (24 Oct 2026)
+- **Decision (owner):** Max8 is removed everywhere. Every product is Wordle, always.
+- **Database:** migration `0004_wordle_only.sql` renames the four sample "Max8 …" products to "Wordle …" (new slugs `wordle-…`), moves every product to Wordle, deletes the Max8 brand and adds **triggers** so the database itself refuses a non-Wordle product or a new brand. Past orders keep the product names they were bought under.
+- **API/admin:** the brand picker is gone from the admin product form; the server always saves products as Wordle and ignores any `brandId` sent.
+- **Storefront:** brand pages (`/brand/…`) removed; the brand label on product cards became a "New" tag for new products; breadcrumbs are Home / Shop / Category; related products are by category.
+- **Old links:** `public/_redirects` sends `/brand/*` to `/shop/` and the four old `/p/max8-…/` URLs to their Wordle versions (301).
+- **Logo:** the header shows the round VK emblem before "VEEESS KNITS", cropped from `logo_vk.jpeg` (64/128/256 px), also used as favicon and home-screen icon. ASSUMPTION: the supplied logo is a photo mock-up; a flat PNG/SVG of the emblem would be sharper — swap the files in `public/images/brand/` when available.
+- **Wordle artwork:** the large "WORDLe" text block on the home page is replaced by the supplied `wordle.jpeg` (trimmed, `wordle-wordmark.jpg`) on its matching cream background (#FDECD8). The sample product photos that showed "MAX8" now show the Wordle print.
+- Not changed: the HLD and design canvas documents still show Max8 (historical design docs).
 
 ### D33. Not built yet (later phases)
 - GST invoices (waiting on GST registration answer).

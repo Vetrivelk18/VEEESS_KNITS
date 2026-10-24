@@ -64,7 +64,8 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .announce { background: var(--indigo); color: #fff; font-size: 13px; text-align: center; padding: 9px 16px; letter-spacing: .02em; }
 .site-header { border-bottom: 1px solid var(--line); background: var(--bg); position: sticky; top: 0; z-index: 30; }
 .site-header .bar { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 68px; }
-.logo { font-family: var(--display); font-stretch: 125%; font-weight: 800; font-size: 22px; letter-spacing: .04em; color: var(--ink); text-decoration: none; }
+.logo { font-family: var(--display); font-stretch: 125%; font-weight: 800; font-size: 22px; letter-spacing: .04em; color: var(--ink); text-decoration: none; display: inline-flex; align-items: center; gap: 10px; white-space: nowrap; min-width: 0; }
+.logo-mark { width: 44px; height: 44px; border-radius: 50%; flex: 0 0 44px; }
 .main-nav { display: flex; gap: 26px; font-weight: 500; font-size: 15px; }
 .main-nav a { color: var(--ink); text-decoration: none; padding: 10px 0; border-bottom: 2px solid transparent; }
 .main-nav a:hover, .main-nav a[aria-current='page'] { border-bottom-color: var(--marigold); }
@@ -73,8 +74,14 @@ button, input, select, textarea { font: inherit; color: inherit; }
 @media (max-width: 860px) {
   .main-nav { display: none; }
   .menu-btn { display: inline-flex; }
-  .logo { font-size: 18px; }
+  .logo { font-size: 16px; gap: 8px; letter-spacing: .02em; }
+  .logo-mark { width: 36px; height: 36px; flex-basis: 36px; }
   .site-header .bar { min-height: 56px; }
+}
+@media (max-width: 370px) {
+  .logo { font-size: 13px; gap: 6px; letter-spacing: 0; }
+  .logo-mark { width: 30px; height: 30px; flex-basis: 30px; }
+  .site-header .bar { gap: 8px; }
 }
 .mobile-menu { border-top: 1px solid var(--line); padding: 8px 0 16px; }
 .mobile-menu a { display: block; padding: 12px 0; font-size: 18px; color: var(--ink); text-decoration: none; border-bottom: 1px solid var(--line); }
@@ -137,6 +144,15 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .brand-light p { color: var(--muted); }
 .brand-card .tag { display: inline-block; font-weight: 600; padding: 12px 20px; border-radius: 4px; }
 @media (max-width: 640px) { .brand-card { padding: 22px; min-height: 160px; } }
+
+.wordle-feature { display: flex; flex-wrap: wrap; align-items: center; gap: 24px 48px; background: #FDECD8; border-radius: 8px; padding: 32px 40px; text-decoration: none; color: #5C3A21; }
+.wordle-feature img { flex: 1 1 360px; min-width: 0; max-width: 560px; height: auto; }
+.wordle-copy { flex: 1 1 280px; min-width: 0; display: flex; flex-direction: column; gap: 14px; align-items: flex-start; }
+.wordle-copy .eyebrow { color: #5C3A21; }
+.wordle-copy p { font-size: 18px; margin: 0; color: #4A3020; max-width: 440px; }
+.wordle-copy .tag { display: inline-block; background: #5C3A21; color: #FDECD8; font-weight: 600; padding: 12px 22px; border-radius: 4px; }
+.wordle-feature:hover .tag { background: #462C18; }
+@media (max-width: 640px) { .wordle-feature { padding: 20px; gap: 12px; } }
 
 /* Product grid */
 .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 24px 20px; }

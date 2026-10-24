@@ -5,10 +5,10 @@ const { product: p, eager = false } = Astro.props;
 const img = p.images[0];
 const off = discountPct(p.minPricePaise, p.mrpPaise);
 ---
-<a class="pcard" href={`/p/${p.slug}/`} data-brand={p.brand.slug} data-category={p.category.slug}>
+<a class="pcard" href={`/p/${p.slug}/`} data-category={p.category.slug}>
   <div class="img">
     {img && <img src={img.src} alt={img.alt} loading={eager ? 'eager' : 'lazy'} decoding="async" width="600" height="800" />}
-    <span class="tagb">{p.brand.name}</span>
+    {p.is_new ? <span class="tagb">New</span> : null}
     {!inStock(p) && <span class="soldout">Sold out</span>}
   </div>
   <span class="name">{p.name}</span>

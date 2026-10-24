@@ -324,6 +324,13 @@ adminApi.patch('/variants/:id', async (c) => {
   return c.json({ ok: true });
 });
 
+/** Wordle is the only brand; products are always saved under it (the database enforces this too). */
+async function wordleBrandId(db: D1Database): Promise<number> {
+  const b = await db.prepare("SELECT id FROM brands WHERE slug = 'wordle'").first<{ id: number }>();
+  if (!b) throw new ApiError(500, 'no_brand', 'The Wordle brand is missing from the database.');
+  return b.id;
+}
+
 function slugify(s: string): string {
   return s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 80);
 }
@@ -331,6 +338,7 @@ function slugify(s: string): string {
 adminApi.post('/products', async (c) => {
   const body = parse(productUpsertSchema, await readJson(c));
   const db = c.env.DB;
+  const brandId = await wordleBrandId(db);
   let slug = slugify(body.name);
   const clash = await db.prepare('SELECT 1 FROM products WHERE slug = ?1').bind(slug).first();
   if (clash) slug = `${slug}-${Math.random().toString(36).slice(2, 6)}`;
@@ -339,7 +347,7 @@ adminApi.post('/products', async (c) => {
       `INSERT INTO products (brand_id, category_id, name, slug, description, fabric, gsm, care, is_active, is_new)
        VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10) RETURNING id`,
     )
-    .bind(body.brandId, body.categoryId, body.name, slug, body.description, body.fabric, body.gsm, body.care, body.isActive ? 1 : 0, body.isNew ? 1 : 0)
+    .bind(brandId, body.categoryId, body.name, slug, body.description, body.fabric, body.gsm, body.care, body.isActive ? 1 : 0, body.isNew ? 1 : 0)
     .first<{ id: number }>();
   await audit(db, c.get('adminEmail'), 'product.create', 'product', r?.id ?? 0, { name: body.name }, clientIp(c));
   return c.json({ ok: true, id: r?.id, slug });
@@ -350,12 +358,13 @@ adminApi.patch('/products/:id', async (c) => {
   if (!Number.isInteger(id) || id <= 0) throw new ApiError(404, 'not_found', 'Product not found.');
   const body = parse(productUpsertSchema, await readJson(c));
   const db = c.env.DB;
+  const brandId = await wordleBrandId(db);
   const r = await db
     .prepare(
       `UPDATE products SET brand_id = ?2, category_id = ?3, name = ?4, description = ?5, fabric = ?6, gsm = ?7, care = ?8,
               is_active = ?9, is_new = ?10, updated_at = ${NOW} WHERE id = ?1`,
     )
-    .bind(id, body.brandId, body.categoryId, body.name, body.description, body.fabric, body.gsm, body.care, body.isActive ? 1 : 0, body.isNew ? 1 : 0)
+    .bind(id, brandId, body.categoryId, body.name, body.description, body.fabric, body.gsm, body.care, body.isActive ? 1 : 0, body.isNew ? 1 : 0)
     .run();
   if (!r.meta.changes) throw new ApiError(404, 'not_found', 'Product not found.');
   await audit(db, c.get('adminEmail'), 'product.update', 'product', id, { name: body.name, active: body.isActive }, clientIp(c));

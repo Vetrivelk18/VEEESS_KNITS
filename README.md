@@ -1,6 +1,6 @@
 # Veeess Knits — online store
 
-Mobile-first store for **Wordle** and **Max8** with Razorpay, cash on delivery (no extra charge) and an admin panel with instant new-order alerts. Runs on Cloudflare's free plan.
+Mobile-first store for **Wordle**, Veeess Knits' own label, with Razorpay, cash on delivery (no extra charge) and an admin panel with instant new-order alerts. Runs on Cloudflare's free plan.
 
 - **Storefront:** Astro static pages (`src/`), served free from Cloudflare.
 - **API + admin + cron:** one Cloudflare Worker (`worker/`) with D1 (database) and R2 (photos, backups).

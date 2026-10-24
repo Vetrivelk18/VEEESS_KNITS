@@ -80,7 +80,8 @@ export const variantUpdateSchema = z.object({
 
 export const productUpsertSchema = z.object({
   name: safeText(3, 100),
-  brandId: z.number().int().positive(),
+  // Wordle is the only brand: any brand sent by the browser is ignored; the server always uses Wordle.
+  brandId: z.number().int().positive().optional(),
   categoryId: z.number().int().positive(),
   description: safeText(0, 2000),
   fabric: safeText(0, 120),

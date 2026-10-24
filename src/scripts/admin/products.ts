@@ -1,10 +1,10 @@
 import { api, el, formatINR, HttpError, setChildren, toast, $ } from '../util';
 import './shell';
 
-interface P { id: number; name: string; slug: string; description: string; fabric: string; gsm: number | null; care: string; is_active: number; is_new: number; brand_id: number; category_id: number }
+interface P { id: number; name: string; slug: string; description: string; fabric: string; gsm: number | null; care: string; is_active: number; is_new: number; category_id: number }
 interface V { id: number; product_id: number; colour: string; colour_hex: string; size: string; sku: string; price_paise: number; mrp_paise: number | null; stock: number; reserved: number; is_active: number }
 interface I { id: number; product_id: number; colour: string | null; src: string; alt: string }
-interface Catalog { products: P[]; variants: V[]; images: I[]; brands: { id: number; name: string }[]; categories: { id: number; name: string }[]; lastPublish: { value: string; updated_at: string } | null; mediaBase: string }
+interface Catalog { products: P[]; variants: V[]; images: I[]; categories: { id: number; name: string }[]; lastPublish: { value: string; updated_at: string } | null; mediaBase: string }
 
 let cat: Catalog;
 const openIds = new Set<number>();
@@ -18,14 +18,14 @@ function err(e: unknown, fallback: string) {
 }
 
 function productForm(form: HTMLFormElement, p?: P) {
+  // Every product is Wordle (the only brand), so there is no brand picker.
   const sel = (name: string, opts: { id: number; name: string }[], val?: number) =>
-    el('label', { class: 'field' }, name === 'brandId' ? 'Brand' : 'Category',
+    el('label', { class: 'field' }, 'Category',
       el('select', { name, required: true }, ...opts.map((o) => el('option', { value: o.id, selected: o.id === val }, o.name))));
   setChildren(
     form,
     el('div', { class: 'form-grid' },
       el('label', { class: 'field full' }, 'Product name', el('input', { name: 'name', required: true, minlength: 3, maxlength: 100, value: p?.name ?? '' })),
-      sel('brandId', cat.brands, p?.brand_id),
       sel('categoryId', cat.categories, p?.category_id),
       el('label', { class: 'field full' }, 'Description', el('textarea', { name: 'description', rows: 3, maxlength: 2000, style: 'border:1px solid var(--line-2);border-radius:4px;padding:10px;font-weight:400' }, p?.description ?? '')),
       el('label', { class: 'field' }, 'Fabric', el('input', { name: 'fabric', maxlength: 120, value: p?.fabric ?? '' })),
@@ -41,7 +41,6 @@ function productForm(form: HTMLFormElement, p?: P) {
     const f = new FormData(form);
     const body = {
       name: String(f.get('name')).trim(),
-      brandId: Number(f.get('brandId')),
       categoryId: Number(f.get('categoryId')),
       description: String(f.get('description') ?? '').trim(),
       fabric: String(f.get('fabric') ?? '').trim(),
@@ -184,7 +183,7 @@ function render() {
         imgs[0] ? el('img', { src: imgSrc(imgs[0].src), alt: '' }) : el('span', { style: 'width:56px;height:70px;background:var(--placeholder);border-radius:4px' }),
         el('span', { style: 'flex:1;min-width:0' },
           el('strong', { style: 'display:block' }, p.name),
-          el('span', { class: 'muted small' }, `${cat.brands.find((b) => b.id === p.brand_id)?.name ?? ''} · ${cat.categories.find((c) => c.id === p.category_id)?.name ?? ''} · ${prices.length ? formatINR(Math.min(...prices)) : 'no sizes yet'} · ${stock} in stock${low ? ` · ${low} size${low === 1 ? '' : 's'} low` : ''}`)),
+          el('span', { class: 'muted small' }, `${cat.categories.find((c) => c.id === p.category_id)?.name ?? ''} · ${prices.length ? formatINR(Math.min(...prices)) : 'no sizes yet'} · ${stock} in stock${low ? ` · ${low} size${low === 1 ? '' : 's'} low` : ''}`)),
         el('span', { class: `pill-s ${p.is_active ? 'st-paid' : 'st-cancelled'}` }, p.is_active ? 'In shop' : 'Hidden'),
       ),
       el('div', { class: 'pbody' },

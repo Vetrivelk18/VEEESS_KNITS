@@ -6,7 +6,6 @@ import { catalog, products, categoryImage } from '../lib/catalog';
 const newArrivals = products.filter((p) => p.is_new).slice(0, 4);
 const featured = newArrivals.length >= 4 ? newArrivals : products.slice(0, 4);
 const wordle = catalog.brands.find((b) => b.slug === 'wordle');
-const max8 = catalog.brands.find((b) => b.slug === 'max8');
 const steps = [
   ['Fabric sourcing', 'Knitted fabric sourced and inspected roll by roll.'],
   ['Pattern & grading', 'Professional patterns and size grading for a consistent fit.'],
@@ -21,9 +20,9 @@ const steps = [
     <div>
       <span class="pill">Tiruppur knitwear · 15+ years</span>
       <h1 class="display h1" style="margin-top:24px">From production to brand perfection.</h1>
-      <p class="lead">Export-standard T-shirts and everyday knitwear, made in our own unit. Shop our own brands, Wordle and Max8, straight from the factory. Pay online or cash on delivery.</p>
+      <p class="lead">Export-standard T-shirts and everyday knitwear, made in our own unit. Shop Wordle, our own label, straight from the factory. Pay online or cash on delivery.</p>
       <div style="display:flex;flex-wrap:wrap;gap:12px">
-        <a class="btn" href="/shop/">Shop Wordle &amp; Max8</a>
+        <a class="btn" href="/shop/">Shop Wordle</a>
         <a class="btn btn-outline" href="#about">How we make them</a>
       </div>
     </div>
@@ -62,25 +61,15 @@ const steps = [
   </section>
 
   <section class="wrap section" aria-labelledby="brand-h">
-    <h2 id="brand-h" class="display h2" style="margin-bottom:28px">Our brands</h2>
-    <div class="brands">
-      <a class="brand-card brand-dark" href="/brand/wordle/">
-        <span class="eyebrow" style="color:var(--marigold)">by Veeess</span>
-        <div>
-          <div class="name">WORDLe</div>
-          <p>{wordle?.tagline}</p>
-          <span class="tag" style="background:var(--marigold);color:var(--ink)">Shop Wordle</span>
-        </div>
-      </a>
-      <a class="brand-card brand-light" href="/brand/max8/">
-        <span class="eyebrow">by Veeess</span>
-        <div>
-          <div class="name">MAX8</div>
-          <p>{max8?.tagline}</p>
-          <span class="tag" style="background:var(--indigo);color:#fff">Shop Max8</span>
-        </div>
-      </a>
-    </div>
+    <h2 id="brand-h" class="sr-only">Our label: Wordle</h2>
+    <a class="wordle-feature" href="/shop/">
+      <img src="/images/brand/wordle-wordmark.jpg" alt="Wordle" width="1015" height="536" loading="lazy" />
+      <div class="wordle-copy">
+        <span class="eyebrow">Our label · by Veeess</span>
+        <p>{wordle?.tagline}</p>
+        <span class="tag">Shop Wordle</span>
+      </div>
+    </a>
   </section>
 
   <section class="wrap section" aria-labelledby="new-h" style="padding-bottom:64px">
@@ -98,7 +87,7 @@ const steps = [
       <div>
         <span class="eyebrow">Made in our own unit</span>
         <h2 class="display" style="font-size:clamp(32px,4vw,48px);margin:16px 0 20px">Every piece made and checked in Tiruppur.</h2>
-        <p>Every Wordle and Max8 piece is cut, stitched, finished and inspected in our own unit, to the export standard we have kept for 15+ years.</p>
+        <p>Every Wordle piece is cut, stitched, finished and inspected in our own unit, to the export standard we have kept for 15+ years.</p>
         <a class="btn btn-accent" href="/shop/" style="margin-top:12px">Shop the collection</a>
       </div>
       <ol class="steps">
