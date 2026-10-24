@@ -1,5 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
+import Icon from '../../components/Icon.astro';
 ---
 <Base title="Your cart" current="cart" noindex>
   <div class="wrap">
@@ -12,7 +13,7 @@ import Base from '../../layouts/Base.astro';
           <div class="r"><span>Shipping</span><span data-shipping>—</span></div>
           <div class="r total"><span>Total</span><span data-total>—</span></div>
           <p class="muted" style="font-size:13px;margin:0" data-ship-hint></p>
-          <a class="btn btn-block" href="/checkout/" data-checkout>Checkout</a>
+          <a class="btn btn-block" href="/checkout/" data-checkout><Icon name="lock" size={18} />Secure checkout</a>
           <p class="muted" style="font-size:13px;margin:0;text-align:center">UPI, cards, netbanking or cash on delivery (no extra charge)</p>
         </div>
       </aside>
