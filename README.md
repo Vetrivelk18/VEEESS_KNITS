@@ -20,24 +20,57 @@ tests/          Security unit tests (vitest)
 
 ## 1. Run it on your computer
 
-Needs Node.js 22+.
+Needs Node.js 22+. Three commands:
 
 ```bash
 npm install
-cp .dev.vars.example .dev.vars        # local settings, never committed
-npm run gen:vapid                      # paste both lines into .dev.vars
-npm run db:migrate:local               # creates the local database with sample products
-npm run dev                            # builds the site and starts http://localhost:8787
+npm run setup:local    # one time: creates .dev.vars, generates keys, prepares the local database
+npm run dev            # checks your setup, builds, and starts http://localhost:8787
 ```
 
-- Shop: http://localhost:8787 — checkout works offline: `RAZORPAY_MOCK=1` shows a "Simulate successful payment" panel instead of Razorpay.
-- Admin: http://localhost:8787/admin/ — on localhost you are signed in as `DEV_ADMIN_EMAIL` (development only).
+- **Shop:** http://localhost:8787 — checkout works offline: `RAZORPAY_MOCK=1` shows a "Simulate successful payment" panel instead of Razorpay.
+- **Admin:** http://localhost:8787/admin/ — see below.
 - Test the 15-minute job: `curl "http://localhost:8787/cdn-cgi/handler/scheduled?cron=*/15+*+*+*+*"`
 
-Checks before every change:
+### Testing the admin panel locally
+
+On the live site, Cloudflare Access asks admins for an email code before the admin panel opens. Access doesn't exist on your computer, so **local sign-in** takes its place and keeps the same flow:
+
+1. Open http://localhost:8787/admin/ — you are sent to a **Local sign-in** page (yellow "LOCAL TESTING ONLY" bar).
+2. Pick an admin email (from `ADMIN_EMAILS` in `.dev.vars`) and press **Sign in (local test)**.
+3. You land back on the page you asked for. A yellow **LOCAL TEST MODE** bar shows you are not using Cloudflare Access.
+4. **Sign out** (top right) takes you back to the sign-in page. Sign in as the other admin to test "seen by" and shared alerts.
+
+To test a new-order alert: keep the admin panel open in one window and place a COD order from the shop in another (or a private window). The bell, pop-up and chime appear within 20 seconds.
+
+**It only switches on when all three are true** — so it can never work on the live site:
+
+| Condition | Where it comes from |
+| --- | --- |
+| `ENVIRONMENT=development` | `.dev.vars` (the live config says `production`) |
+| `LOCAL_ADMIN_BYPASS=1` | `.dev.vars` (explicit opt-in) |
+| The address is `localhost` / `127.0.0.1` | your browser |
+
+The email must also be in `ADMIN_EMAILS`. Sessions last 8 hours or until you restart `npm run dev`.
+
+**Check your setup any time:** `npm run check:local` prints ✔ / ✖ for each setting with the exact fix.
+
+| You see | Cause | Fix |
+| --- | --- | --- |
+| "Admin login required. Sign in through Cloudflare Access." | No `.dev.vars`, so the app runs with live (production) settings | `npm run setup:local`, then restart `npm run dev` |
+| "Local admin sign-in is switched off" page | A setting is missing; the page lists which | Add it to `.dev.vars`, restart `npm run dev` |
+| Sign-in page shows "not in ADMIN_EMAILS" | Email not in the list | Add it to `ADMIN_EMAILS` in `.dev.vars` |
+| 404 on `/__local/login` | Opened via a network IP (e.g. `192.168.x.x`) or `npm run dev` not restarted | Use http://localhost:8787 |
+| Admin works but pages are blank | Using `astro dev` (port 4321) — it has no API | Use `npm run dev` (port 8787) |
+
+**To test on a phone on your Wi-Fi**, local sign-in is deliberately off (it only trusts localhost). Use Cloudflare's preview deployment with Access instead.
+
+**Safety nets:** `npm run deploy` and the GitHub deploy run `npm run check:prod`, which refuses to deploy if `wrangler.jsonc` contains `LOCAL_ADMIN_BYPASS`, `DEV_ADMIN_EMAIL`, `RAZORPAY_MOCK` or a non-production `ENVIRONMENT`. CI also boots the Worker with live settings (`npm run smoke`) and checks the admin area is locked and `/__local/*` returns 404. `.dev.vars` is git-ignored.
+
+### Checks before every change
 
 ```bash
-npm run typecheck && npm test && npm run build:site
+npm run typecheck && npm test && npm run build:site && npm run smoke
 ```
 
 ---

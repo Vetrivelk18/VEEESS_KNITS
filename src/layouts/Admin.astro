@@ -24,6 +24,7 @@ const nav = [
   <meta name="apple-mobile-web-app-capable" content="yes" />
 </head>
 <body class="admin">
+  <div class="local-banner" data-local-banner hidden>LOCAL TEST MODE · signed in without Cloudflare Access · this only works on your computer</div>
   <header class="admin-bar">
     <div class="wrap admin-bar-inner">
       <div class="admin-left">
@@ -38,6 +39,7 @@ const nav = [
           <Icon name="bell" /><span class="badge" data-bell-count hidden>0</span>
         </button>
         <span class="admin-who" data-admin-email></span>
+        <a class="admin-signout" href="/cdn-cgi/access/logout" data-logout>Sign out</a>
       </div>
       <div class="bell-panel" role="dialog" aria-label="New-order alerts" data-bell-panel hidden>
         <div class="bell-head"><strong>New-order alerts</strong><button type="button" class="link-btn" data-mark-all>Mark all read</button></div>

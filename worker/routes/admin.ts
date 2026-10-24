@@ -27,6 +27,8 @@ const UUID = /^[0-9a-f-]{36}$/;
 adminApi.get('/me', (c) =>
   c.json({
     email: c.get('adminEmail'),
+    authMode: c.get('authMode'),
+    logoutUrl: c.get('authMode') === 'local' ? '/__local/logout' : '/cdn-cgi/access/logout',
     vapidPublicKey: c.env.VAPID_PUBLIC_KEY && !/REPLACE/.test(c.env.VAPID_PUBLIC_KEY) ? c.env.VAPID_PUBLIC_KEY : null,
     alertEmail: c.env.ALERT_EMAIL_TO || null,
   }),

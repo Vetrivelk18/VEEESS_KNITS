@@ -1,0 +1,33 @@
+# Local development settings. `npm run setup:local` copies this to .dev.vars
+# and fills in the generated values. NEVER commit .dev.vars.
+ENVIRONMENT=development
+SITE_URL=http://localhost:8787
+
+# --- Admin sign-in on your computer --------------------------------------
+# Cloudflare Access only exists on the live site. With these two settings the
+# admin panel shows a LOCAL sign-in page instead (localhost only).
+LOCAL_ADMIN_BYPASS=1
+ADMIN_EMAILS=admin1@example.com,admin2@example.com
+# Pre-selected on the local sign-in page:
+DEV_ADMIN_EMAIL=admin1@example.com
+
+# --- Payments ----------------------------------------------------------------
+# 1 = simulate Razorpay locally (no network). Only works on localhost in development.
+RAZORPAY_MOCK=1
+RAZORPAY_KEY_ID=rzp_test_localdev01
+RAZORPAY_KEY_SECRET=local_dev_secret_123456
+RAZORPAY_WEBHOOK_SECRET=local_webhook_secret_123
+# To test with Razorpay's real test mode instead, set RAZORPAY_MOCK=0 and paste
+# your test keys from Dashboard > Account & Settings > API Keys.
+
+# Cloudflare Turnstile test keys (always pass)
+TURNSTILE_SITE_KEY=1x00000000000000000000AA
+TURNSTILE_SECRET_KEY=1x0000000000000000000000000000000AA
+
+# Filled in by `npm run setup:local`
+ORDER_LINK_SECRET=
+VAPID_PUBLIC_KEY=
+VAPID_PRIVATE_JWK=
+
+# Optional: real emails while testing (https://resend.com)
+RESEND_API_KEY=

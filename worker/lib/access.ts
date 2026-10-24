@@ -1,5 +1,7 @@
 import type { Context, MiddlewareHandler } from 'hono';
-import { adminEmails, isLocalDevRequest, type Env } from './env';
+import { getCookie } from 'hono/cookie';
+import { adminEmails, type Env } from './env';
+import { devHelp, LOCAL_COOKIE, localAdminStatus, readLocalSession } from './localauth';
 import { b64urlDecode } from './crypto';
 
 /**
@@ -67,10 +69,12 @@ export async function verifyAccessJwt(token: string, env: Env): Promise<AccessCl
 export async function resolveAdmin(c: Context<{ Bindings: Env; Variables: AdminVars }>): Promise<string | null> {
   const env = c.env;
   const allowed = adminEmails(env);
-  // Local development only: no Access in front of localhost.
-  if (isLocalDevRequest(env, c.req.raw) && env.DEV_ADMIN_EMAIL) {
-    const e = env.DEV_ADMIN_EMAIL.toLowerCase();
-    return allowed.has(e) ? e : null;
+  // Local testing only: a signed local session stands in for Cloudflare Access.
+  // Never active in production (see localauth.ts for the three conditions).
+  if (localAdminStatus(env, c.req.raw).enabled) {
+    const email = await readLocalSession(env, getCookie(c, LOCAL_COOKIE));
+    if (email) c.set('authMode', 'local');
+    return email;
   }
   const token = c.req.header('Cf-Access-Jwt-Assertion');
   if (!token) return null;
@@ -78,6 +82,7 @@ export async function resolveAdmin(c: Context<{ Bindings: Env; Variables: AdminV
     const claims = await verifyAccessJwt(token, env);
     const email = claims?.email?.toLowerCase();
     if (!email || !allowed.has(email)) return null;
+    c.set('authMode', 'access');
     return email;
   } catch (err) {
     console.error('Access verification error', err instanceof Error ? err.message : err);
@@ -85,15 +90,38 @@ export async function resolveAdmin(c: Context<{ Bindings: Env; Variables: AdminV
   }
 }
 
-export type AdminVars = { adminEmail: string };
+export type AdminVars = { adminEmail: string; authMode: 'access' | 'local' };
 
 export const requireAdmin: MiddlewareHandler<{ Bindings: Env; Variables: AdminVars }> = async (c, next) => {
   const email = await resolveAdmin(c);
   if (!email) {
-    const path = new URL(c.req.url).pathname;
-    if (path.startsWith('/api/')) return c.json({ error: 'unauthorized', message: 'Admin login required.' }, 401);
+    const url = new URL(c.req.url);
+    const local = localAdminStatus(c.env, c.req.raw);
+    const help = devHelp(c.env, c.req.raw); // only ever present in development
+    if (url.pathname.startsWith('/api/')) {
+      return c.json({ error: 'unauthorized', message: 'Admin login required.', ...(help ? { localHelp: local.enabled ? ['Sign in at /__local/login'] : help } : {}) }, 401);
+    }
+    // Same flow as production: unauthenticated admin pages go to a sign-in page.
+    if (local.enabled) return c.redirect(`/__local/login?next=${encodeURIComponent(url.pathname + url.search)}`, 302);
+    if (help) return c.html(localHelpPage(help), 401);
     return c.text('Admin login required. Sign in through Cloudflare Access.', 401);
   }
   c.set('adminEmail', email);
   await next();
 };
+
+function esc(s: string): string {
+  return s.replace(/[&<>"']/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[ch] as string);
+}
+
+/** Development-only troubleshooting page (never shown in production). */
+function localHelpPage(problems: string[]): string {
+  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Local admin sign-in is off</title></head>
+<body style="font-family:system-ui,sans-serif;max-width:640px;margin:40px auto;padding:0 16px;color:#14161F">
+<h1 style="font-size:24px">Local admin sign-in is switched off</h1>
+<p>On the live site, admins sign in through Cloudflare Access. On your computer a local sign-in page is used instead, but it is off because:</p>
+<ul>${problems.map((p) => `<li style="margin:6px 0">${esc(p)}</li>`).join('')}</ul>
+<p><strong>Fix:</strong> run <code>npm run setup:local</code> (creates <code>.dev.vars</code>), or add <code>ENVIRONMENT=development</code> and <code>LOCAL_ADMIN_BYPASS=1</code> to <code>.dev.vars</code>. Then stop and restart <code>npm run dev</code> and open <a href="http://localhost:8787/admin/">http://localhost:8787/admin/</a>.</p>
+<p>Check your setup any time with <code>npm run check:local</code>.</p>
+</body></html>`;
+}

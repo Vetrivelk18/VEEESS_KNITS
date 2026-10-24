@@ -7,6 +7,7 @@ export interface Env {
   SITE_URL: string;
   ADMIN_EMAILS: string;
   DEV_ADMIN_EMAIL?: string;
+  LOCAL_ADMIN_BYPASS?: string;
   ACCESS_TEAM_DOMAIN: string;
   ACCESS_AUD: string;
 
