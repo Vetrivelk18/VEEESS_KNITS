@@ -1,0 +1,55 @@
+---
+import '../styles/global.css';
+import '../styles/admin.css';
+import Icon from '../components/Icon.astro';
+interface Props { title: string; current: 'orders' | 'products' | 'alerts' }
+const { title, current } = Astro.props;
+const nav = [
+  { href: '/admin/', label: 'Orders', key: 'orders' },
+  { href: '/admin/products/', label: 'Products', key: 'products' },
+  { href: '/admin/alerts/', label: 'Alert settings', key: 'alerts' },
+];
+---
+<!doctype html>
+<html lang="en-IN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>{title} · Veeess Admin</title>
+  <link rel="manifest" href="/admin/manifest.webmanifest" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="/admin/icon-192.png" />
+  <meta name="theme-color" content="#14161F" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+</head>
+<body class="admin">
+  <header class="admin-bar">
+    <div class="wrap admin-bar-inner">
+      <div class="admin-left">
+        <a class="admin-logo" href="/admin/">VEEESS <span>ADMIN</span></a>
+        <nav aria-label="Admin">
+          {nav.map((n) => <a href={n.href} aria-current={current === n.key ? 'page' : undefined}>{n.label}</a>)}
+        </nav>
+      </div>
+      <div class="admin-right">
+        <a class="admin-link" href="/" target="_blank" rel="noopener">View shop</a>
+        <button class="icon-btn bell" type="button" aria-haspopup="dialog" aria-expanded="false" aria-label="New-order alerts" data-bell>
+          <Icon name="bell" /><span class="badge" data-bell-count hidden>0</span>
+        </button>
+        <span class="admin-who" data-admin-email></span>
+      </div>
+      <div class="bell-panel" role="dialog" aria-label="New-order alerts" data-bell-panel hidden>
+        <div class="bell-head"><strong>New-order alerts</strong><button type="button" class="link-btn" data-mark-all>Mark all read</button></div>
+        <div data-bell-list class="bell-list"><p class="muted" style="padding:16px">No alerts yet.</p></div>
+        <div class="bell-foot">Alerts also go to admins' phones and laptops by push, with a backup email. <a href="/admin/alerts/">Settings</a></div>
+      </div>
+    </div>
+  </header>
+  <main id="main" class="wrap admin-main"><slot /></main>
+  <div class="toast-host" aria-live="assertive" data-toasts></div>
+  <script>
+    import '../scripts/admin/shell';
+  </script>
+</body>
+</html>

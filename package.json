@@ -1,0 +1,32 @@
+{
+  "name": "veeess-knits",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "db:migrate:local": "wrangler d1 migrations apply veeess_db --local",
+    "db:migrate:remote": "wrangler d1 migrations apply veeess_db --remote",
+    "catalog:export": "node scripts/export-catalog.mjs",
+    "build:site": "astro build",
+    "build": "npm run catalog:export && astro build",
+    "dev": "npm run build && wrangler dev",
+    "deploy": "npm run build && wrangler deploy",
+    "typecheck": "tsc -p tsconfig.worker.json && tsc --noEmit -p tsconfig.json",
+    "test": "vitest run",
+    "gen:vapid": "node scripts/gen-vapid.mjs"
+  },
+  "dependencies": {
+    "hono": "4.13.13",
+    "zod": "3.25.76"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "5.20261024.1",
+    "@fontsource-variable/archivo": "5.1.0",
+    "@fontsource/instrument-sans": "5.1.0",
+    "@types/node": "^22.20.5",
+    "astro": "5.18.2",
+    "typescript": "5.6.3",
+    "vitest": "3.2.7",
+    "wrangler": "4.152.0"
+  }
+}

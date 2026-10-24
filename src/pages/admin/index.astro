@@ -1,0 +1,30 @@
+---
+import Admin from '../../layouts/Admin.astro';
+---
+<Admin title="Orders" current="orders">
+  <div class="admin-head">
+    <div>
+      <h1 class="display h2">Orders</h1>
+      <p class="muted" style="margin:6px 0 0" data-summary-line>Loading…</p>
+    </div>
+    <div class="card device-card">
+      <span style="display:flex;flex-direction:column;gap:2px;font-size:14px"><strong>Alerts on this device</strong><span class="muted small" data-push-note>Push notification + chime · backup email</span></span>
+      <button type="button" class="switch" role="switch" aria-checked="false" aria-label="New-order alerts on this device" data-push-switch></button>
+    </div>
+  </div>
+  <div class="toolbar">
+    <div class="chips" role="group" aria-label="Filter orders" style="margin:0" data-filters></div>
+    <form data-search style="margin-left:auto" role="search"><label class="sr-only" for="q">Search orders</label><input id="q" type="search" name="q" placeholder="Order no., name or phone" maxlength="40" /></form>
+  </div>
+  <div class="table-wrap orders-wrap">
+    <table class="data orders">
+      <thead><tr><th>Order</th><th>Time</th><th>Customer</th><th>Items</th><th>Total</th><th>Payment</th><th>Status</th><th><span class="sr-only">Action</span></th></tr></thead>
+      <tbody data-rows><tr><td colspan="8" class="muted">Loading…</td></tr></tbody>
+    </table>
+  </div>
+  <p class="muted small">New orders are highlighted until an admin opens them; read state is shared by all admins. The list refreshes automatically.</p>
+  <div data-drawer-root></div>
+  <script>
+    import '../../scripts/admin/orders';
+  </script>
+</Admin>

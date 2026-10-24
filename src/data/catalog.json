@@ -1,0 +1,1008 @@
+{
+  "generatedAt": "2026-10-24T09:05:04.190Z",
+  "brands": [
+    {
+      "id": 1,
+      "name": "Wordle",
+      "slug": "wordle",
+      "tagline": "Graphic, statement pieces with heavy workmanship."
+    },
+    {
+      "id": 2,
+      "name": "Max8",
+      "slug": "max8",
+      "tagline": "Clean, minimal everyday essentials."
+    }
+  ],
+  "categories": [
+    {
+      "id": 1,
+      "name": "T-shirts",
+      "slug": "t-shirts",
+      "sort_order": 1
+    },
+    {
+      "id": 2,
+      "name": "Shirts",
+      "slug": "shirts",
+      "sort_order": 2
+    },
+    {
+      "id": 3,
+      "name": "Shorts",
+      "slug": "shorts",
+      "sort_order": 3
+    },
+    {
+      "id": 4,
+      "name": "Track pants",
+      "slug": "track-pants",
+      "sort_order": 4
+    },
+    {
+      "id": 5,
+      "name": "Sleeveless",
+      "slug": "sleeveless",
+      "sort_order": 5
+    },
+    {
+      "id": 6,
+      "name": "Kidswear",
+      "slug": "kidswear",
+      "sort_order": 6
+    }
+  ],
+  "products": [
+    {
+      "id": 1,
+      "name": "Wordle Heavyweight Oversized Tee",
+      "slug": "wordle-heavyweight-oversized-tee",
+      "description": "A boxy, dropped-shoulder tee in heavyweight cotton with the Wordle chest print. Pre-shrunk and shrinkage-tested.",
+      "fabric": "100% combed cotton, bio-washed",
+      "gsm": 240,
+      "care": "Machine wash cold, inside out. Do not bleach. Dry in shade.",
+      "is_new": 1,
+      "brand_id": 1,
+      "category_id": 1,
+      "brand": {
+        "id": 1,
+        "name": "Wordle",
+        "slug": "wordle",
+        "tagline": "Graphic, statement pieces with heavy workmanship."
+      },
+      "category": {
+        "id": 1,
+        "name": "T-shirts",
+        "slug": "t-shirts",
+        "sort_order": 1
+      },
+      "minPricePaise": 79900,
+      "mrpPaise": 99900,
+      "colours": [
+        {
+          "name": "Jet black",
+          "hex": "#1C1C1E"
+        },
+        {
+          "name": "Off white",
+          "hex": "#F2EFE6"
+        }
+      ],
+      "sizes": [
+        "S",
+        "M",
+        "L",
+        "XL",
+        "XXL"
+      ],
+      "variants": [
+        {
+          "id": 1,
+          "colour": "Jet black",
+          "colour_hex": "#1C1C1E",
+          "size": "S",
+          "price_paise": 79900,
+          "mrp_paise": 99900,
+          "available": 12
+        },
+        {
+          "id": 2,
+          "colour": "Jet black",
+          "colour_hex": "#1C1C1E",
+          "size": "M",
+          "price_paise": 79900,
+          "mrp_paise": 99900,
+          "available": 12
+        },
+        {
+          "id": 3,
+          "colour": "Jet black",
+          "colour_hex": "#1C1C1E",
+          "size": "L",
+          "price_paise": 79900,
+          "mrp_paise": 99900,
+          "available": 12
+        },
+        {
+          "id": 4,
+          "colour": "Jet black",
+          "colour_hex": "#1C1C1E",
+          "size": "XL",
+          "price_paise": 79900,
+          "mrp_paise": 99900,
+          "available": 12
+        },
+        {
+          "id": 5,
+          "colour": "Jet black",
+          "colour_hex": "#1C1C1E",
+          "size": "XXL",
+          "price_paise": 79900,
+          "mrp_paise": 99900,
+          "available": 3
+        },
+        {
+          "id": 6,
+          "colour": "Off white",
+          "colour_hex": "#F2EFE6",
+          "size": "S",
+          "price_paise": 79900,
+          "mrp_paise": 99900,
+          "available": 12
+        },
+        {
+          "id": 7,
+          "colour": "Off white",
+          "colour_hex": "#F2EFE6",
+          "size": "M",
+          "price_paise": 79900,
+          "mrp_paise": 99900,
+          "available": 12
+        },
+        {
+          "id": 8,
+          "colour": "Off white",
+          "colour_hex": "#F2EFE6",
+          "size": "L",
+          "price_paise": 79900,
+          "mrp_paise": 99900,
+          "available": 12
+        },
+        {
+          "id": 9,
+          "colour": "Off white",
+          "colour_hex": "#F2EFE6",
+          "size": "XL",
+          "price_paise": 79900,
+          "mrp_paise": 99900,
+          "available": 12
+        },
+        {
+          "id": 10,
+          "colour": "Off white",
+          "colour_hex": "#F2EFE6",
+          "size": "XXL",
+          "price_paise": 79900,
+          "mrp_paise": 99900,
+          "available": 3
+        }
+      ],
+      "images": [
+        {
+          "src": "/images/products/hero.jpg",
+          "alt": "Wordle Heavyweight Oversized Tee in Jet black",
+          "colour": "Jet black"
+        },
+        {
+          "src": "/images/products/view-back.jpg",
+          "alt": "Wordle Heavyweight Oversized Tee in Jet black",
+          "colour": "Jet black"
+        },
+        {
+          "src": "/images/products/view-detail.jpg",
+          "alt": "Wordle Heavyweight Oversized Tee in Jet black",
+          "colour": "Jet black"
+        },
+        {
+          "src": "/images/products/p1.jpg",
+          "alt": "Wordle Heavyweight Oversized Tee in Off white",
+          "colour": "Off white"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Max8 Classic Crew Tee",
+      "slug": "max8-classic-crew-tee",
+      "description": "An everyday regular-fit crew neck with a small Max8 print. Soft, breathable and made to last wash after wash.",
+      "fabric": "100% combed cotton",
+      "gsm": 180,
+      "care": "Machine wash cold, inside out. Do not bleach. Dry in shade.",
+      "is_new": 1,
+      "brand_id": 2,
+      "category_id": 1,
+      "brand": {
+        "id": 2,
+        "name": "Max8",
+        "slug": "max8",
+        "tagline": "Clean, minimal everyday essentials."
+      },
+      "category": {
+        "id": 1,
+        "name": "T-shirts",
+        "slug": "t-shirts",
+        "sort_order": 1
+      },
+      "minPricePaise": 59900,
+      "mrpPaise": 69900,
+      "colours": [
+        {
+          "name": "Olive",
+          "hex": "#5E6B3A"
+        },
+        {
+          "name": "Indigo",
+          "hex": "#2C3A6E"
+        }
+      ],
+      "sizes": [
+        "S",
+        "M",
+        "L",
+        "XL",
+        "XXL"
+      ],
+      "variants": [
+        {
+          "id": 11,
+          "colour": "Olive",
+          "colour_hex": "#5E6B3A",
+          "size": "S",
+          "price_paise": 59900,
+          "mrp_paise": 69900,
+          "available": 10
+        },
+        {
+          "id": 12,
+          "colour": "Olive",
+          "colour_hex": "#5E6B3A",
+          "size": "M",
+          "price_paise": 59900,
+          "mrp_paise": 69900,
+          "available": 12
+        },
+        {
+          "id": 13,
+          "colour": "Olive",
+          "colour_hex": "#5E6B3A",
+          "size": "L",
+          "price_paise": 59900,
+          "mrp_paise": 69900,
+          "available": 12
+        },
+        {
+          "id": 14,
+          "colour": "Olive",
+          "colour_hex": "#5E6B3A",
+          "size": "XL",
+          "price_paise": 59900,
+          "mrp_paise": 69900,
+          "available": 12
+        },
+        {
+          "id": 15,
+          "colour": "Olive",
+          "colour_hex": "#5E6B3A",
+          "size": "XXL",
+          "price_paise": 59900,
+          "mrp_paise": 69900,
+          "available": 3
+        },
+        {
+          "id": 16,
+          "colour": "Indigo",
+          "colour_hex": "#2C3A6E",
+          "size": "S",
+          "price_paise": 59900,
+          "mrp_paise": 69900,
+          "available": 12
+        },
+        {
+          "id": 17,
+          "colour": "Indigo",
+          "colour_hex": "#2C3A6E",
+          "size": "M",
+          "price_paise": 59900,
+          "mrp_paise": 69900,
+          "available": 12
+        },
+        {
+          "id": 18,
+          "colour": "Indigo",
+          "colour_hex": "#2C3A6E",
+          "size": "L",
+          "price_paise": 59900,
+          "mrp_paise": 69900,
+          "available": 12
+        },
+        {
+          "id": 19,
+          "colour": "Indigo",
+          "colour_hex": "#2C3A6E",
+          "size": "XL",
+          "price_paise": 59900,
+          "mrp_paise": 69900,
+          "available": 12
+        },
+        {
+          "id": 20,
+          "colour": "Indigo",
+          "colour_hex": "#2C3A6E",
+          "size": "XXL",
+          "price_paise": 59900,
+          "mrp_paise": 69900,
+          "available": 3
+        }
+      ],
+      "images": [
+        {
+          "src": "/images/products/p2.jpg",
+          "alt": "Max8 Classic Crew Tee in Olive",
+          "colour": "Olive"
+        },
+        {
+          "src": "/images/products/cat-tshirts.jpg",
+          "alt": "Max8 Classic Crew Tee in Indigo",
+          "colour": "Indigo"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Wordle Side-Stripe Track Pants",
+      "slug": "wordle-side-stripe-track-pants",
+      "description": "Tapered track pants with contrast side stripes, drawcord waist and ribbed cuffs.",
+      "fabric": "Cotton-rich fleece back",
+      "gsm": 260,
+      "care": "Machine wash cold, inside out. Do not bleach. Dry in shade.",
+      "is_new": 1,
+      "brand_id": 1,
+      "category_id": 4,
+      "brand": {
+        "id": 1,
+        "name": "Wordle",
+        "slug": "wordle",
+        "tagline": "Graphic, statement pieces with heavy workmanship."
+      },
+      "category": {
+        "id": 4,
+        "name": "Track pants",
+        "slug": "track-pants",
+        "sort_order": 4
+      },
+      "minPricePaise": 109900,
+      "mrpPaise": 129900,
+      "colours": [
+        {
+          "name": "Indigo",
+          "hex": "#2C3A6E"
+        },
+        {
+          "name": "Midnight",
+          "hex": "#1F2233"
+        }
+      ],
+      "sizes": [
+        "S",
+        "M",
+        "L",
+        "XL",
+        "XXL"
+      ],
+      "variants": [
+        {
+          "id": 21,
+          "colour": "Indigo",
+          "colour_hex": "#2C3A6E",
+          "size": "S",
+          "price_paise": 109900,
+          "mrp_paise": 129900,
+          "available": 12
+        },
+        {
+          "id": 22,
+          "colour": "Indigo",
+          "colour_hex": "#2C3A6E",
+          "size": "M",
+          "price_paise": 109900,
+          "mrp_paise": 129900,
+          "available": 12
+        },
+        {
+          "id": 23,
+          "colour": "Indigo",
+          "colour_hex": "#2C3A6E",
+          "size": "L",
+          "price_paise": 109900,
+          "mrp_paise": 129900,
+          "available": 12
+        },
+        {
+          "id": 24,
+          "colour": "Indigo",
+          "colour_hex": "#2C3A6E",
+          "size": "XL",
+          "price_paise": 109900,
+          "mrp_paise": 129900,
+          "available": 12
+        },
+        {
+          "id": 25,
+          "colour": "Indigo",
+          "colour_hex": "#2C3A6E",
+          "size": "XXL",
+          "price_paise": 109900,
+          "mrp_paise": 129900,
+          "available": 3
+        },
+        {
+          "id": 26,
+          "colour": "Midnight",
+          "colour_hex": "#1F2233",
+          "size": "S",
+          "price_paise": 109900,
+          "mrp_paise": 129900,
+          "available": 12
+        },
+        {
+          "id": 27,
+          "colour": "Midnight",
+          "colour_hex": "#1F2233",
+          "size": "M",
+          "price_paise": 109900,
+          "mrp_paise": 129900,
+          "available": 12
+        },
+        {
+          "id": 28,
+          "colour": "Midnight",
+          "colour_hex": "#1F2233",
+          "size": "L",
+          "price_paise": 109900,
+          "mrp_paise": 129900,
+          "available": 12
+        },
+        {
+          "id": 29,
+          "colour": "Midnight",
+          "colour_hex": "#1F2233",
+          "size": "XL",
+          "price_paise": 109900,
+          "mrp_paise": 129900,
+          "available": 12
+        },
+        {
+          "id": 30,
+          "colour": "Midnight",
+          "colour_hex": "#1F2233",
+          "size": "XXL",
+          "price_paise": 109900,
+          "mrp_paise": 129900,
+          "available": 3
+        }
+      ],
+      "images": [
+        {
+          "src": "/images/products/p3.jpg",
+          "alt": "Wordle Side-Stripe Track Pants in Indigo",
+          "colour": "Indigo"
+        },
+        {
+          "src": "/images/products/cat-trackpants.jpg",
+          "alt": "Wordle Side-Stripe Track Pants in Midnight",
+          "colour": "Midnight"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "name": "Max8 Kids Crew Tee",
+      "slug": "max8-kids-crew-tee",
+      "description": "A soft, easy-wear tee for kids with a playful Max8 print.",
+      "fabric": "100% soft cotton",
+      "gsm": 160,
+      "care": "Machine wash cold, inside out. Do not bleach. Dry in shade.",
+      "is_new": 1,
+      "brand_id": 2,
+      "category_id": 6,
+      "brand": {
+        "id": 2,
+        "name": "Max8",
+        "slug": "max8",
+        "tagline": "Clean, minimal everyday essentials."
+      },
+      "category": {
+        "id": 6,
+        "name": "Kidswear",
+        "slug": "kidswear",
+        "sort_order": 6
+      },
+      "minPricePaise": 44900,
+      "mrpPaise": null,
+      "colours": [
+        {
+          "name": "Sky",
+          "hex": "#C9D6E8"
+        },
+        {
+          "name": "Mustard",
+          "hex": "#E6B83A"
+        }
+      ],
+      "sizes": [
+        "2-3Y",
+        "4-5Y",
+        "6-7Y",
+        "8-9Y"
+      ],
+      "variants": [
+        {
+          "id": 31,
+          "colour": "Sky",
+          "colour_hex": "#C9D6E8",
+          "size": "2-3Y",
+          "price_paise": 44900,
+          "mrp_paise": null,
+          "available": 12
+        },
+        {
+          "id": 32,
+          "colour": "Sky",
+          "colour_hex": "#C9D6E8",
+          "size": "4-5Y",
+          "price_paise": 44900,
+          "mrp_paise": null,
+          "available": 12
+        },
+        {
+          "id": 33,
+          "colour": "Sky",
+          "colour_hex": "#C9D6E8",
+          "size": "6-7Y",
+          "price_paise": 44900,
+          "mrp_paise": null,
+          "available": 12
+        },
+        {
+          "id": 34,
+          "colour": "Sky",
+          "colour_hex": "#C9D6E8",
+          "size": "8-9Y",
+          "price_paise": 44900,
+          "mrp_paise": null,
+          "available": 12
+        },
+        {
+          "id": 35,
+          "colour": "Mustard",
+          "colour_hex": "#E6B83A",
+          "size": "2-3Y",
+          "price_paise": 44900,
+          "mrp_paise": null,
+          "available": 12
+        },
+        {
+          "id": 36,
+          "colour": "Mustard",
+          "colour_hex": "#E6B83A",
+          "size": "4-5Y",
+          "price_paise": 44900,
+          "mrp_paise": null,
+          "available": 12
+        },
+        {
+          "id": 37,
+          "colour": "Mustard",
+          "colour_hex": "#E6B83A",
+          "size": "6-7Y",
+          "price_paise": 44900,
+          "mrp_paise": null,
+          "available": 12
+        },
+        {
+          "id": 38,
+          "colour": "Mustard",
+          "colour_hex": "#E6B83A",
+          "size": "8-9Y",
+          "price_paise": 44900,
+          "mrp_paise": null,
+          "available": 12
+        }
+      ],
+      "images": [
+        {
+          "src": "/images/products/p4.jpg",
+          "alt": "Max8 Kids Crew Tee in Sky",
+          "colour": "Sky"
+        },
+        {
+          "src": "/images/products/cat-kids.jpg",
+          "alt": "Max8 Kids Crew Tee in Mustard",
+          "colour": "Mustard"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "name": "Max8 Knit Casual Shirt",
+      "slug": "max8-knit-casual-shirt",
+      "description": "A relaxed knit shirt with a chest pocket — the comfort of a tee with the look of a shirt.",
+      "fabric": "Cotton knit",
+      "gsm": 200,
+      "care": "Machine wash cold, inside out. Do not bleach. Dry in shade.",
+      "is_new": 0,
+      "brand_id": 2,
+      "category_id": 2,
+      "brand": {
+        "id": 2,
+        "name": "Max8",
+        "slug": "max8",
+        "tagline": "Clean, minimal everyday essentials."
+      },
+      "category": {
+        "id": 2,
+        "name": "Shirts",
+        "slug": "shirts",
+        "sort_order": 2
+      },
+      "minPricePaise": 99900,
+      "mrpPaise": 119900,
+      "colours": [
+        {
+          "name": "Sage",
+          "hex": "#8A9A7B"
+        }
+      ],
+      "sizes": [
+        "S",
+        "M",
+        "L",
+        "XL",
+        "XXL"
+      ],
+      "variants": [
+        {
+          "id": 39,
+          "colour": "Sage",
+          "colour_hex": "#8A9A7B",
+          "size": "S",
+          "price_paise": 99900,
+          "mrp_paise": 119900,
+          "available": 12
+        },
+        {
+          "id": 40,
+          "colour": "Sage",
+          "colour_hex": "#8A9A7B",
+          "size": "M",
+          "price_paise": 99900,
+          "mrp_paise": 119900,
+          "available": 12
+        },
+        {
+          "id": 41,
+          "colour": "Sage",
+          "colour_hex": "#8A9A7B",
+          "size": "L",
+          "price_paise": 99900,
+          "mrp_paise": 119900,
+          "available": 12
+        },
+        {
+          "id": 42,
+          "colour": "Sage",
+          "colour_hex": "#8A9A7B",
+          "size": "XL",
+          "price_paise": 99900,
+          "mrp_paise": 119900,
+          "available": 12
+        },
+        {
+          "id": 43,
+          "colour": "Sage",
+          "colour_hex": "#8A9A7B",
+          "size": "XXL",
+          "price_paise": 99900,
+          "mrp_paise": 119900,
+          "available": 3
+        }
+      ],
+      "images": [
+        {
+          "src": "/images/products/cat-shirts.jpg",
+          "alt": "Max8 Knit Casual Shirt in Sage",
+          "colour": "Sage"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "name": "Wordle Lounge Shorts",
+      "slug": "wordle-lounge-shorts",
+      "description": "Easy lounge shorts with an elastic drawcord waist and side pockets.",
+      "fabric": "Cotton terry",
+      "gsm": 220,
+      "care": "Machine wash cold, inside out. Do not bleach. Dry in shade.",
+      "is_new": 0,
+      "brand_id": 1,
+      "category_id": 3,
+      "brand": {
+        "id": 1,
+        "name": "Wordle",
+        "slug": "wordle",
+        "tagline": "Graphic, statement pieces with heavy workmanship."
+      },
+      "category": {
+        "id": 3,
+        "name": "Shorts",
+        "slug": "shorts",
+        "sort_order": 3
+      },
+      "minPricePaise": 64900,
+      "mrpPaise": null,
+      "colours": [
+        {
+          "name": "Charcoal",
+          "hex": "#3B3F4A"
+        }
+      ],
+      "sizes": [
+        "S",
+        "M",
+        "L",
+        "XL",
+        "XXL"
+      ],
+      "variants": [
+        {
+          "id": 44,
+          "colour": "Charcoal",
+          "colour_hex": "#3B3F4A",
+          "size": "S",
+          "price_paise": 64900,
+          "mrp_paise": null,
+          "available": 12
+        },
+        {
+          "id": 45,
+          "colour": "Charcoal",
+          "colour_hex": "#3B3F4A",
+          "size": "M",
+          "price_paise": 64900,
+          "mrp_paise": null,
+          "available": 12
+        },
+        {
+          "id": 46,
+          "colour": "Charcoal",
+          "colour_hex": "#3B3F4A",
+          "size": "L",
+          "price_paise": 64900,
+          "mrp_paise": null,
+          "available": 12
+        },
+        {
+          "id": 47,
+          "colour": "Charcoal",
+          "colour_hex": "#3B3F4A",
+          "size": "XL",
+          "price_paise": 64900,
+          "mrp_paise": null,
+          "available": 12
+        },
+        {
+          "id": 48,
+          "colour": "Charcoal",
+          "colour_hex": "#3B3F4A",
+          "size": "XXL",
+          "price_paise": 64900,
+          "mrp_paise": null,
+          "available": 3
+        }
+      ],
+      "images": [
+        {
+          "src": "/images/products/cat-shorts.jpg",
+          "alt": "Wordle Lounge Shorts in Charcoal",
+          "colour": "Charcoal"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "name": "Max8 Sleeveless Vest",
+      "slug": "max8-sleeveless-vest",
+      "description": "A clean sleeveless vest for training or warm days.",
+      "fabric": "100% combed cotton",
+      "gsm": 180,
+      "care": "Machine wash cold, inside out. Do not bleach. Dry in shade.",
+      "is_new": 0,
+      "brand_id": 2,
+      "category_id": 5,
+      "brand": {
+        "id": 2,
+        "name": "Max8",
+        "slug": "max8",
+        "tagline": "Clean, minimal everyday essentials."
+      },
+      "category": {
+        "id": 5,
+        "name": "Sleeveless",
+        "slug": "sleeveless",
+        "sort_order": 5
+      },
+      "minPricePaise": 49900,
+      "mrpPaise": null,
+      "colours": [
+        {
+          "name": "Rust",
+          "hex": "#B5502F"
+        }
+      ],
+      "sizes": [
+        "S",
+        "M",
+        "L",
+        "XL",
+        "XXL"
+      ],
+      "variants": [
+        {
+          "id": 49,
+          "colour": "Rust",
+          "colour_hex": "#B5502F",
+          "size": "S",
+          "price_paise": 49900,
+          "mrp_paise": null,
+          "available": 12
+        },
+        {
+          "id": 50,
+          "colour": "Rust",
+          "colour_hex": "#B5502F",
+          "size": "M",
+          "price_paise": 49900,
+          "mrp_paise": null,
+          "available": 12
+        },
+        {
+          "id": 51,
+          "colour": "Rust",
+          "colour_hex": "#B5502F",
+          "size": "L",
+          "price_paise": 49900,
+          "mrp_paise": null,
+          "available": 12
+        },
+        {
+          "id": 52,
+          "colour": "Rust",
+          "colour_hex": "#B5502F",
+          "size": "XL",
+          "price_paise": 49900,
+          "mrp_paise": null,
+          "available": 12
+        },
+        {
+          "id": 53,
+          "colour": "Rust",
+          "colour_hex": "#B5502F",
+          "size": "XXL",
+          "price_paise": 49900,
+          "mrp_paise": null,
+          "available": 3
+        }
+      ],
+      "images": [
+        {
+          "src": "/images/products/cat-sleeveless.jpg",
+          "alt": "Max8 Sleeveless Vest in Rust",
+          "colour": "Rust"
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "name": "Wordle Graphic Print Tee",
+      "slug": "wordle-graphic-print-tee",
+      "description": "A regular-fit tee with a bold Wordle front print in rust.",
+      "fabric": "100% combed cotton",
+      "gsm": 220,
+      "care": "Machine wash cold, inside out. Do not bleach. Dry in shade.",
+      "is_new": 0,
+      "brand_id": 1,
+      "category_id": 1,
+      "brand": {
+        "id": 1,
+        "name": "Wordle",
+        "slug": "wordle",
+        "tagline": "Graphic, statement pieces with heavy workmanship."
+      },
+      "category": {
+        "id": 1,
+        "name": "T-shirts",
+        "slug": "t-shirts",
+        "sort_order": 1
+      },
+      "minPricePaise": 84900,
+      "mrpPaise": 99900,
+      "colours": [
+        {
+          "name": "Off white",
+          "hex": "#F2EFE6"
+        }
+      ],
+      "sizes": [
+        "S",
+        "M",
+        "L",
+        "XL",
+        "XXL"
+      ],
+      "variants": [
+        {
+          "id": 54,
+          "colour": "Off white",
+          "colour_hex": "#F2EFE6",
+          "size": "S",
+          "price_paise": 84900,
+          "mrp_paise": 99900,
+          "available": 12
+        },
+        {
+          "id": 55,
+          "colour": "Off white",
+          "colour_hex": "#F2EFE6",
+          "size": "M",
+          "price_paise": 84900,
+          "mrp_paise": 99900,
+          "available": 12
+        },
+        {
+          "id": 56,
+          "colour": "Off white",
+          "colour_hex": "#F2EFE6",
+          "size": "L",
+          "price_paise": 84900,
+          "mrp_paise": 99900,
+          "available": 12
+        },
+        {
+          "id": 57,
+          "colour": "Off white",
+          "colour_hex": "#F2EFE6",
+          "size": "XL",
+          "price_paise": 84900,
+          "mrp_paise": 99900,
+          "available": 12
+        },
+        {
+          "id": 58,
+          "colour": "Off white",
+          "colour_hex": "#F2EFE6",
+          "size": "XXL",
+          "price_paise": 84900,
+          "mrp_paise": 99900,
+          "available": 3
+        }
+      ],
+      "images": [
+        {
+          "src": "/images/products/studio-print.jpg",
+          "alt": "Wordle Graphic Print Tee in Off white",
+          "colour": "Off white"
+        }
+      ]
+    }
+  ]
+}

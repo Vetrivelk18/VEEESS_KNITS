@@ -1,0 +1,24 @@
+---
+import Base from '../../layouts/Base.astro';
+---
+<Base title="Your cart" current="cart" noindex>
+  <div class="wrap">
+    <div class="page-title"><h1 class="display h2">Your cart</h1></div>
+    <div class="cart-layout" data-cart-root>
+      <div class="main" data-lines aria-live="polite"><p class="muted">Loading your cart…</p></div>
+      <aside class="side" data-summary hidden>
+        <div class="summary">
+          <div class="r"><span data-sub-label>Subtotal</span><span data-subtotal>—</span></div>
+          <div class="r"><span>Shipping</span><span data-shipping>—</span></div>
+          <div class="r total"><span>Total</span><span data-total>—</span></div>
+          <p class="muted" style="font-size:13px;margin:0" data-ship-hint></p>
+          <a class="btn btn-block" href="/checkout/" data-checkout>Checkout</a>
+          <p class="muted" style="font-size:13px;margin:0;text-align:center">UPI, cards, netbanking or cash on delivery (no extra charge)</p>
+        </div>
+      </aside>
+    </div>
+  </div>
+  <script>
+    import '../../scripts/cart-page';
+  </script>
+</Base>

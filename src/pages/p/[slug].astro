@@ -1,0 +1,104 @@
+---
+import Base from '../../layouts/Base.astro';
+import Icon from '../../components/Icon.astro';
+import ProductCard from '../../components/ProductCard.astro';
+import { products, formatINR, discountPct, type Product } from '../../lib/catalog';
+export function getStaticPaths() {
+  return products.map((p) => ({ params: { slug: p.slug }, props: { p } }));
+}
+const { p } = Astro.props as { p: Product };
+const first = p.colours[0]!;
+const imgs = p.images.filter((i) => i.colour === first.name);
+const gallery = (imgs.length ? imgs : p.images).slice(0, 3);
+const related = products.filter((x) => x.id !== p.id && (x.category.id === p.category.id || x.brand.id === p.brand.id)).slice(0, 4);
+const off = discountPct(p.minPricePaise, p.mrpPaise);
+const data = JSON.stringify({
+  slug: p.slug, name: p.name, brand: p.brand.name,
+  variants: p.variants, colours: p.colours, sizes: p.sizes,
+  images: p.images,
+}).replace(/</g, '\\u003c');
+const jsonLd = JSON.stringify({
+  '@context': 'https://schema.org', '@type': 'Product', name: p.name, description: p.description,
+  brand: { '@type': 'Brand', name: p.brand.name }, image: p.images.map((i) => new URL(i.src, Astro.site).href),
+  offers: { '@type': 'Offer', priceCurrency: 'INR', price: (p.minPricePaise / 100).toFixed(2), availability: p.variants.some((v) => v.available > 0) ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock' },
+}).replace(/</g, '\\u003c');
+---
+<Base title={p.name} current="shop" description={p.description.slice(0, 155)} image={p.images[0]?.src}>
+  <script type="application/ld+json" is:inline set:html={jsonLd}></script>
+  <script type="application/json" id="product-data" is:inline set:html={data}></script>
+  <div class="wrap">
+    <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a> / <a href={`/brand/${p.brand.slug}/`}>{p.brand.name}</a> / <a href={`/shop/${p.category.slug}/`}>{p.category.name}</a></nav>
+    <div class="pdp">
+      <div class="gal" data-gallery>
+        {gallery.map((g, i) => <div class={i === 0 ? 'main' : ''}><img src={g.src} alt={g.alt} width="1200" height={i === 0 ? 900 : 1200} loading={i === 0 ? 'eager' : 'lazy'} /></div>)}
+      </div>
+      <div class="info">
+        <div>
+          <a class="eyebrow" href={`/brand/${p.brand.slug}/`} style="text-decoration:none">{p.brand.name}</a>
+          <h1 class="display">{p.name}</h1>
+          <div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap">
+            <span class="pricebig" data-price>{formatINR(p.minPricePaise)}</span>
+            {p.mrpPaise && p.mrpPaise > p.minPricePaise && <span class="muted"><s data-mrp>{formatINR(p.mrpPaise)}</s> <span class="free" data-off>{off}% off</span></span>}
+            <span class="muted" style="font-size:14px">Inclusive of all taxes</span>
+          </div>
+        </div>
+
+        <div>
+          <div class="opt-label">Colour: <span data-colour-name>{first.name}</span></div>
+          <div class="colour-row" role="group" aria-label="Colour">
+            {p.colours.map((c, i) => <button type="button" class="colour-btn" aria-label={c.name} aria-pressed={i === 0 ? 'true' : 'false'} data-colour={c.name}><span style={`background:${c.hex}`}></span></button>)}
+          </div>
+        </div>
+
+        <div>
+          <div class="opt-label">Size: <span data-size-name>Select</span> <a href="#size-chart" style="font-weight:400;font-size:14px">Size chart</a></div>
+          <div class="size-row" role="group" aria-label="Size" data-sizes>
+            {p.sizes.map((s) => <button type="button" class="size-btn" aria-pressed="false" data-size={s}>{s}</button>)}
+          </div>
+          <p class="err" data-size-err hidden>Please choose a size.</p>
+          <p class="muted" style="font-size:14px;margin:8px 0 0" data-stock-note aria-live="polite"></p>
+        </div>
+
+        <div class="sticky-buy">
+          <div class="buy-row">
+            <div class="qty" role="group" aria-label="Quantity">
+              <button type="button" aria-label="Decrease quantity" data-dec>−</button>
+              <output data-qty aria-live="polite">1</output>
+              <button type="button" aria-label="Increase quantity" data-inc>+</button>
+            </div>
+            <button type="button" class="btn" data-add>Add to cart</button>
+          </div>
+          <button type="button" class="btn btn-accent btn-block" style="margin-top:10px;min-height:52px" data-buy>Buy now</button>
+        </div>
+
+        <div class="perks">
+          <div><Icon name="truck" size={18} />Free shipping on orders over ₹999</div>
+          <div><Icon name="returns" size={18} />Easy returns — see our <a href="/policies/returns/">returns policy</a></div>
+          <div><Icon name="card" size={18} />Pay by UPI, card or netbanking via Razorpay</div>
+          <div><Icon name="cash" size={18} /><span><strong>Cash on delivery available</strong> · no extra charge</span></div>
+        </div>
+
+        <div class="accordion">
+          <details open><summary>Fabric &amp; fit</summary><p>{p.description}<br />{p.fabric}{p.gsm ? `, ${p.gsm} GSM` : ''}. Pre-shrunk and shrinkage-tested.</p></details>
+          <details><summary>Care</summary><p>{p.care}</p></details>
+          <details><summary>Shipping &amp; returns</summary><p>Dispatched from Tiruppur. Delivery times depend on your PIN code.<br />See our <a href="/policies/shipping/">shipping</a> and <a href="/policies/returns/">returns</a> policies.</p></details>
+        </div>
+      </div>
+    </div>
+
+    <section id="size-chart" style="padding-bottom:48px">
+      <h2 class="display" style="font-size:28px;margin:0 0 16px">Size chart</h2>
+      <p class="draft-note">Measurements for this style will be added by Veeess Knits. Need help choosing? Call <a href="tel:+919600577555">+91 96005 77555</a>.</p>
+    </section>
+
+    {related.length > 0 && (
+      <section style="padding-bottom:24px">
+        <h2 class="display" style="font-size:28px;margin:0 0 20px">You may also like</h2>
+        <div class="product-grid">{related.map((r) => <ProductCard product={r} />)}</div>
+      </section>
+    )}
+  </div>
+  <script>
+    import '../../scripts/product';
+  </script>
+</Base>

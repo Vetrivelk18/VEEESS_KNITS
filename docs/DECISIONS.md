@@ -1,0 +1,202 @@
+# Veeess Knits — Decisions and assumptions
+
+A running log of the important choices made while building, so you can review and change them. Each entry says **what** was decided, **why**, and **how to change it**. Items marked **ASSUMPTION** are guesses that need confirming with Veeess Knits.
+
+Last updated: 24 Oct 2026 · Code version 0.1.0
+
+---
+
+## 1. Platform and architecture
+
+### D1. Cloudflare Worker with static assets (instead of Cloudflare Pages)
+- **What:** One Cloudflare Worker serves the Astro-built static site (`./dist`) and the API. Static files are served for free; only `/api/*`, `/media/*` and `/admin/*` run Worker code.
+- **Why:** Cloudflare Pages cannot run scheduled jobs (cron). We need cron for payment reconciliation, order expiry, admin re-alerts and backups. Workers with static assets has the same free, unlimited static serving, plus cron, in one deploy. This is a change from the HLD, which said "Pages".
+- **Change it:** not recommended; Pages would need a second Worker just for cron.
+
+### D2. Static storefront pages, rebuilt when the catalogue changes
+- **What:** Home, shop, category, brand and product pages are pre-built HTML (good for speed, SEO and the free plan). Live price and stock are fetched from `/api/products/:slug` when a product page opens, and the server re-checks everything at checkout.
+- **Why:** Rendering every page on the server would count every page view against the 100,000 requests/day limit and the 10 ms CPU limit.
+- **Consequence:** New products, names, descriptions and images appear on the site after a rebuild. The admin panel has a **Publish storefront** button that triggers a rebuild through GitHub Actions (takes about 1–2 minutes). Price and stock changes show immediately without a rebuild.
+
+### D3. Fewer dependencies (security choice)
+- **What:** Runtime dependencies are only `hono` (routing) and `zod` (input validation). No ORM, no UI framework, no CSS framework.
+- **Why:** Every dependency is code that can carry vulnerabilities. Database access uses D1 prepared statements with bound parameters, which prevents SQL injection without an ORM. The HLD mentioned Drizzle ORM and Tailwind; both were dropped for this reason.
+- **Change it:** either can be added later without changing the database.
+
+### D4. Pinned to Astro 5
+- **What:** Astro 5.18 is used instead of the newest major version.
+- **Why:** It is a mature, well-documented release. Upgrade later in a separate change.
+
+### D5. Fonts are self-hosted
+- **What:** Archivo and Instrument Sans are bundled from npm (`@fontsource`) instead of loaded from Google Fonts.
+- **Why:** Faster first load, no third-party request with the customer's IP, and a tighter Content-Security-Policy.
+
+---
+
+## 2. Catalogue and pricing
+
+### D6. Sample catalogue — ASSUMPTION
+- 8 sample products across both brands and all 6 categories, with **sample prices, MRPs, stock levels and descriptions**. The product photos are the generated mock-up images.
+- **Replace** all of these in the admin panel before launch (open question in the HLD: real photos, prices, size charts).
+
+### D7. Shipping charge — ASSUMPTION
+- Free shipping on orders of **₹999 or more**, otherwise **₹79**. These are placeholder numbers in `wrangler.jsonc` (`FREE_SHIPPING_MIN_PAISE`, `SHIPPING_FEE_PAISE`). Change them once the shipping partner is chosen.
+
+### D8. Prices include GST
+- Prices are shown and charged as GST-inclusive ("Inclusive of all taxes"). GST invoice generation is **not** built yet — waiting on whether the company is GST-registered (HLD open question).
+
+### D9. Quantity limit
+- Maximum 10 of one item per order and 20 items per order, to stop bulk/abusive orders now that B2B is out of scope.
+
+---
+
+## 3. Orders, payments and cash on delivery
+
+### D10. Stock is protected by the database itself
+- A `CHECK (reserved <= stock AND stock >= 0)` rule on `product_variants` means two shoppers can never both buy the last item, even at the same millisecond — the second checkout fails and rolls back cleanly ("Sorry, an item just sold out").
+- **Online orders** reserve stock at checkout and convert it to a sale when payment is confirmed. Unpaid reservations are released after **30 minutes** (`ORDER_EXPIRY_MINUTES`).
+- **COD orders** take stock immediately (there is no payment step). Cancelling a COD order in the admin panel puts the stock back.
+
+### D11. A payment is confirmed three ways, but counted once
+- Browser verify (signature check) → Razorpay webhook → 15-minute reconciliation job. Whichever arrives first marks the order paid; the others do nothing. The payment ID is unique in the database and each webhook event ID is stored, so replays are ignored.
+- On top of the signature, the server asks Razorpay for the payment and checks it is **captured** and the **amount and currency match** the order. A mismatch is flagged "needs attention" in the admin panel.
+- **ASSUMPTION / ACTION:** turn on **automatic capture** in the Razorpay dashboard (Settings → Payment capture). Only captured payments mark an order paid.
+- If a customer pays *after* their reservation expired, the order is still marked paid; if the item has since sold out it is flagged **OUT OF STOCK — refund or restock** for the admin.
+
+### D12. Cash on delivery rules
+- COD has **no extra charge** (the database enforces `cod_fee_paise = 0`).
+- A phone number can have at most **2 open COD orders** (`COD_MAX_OPEN_PER_PHONE`). Open = pending, confirmed, packed or shipped.
+- Optional maximum COD order value: `COD_MAX_ORDER_PAISE` (set to `0` = no limit, because this is still an open question).
+- New COD orders arrive as **"COD to confirm"**. The admin confirms (e.g. by a quick call) before packing. Whether to always phone first is an open question in the HLD.
+
+### D13. Order status rules (enforced on the server)
+| From | Allowed next |
+| --- | --- |
+| COD to confirm | Confirmed, Cancelled |
+| Confirmed (COD) | Packed, Cancelled |
+| Paid (online) | Packed (cancel = refund) |
+| Packed | Shipped (tracking number required), Cancelled (COD only) |
+| Shipped | Delivered |
+- Online-paid orders are cancelled only through **Refund** (full amount). Refunding a paid/packed order puts stock back; refunding a shipped/delivered one does not (returns are handled by hand).
+- Abandoned online checkouts (never paid) are hidden from the main order list.
+
+### D14. Customer order page uses a signed link
+- The order confirmation page and email link carry a signed token valid for **30 days**. Without it, an order ID shows nothing, so nobody can look up other people's orders by guessing.
+
+### D15. Guest checkout only
+- No customer accounts or passwords (nothing to leak or reset). Customers are identified by mobile number. Accounts can be added later.
+
+### D16. Mock payments for local testing only
+- `RAZORPAY_MOCK=1` replaces the Razorpay popup with a local simulator so the whole flow can be tested offline. It is ignored unless `ENVIRONMENT=development` **and** the request is to `localhost`. A unit test checks it can never activate in production.
+
+---
+
+## 4. Security (primary focus)
+
+### D17. Admin login: Cloudflare Access + our own verification
+- Cloudflare Access (free, up to 50 users) asks admins for an email one-time code before `/admin` and `/api/admin` are reachable.
+- The Worker does **not** trust Access blindly: it verifies the Access JWT signature (RS256) against Cloudflare's public keys, checks audience, issuer and expiry, and requires the email to be in `ADMIN_EMAILS`. If Access were ever misconfigured, the admin area still returns 401.
+- **ACTION:** put the 2–3 real admin emails in `ADMIN_EMAILS` and in the Access policy (HLD open question).
+
+### D18. Other protections built in
+| Threat | Protection in the code |
+| --- | --- |
+| Price tampering | Server prices every cart from the database; browser prices are ignored (unit-tested). |
+| Fake payment success | HMAC-SHA256 signature check (constant-time compare) + Razorpay API confirmation of capture and amount. |
+| Webhook forgery / replay | HMAC of the raw body with the webhook secret; event IDs stored. |
+| Cross-site request forgery | Every POST/PATCH/DELETE must come from our own origin and be JSON; Razorpay's webhook is the only exception (it is signed). |
+| SQL injection | Only prepared statements with bound parameters; search input is escaped for `LIKE`. |
+| XSS | Free text rejects `<`, `>` and control characters; pages render text with `textContent`, never `innerHTML` with user data; emails are HTML-escaped; strict Content-Security-Policy. |
+| Bots, fake COD orders | Cloudflare Turnstile on checkout (verified server-side, fails closed), rate limits per IP and per phone, COD caps. |
+| Brute force / abuse | Rate limits stored in D1 on checkout, order lookup, verify, refunds, uploads, publish. |
+| Malicious uploads | Admin-only; JPEG/PNG/WebP detected by file signature (not file name); 5 MB limit; random file names; served with `sandbox` CSP. |
+| SSRF via push endpoints | Only real browser push services (Google, Apple, Mozilla, Microsoft) can be registered. |
+| Leaking customer data | Push notifications carry **no data**; alert text and admin emails never include address or phone. Error messages never include internals. |
+| Secrets | Only in Cloudflare encrypted secrets / `.dev.vars` (git-ignored). The app refuses to process payments if a secret is missing or still a placeholder. |
+| Clickjacking, sniffing | `X-Frame-Options: DENY`, `frame-ancestors 'none'`, `nosniff`, HSTS, Referrer-Policy, Permissions-Policy. |
+| Accountability | Every admin change (status, refund, price, stock, upload, publish) is written to an audit log with email, IP and time. |
+| Order details tampering | Each order stores the name and email given at that checkout, so someone ordering with another person's phone number can't alter how that person's earlier orders look or where their emails go. |
+| Lost webhook on a crash | A webhook event is marked "seen" only after it has been processed, so Razorpay's retry still works; the 15-minute reconciliation is a second safety net. |
+
+### D19. Rate limiting stored in D1
+- Free-plan friendly, but each limited request costs one database write. **ACTION:** also add Cloudflare's free WAF rate-limiting rule on `/api/checkout` (README has the exact rule) so floods are stopped before they reach the Worker.
+
+---
+
+## 5. Admin panel and new-order alerts
+
+### D20. Four layers of alerts
+1. **In the panel:** bell with unread count, pop-up card with "View order", a short two-tone chime, and the unread count in the browser tab title. The panel checks every **20 seconds** while visible (and immediately when the tab is reopened).
+2. **Web Push** to every admin device that turned alerts on, even with the panel closed. Tapping it opens that order.
+3. **Backup email** to `ALERT_EMAIL_TO` for every new order (needs a Resend API key).
+4. **Re-alert:** if no admin opens a new order within **15 minutes**, every device is pushed again (once).
+- An alert is created only when an order becomes **paid** (online) or **COD to confirm** — never for abandoned checkouts. One alert per order, guaranteed by the database.
+- Opening the order, acting on it, or "Mark all read" clears it **for all admins** and records who saw it.
+
+### D21. Push notifications carry no customer data
+- The push is an empty "wake-up"; the admin device's service worker then fetches the alert text from our API (behind Cloudflare Access). Lock-screen text is only "New order VK-1043 · ₹1,299 · COD · 2 items · Priya" — no address or phone.
+- **iPhone limitation:** web push needs iOS 16.4+ and the admin panel added to the Home Screen. The Alert settings page explains this. Admins can also rely on the backup email.
+
+### D22. The chime needs one tap
+- Browsers block sound until the user interacts with the page. After the first tap/click anywhere in the admin panel, the chime works for the rest of the session.
+
+### D23. Two-step confirm for risky actions
+- "Cancel order" and "Refund" need a second tap within 4 seconds instead of a pop-up dialog. Refunds are always the full amount; partial refunds can be done in the Razorpay dashboard.
+
+### D24. Shipping requires a tracking number
+- An order can't be marked **Shipped** without a courier tracking number; the customer sees it on their order page.
+
+### D25. Mobile-first admin
+- On phones the orders table becomes cards with one big action button ("Confirm COD", "Mark packed", …). The admin panel can be installed to the Home Screen (it has a web app manifest and icon).
+
+---
+
+## 6. Storefront
+
+### D26. Follows the approved design, with these enhancements
+- Sticky header and a bottom tab bar on phones (Home, Shop, Track order, Cart with item count).
+- Live stock on product pages: sold-out sizes are crossed out, "Only N left" under 4 units.
+- Cart re-prices from the server every time it opens and blocks checkout if an item ran out.
+- "Buy now" goes straight to checkout; checkout shows "Cash on delivery charge — Free" when COD is selected.
+- Product pages include structured data (Google Shopping/SEO); `robots.txt` hides admin, API, checkout and order pages.
+- Accessibility: skip link, labelled buttons, keyboard-usable controls, visible focus, 44 px touch targets.
+
+### D27. Track order page uses the emailed link — ASSUMPTION
+- The "Track order" tab explains that orders open from the private link in the confirmation email (or by phone/WhatsApp). There is deliberately **no** "enter order number + phone" lookup, to stop people looking up others' orders. A one-time-code lookup can be added later.
+
+### D28. WhatsApp number — ASSUMPTION
+- "Chat on WhatsApp" links to **+91 96006 86606**, the number the current Wix site uses for WhatsApp. Confirm it.
+
+### D29. Policy pages are drafts
+- Shipping, returns, privacy and terms pages contain draft wording with **[bracketed]** gaps (return window, dispatch time, grievance officer). They must be reviewed before launch. This is not legal advice.
+
+### D30. Size charts not yet built
+- The product page shows a placeholder size-chart note. Real measurements per style are needed from Veeess Knits.
+
+---
+
+## 7. Deployment and operations
+
+### D31. GitHub Actions deploys; "Publish storefront" rebuilds
+- Push to `main` → tests → database migrations → catalogue export from live D1 → build → deploy. The admin's Publish button triggers the same workflow (needs `GITHUB_REPO` + `GITHUB_DISPATCH_TOKEN`).
+- Dependabot opens weekly update PRs; CI runs `npm audit` for high-severity issues.
+
+### D32. Backups
+- D1 Time Travel (point-in-time restore) plus a weekly JSON export of all business tables to the private R2 bucket (`backups/`, last 12 kept). Backups are not reachable through `/media/`.
+
+### D33. Not built yet (later phases)
+- GST invoices (waiting on GST registration answer).
+- Courier integration (Shiprocket etc.) — tracking numbers are typed in by the admin for now.
+- Customer accounts, wishlists, coupons, reviews, product search box (the search icon opens the full catalogue).
+- Sentry error tracking (Cloudflare Workers logs are on).
+
+---
+
+## 8. Open items for Veeess Knits (before launch)
+- [ ] Real products, photos, prices, MRPs, stock, size charts.
+- [ ] Shipping charge and free-shipping threshold (D7), dispatch time, return window.
+- [ ] Admin email addresses (D17) and the alert inbox.
+- [ ] Any COD maximum order value (D12) and whether to phone-confirm every COD order.
+- [ ] GST registration / invoice requirement (D8).
+- [ ] WhatsApp number (D28) and grievance officer for the privacy policy (D29).
+- [ ] Razorpay KYC, automatic capture on, webhook configured (README §2.4).

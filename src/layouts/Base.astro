@@ -1,0 +1,101 @@
+---
+import '../styles/global.css';
+import Icon from '../components/Icon.astro';
+interface Props { title: string; description?: string; current?: string; noindex?: boolean; image?: string }
+const { title, description = 'Export-standard T-shirts and everyday knitwear from Tiruppur. Shop Wordle and Max8 — pay online or cash on delivery, no extra charge.', current = '', noindex = false, image = '/images/products/hero.jpg' } = Astro.props;
+const fullTitle = title.includes('Veeess') ? title : `${title} | Veeess Knits`;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const nav = [
+  { href: '/shop/', label: 'Shop', key: 'shop' },
+  { href: '/brand/wordle/', label: 'Wordle', key: 'wordle' },
+  { href: '/brand/max8/', label: 'Max8', key: 'max8' },
+  { href: '/#about', label: 'Our story', key: 'about' },
+  { href: '/track/', label: 'Track order', key: 'track' },
+];
+---
+<!doctype html>
+<html lang="en-IN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>{fullTitle}</title>
+  <meta name="description" content={description} />
+  <link rel="canonical" href={canonical} />
+  {noindex && <meta name="robots" content="noindex" />}
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content={fullTitle} />
+  <meta property="og:description" content={description} />
+  <meta property="og:image" content={new URL(image, Astro.site)} />
+  <meta name="theme-color" content="#1F2B5C" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+</head>
+<body class="has-tabbar">
+  <a class="skip" href="#main">Skip to content</a>
+  <div class="announce">Free shipping over ₹999 · Cash on delivery, no extra charge · Made in Tiruppur</div>
+  <header class="site-header">
+    <div class="wrap bar">
+      <button class="icon-btn menu-btn" type="button" aria-label="Menu" aria-expanded="false" aria-controls="mobile-menu" data-menu-toggle><Icon name="menu" /></button>
+      <a class="logo" href="/">VEEESS KNITS</a>
+      <nav class="main-nav" aria-label="Main">
+        {nav.map((n) => <a href={n.href} aria-current={current === n.key ? 'page' : undefined}>{n.label}</a>)}
+      </nav>
+      <div class="header-actions">
+        <a class="icon-btn" href="/shop/" aria-label="Browse all products"><Icon name="search" /></a>
+        <a class="icon-btn" href="/cart/" aria-label="Cart" data-cart-link><Icon name="cart" /><span class="badge" data-cart-count hidden>0</span></a>
+      </div>
+    </div>
+    <nav id="mobile-menu" class="wrap mobile-menu" aria-label="Mobile" hidden>
+      {nav.map((n) => <a href={n.href}>{n.label}</a>)}
+      <a href="/cart/">Cart</a>
+    </nav>
+  </header>
+
+  <main id="main"><slot /></main>
+
+  <footer class="site-footer">
+    <div class="wrap cols">
+      <div>
+        <div class="logo" style="color:#fff;font-size:20px">VEEESS KNITS</div>
+        <p style="font-size:14px;line-height:1.6;margin:12px 0">32-A, Padmavathi Puram 7th Street,<br />Gandhi Nagar, Tiruppur 641603</p>
+        <a href="mailto:info.veeessknits@gmail.com" style="color:#fff">info.veeessknits@gmail.com</a>
+      </div>
+      <div>
+        <h2>Shop</h2>
+        <a href="/shop/">All products</a>
+        <a href="/brand/wordle/">Wordle</a>
+        <a href="/brand/max8/">Max8</a>
+        <a href="/shop/kidswear/">Kidswear</a>
+      </div>
+      <div>
+        <h2>Help</h2>
+        <a href="/track/">Track your order</a>
+        <a href="/policies/shipping/">Shipping policy</a>
+        <a href="/policies/returns/">Returns &amp; refunds</a>
+        <a href="/policies/terms/">Terms &amp; conditions</a>
+        <a href="/policies/privacy/">Privacy policy</a>
+      </div>
+      <div>
+        <h2>Talk to us</h2>
+        <p style="font-size:14px;margin:0">Karthikeyan K, Managing Director<br /><a href="tel:+919600577555" style="color:#fff;display:inline">+91 96005 77555</a></p>
+        <p style="font-size:14px">Sowndhariyan K, Executive Director<br /><a href="tel:+916369010649" style="color:#fff;display:inline">+91 63690 10649</a></p>
+        <a class="wa" href="https://wa.me/919600686606" rel="noopener noreferrer" target="_blank">Chat on WhatsApp</a>
+      </div>
+    </div>
+    <div class="wrap legal">
+      <span>© {new Date().getFullYear()} Veeess Knits. All rights reserved.</span>
+      <span>Secure payments by Razorpay · UPI · Cards · Netbanking · Cash on delivery</span>
+    </div>
+  </footer>
+
+  <nav class="tabbar" aria-label="App">
+    <a href="/" aria-current={current === 'home' ? 'page' : undefined}><Icon name="home" />Home</a>
+    <a href="/shop/" aria-current={current === 'shop' ? 'page' : undefined}><Icon name="grid" />Shop</a>
+    <a href="/track/" aria-current={current === 'track' ? 'page' : undefined}><Icon name="truck" />Track order</a>
+    <a href="/cart/" aria-current={current === 'cart' ? 'page' : undefined}><Icon name="cart" />Cart<span class="badge" data-cart-count hidden>0</span></a>
+  </nav>
+  <div class="toast-host" aria-live="polite" data-toasts></div>
+  <script>
+    import '../scripts/site';
+  </script>
+</body>
+</html>

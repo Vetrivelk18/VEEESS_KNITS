@@ -1,0 +1,30 @@
+---
+import ProductCard from './ProductCard.astro';
+import { catalog, type Product } from '../lib/catalog';
+interface Props { title: string; intro?: string; items: Product[]; activeCategory?: string; brandSlug?: string }
+const { title, intro, items, activeCategory = '', brandSlug } = Astro.props;
+const base = brandSlug ? `/brand/${brandSlug}/` : '/shop/';
+---
+<section class="wrap">
+  <div class="page-title">
+    <h1 class="display h2">{title}</h1>
+    {intro && <p class="muted" style="max-width:640px;margin:10px 0 0">{intro}</p>}
+  </div>
+  {!brandSlug && (
+    <nav class="chips" aria-label="Categories">
+      <a class="chip" href="/shop/" aria-current={activeCategory === '' ? 'page' : undefined}>All</a>
+      {catalog.categories.map((c) => <a class="chip" href={`/shop/${c.slug}/`} aria-current={activeCategory === c.slug ? 'page' : undefined}>{c.name}</a>)}
+    </nav>
+  )}
+  {brandSlug && (
+    <nav class="chips" aria-label="Brands">
+      {catalog.brands.map((b) => <a class="chip" href={`/brand/${b.slug}/`} aria-current={brandSlug === b.slug ? 'page' : undefined}>{b.name}</a>)}
+      <a class="chip" href="/shop/">All products</a>
+    </nav>
+  )}
+  {items.length ? (
+    <div class="product-grid" style="padding-bottom:40px">{items.map((p, i) => <ProductCard product={p} eager={i < 4} />)}</div>
+  ) : (
+    <div class="empty"><p>New styles are on the way. <a href={base === '/shop/' ? '/shop/' : '/shop/'}>See all products</a></p></div>
+  )}
+</section>

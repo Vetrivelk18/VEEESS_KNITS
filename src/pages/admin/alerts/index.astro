@@ -1,0 +1,33 @@
+---
+import Admin from '../../../layouts/Admin.astro';
+---
+<Admin title="Alert settings" current="alerts">
+  <div class="admin-head"><h1 class="display h2">Alert settings</h1></div>
+  <div class="card device-card" style="max-width:720px">
+    <span style="flex:1;display:flex;flex-direction:column;gap:4px"><strong>New-order alerts on this device</strong><span class="muted small" data-push-note>Shows a notification on this phone or laptop for every new order, even when the admin panel is closed.</span></span>
+    <button type="button" class="switch" role="switch" aria-checked="false" aria-label="New-order alerts on this device" data-push-switch></button>
+  </div>
+  <div class="card" style="max-width:720px;display:flex;flex-direction:column;gap:10px">
+    <strong>How alerts reach you</strong>
+    <ol style="margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px;font-size:15px">
+      <li><strong>In this panel:</strong> the bell count, a pop-up and a short chime. The panel checks every 20 seconds.</li>
+      <li><strong>Push:</strong> a notification on every device that has alerts turned on above.</li>
+      <li><strong>Email backup:</strong> every new order is also emailed to <span data-alert-email>the admin inbox</span>.</li>
+      <li><strong>Reminder:</strong> if nobody opens a new order within 15 minutes, all devices are alerted again.</li>
+    </ol>
+    <p class="notice small" style="margin:0"><strong>iPhone:</strong> push alerts need iOS 16.4 or later and the admin panel added to the Home Screen (Share → Add to Home Screen). Then open it from the Home Screen and turn alerts on.</p>
+    <div><button type="button" class="btn btn-sm btn-outline" data-test-push>Send a test alert to all devices</button></div>
+  </div>
+  <div class="card" style="max-width:720px">
+    <strong>Devices with alerts on</strong>
+    <div data-devices class="small" style="margin-top:8px"><p class="muted">Loading…</p></div>
+  </div>
+  <div class="card">
+    <strong>Activity log</strong>
+    <p class="muted small" style="margin:4px 0 10px">Every admin change is recorded here.</p>
+    <div class="table-wrap"><table class="data" style="min-width:640px"><thead><tr><th>When</th><th>Who</th><th>What</th><th>Item</th></tr></thead><tbody data-audit></tbody></table></div>
+  </div>
+  <script>
+    import '../../../scripts/admin/alerts';
+  </script>
+</Admin>

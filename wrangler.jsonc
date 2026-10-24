@@ -1,0 +1,58 @@
+// Cloudflare Worker + static assets for veeessknits.com
+// Static pages (built by Astro into ./dist) are served free and unlimited.
+// Only /api/*, /media/* and /admin/* run the Worker code.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "veeess-knits",
+  "main": "worker/index.ts",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "not_found_handling": "404-page",
+    "html_handling": "auto-trailing-slash",
+    // Admin pages run through the Worker so they are protected even if
+    // Cloudflare Access is misconfigured (defence in depth).
+    "run_worker_first": ["/api/*", "/media/*", "/admin", "/admin/*"]
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "veeess_db",
+      // Replace with the id printed by: npx wrangler d1 create veeess_db
+      "database_id": "00000000-0000-0000-0000-000000000000",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "r2_buckets": [
+    { "binding": "MEDIA", "bucket_name": "veeess-media" }
+  ],
+  "triggers": {
+    // Every 15 min: reconcile payments, expire unpaid orders, re-alert admins.
+    // Sundays 21:00 UTC (Mon 02:30 IST): export a database backup to R2.
+    "crons": ["*/15 * * * *", "0 21 * * SUN"]
+  },
+  "observability": { "enabled": true },
+  // Non-secret settings. Secrets go in `wrangler secret put` (see README).
+  // For local development, .dev.vars overrides these values.
+  "vars": {
+    "ENVIRONMENT": "production",
+    "SITE_URL": "https://www.veeessknits.com",
+    "ADMIN_EMAILS": "admin1@example.com,admin2@example.com",
+    "ACCESS_TEAM_DOMAIN": "veeess.cloudflareaccess.com",
+    "ACCESS_AUD": "REPLACE_WITH_ACCESS_APPLICATION_AUD",
+    "RAZORPAY_KEY_ID": "rzp_test_REPLACE",
+    "TURNSTILE_SITE_KEY": "REPLACE_WITH_TURNSTILE_SITE_KEY",
+    "VAPID_PUBLIC_KEY": "REPLACE_WITH_OUTPUT_OF_npm_run_gen:vapid",
+    "VAPID_SUBJECT": "mailto:info.veeessknits@gmail.com",
+    "EMAIL_FROM": "Veeess Knits <orders@veeessknits.com>",
+    "ALERT_EMAIL_TO": "info.veeessknits@gmail.com",
+    "FREE_SHIPPING_MIN_PAISE": "99900",
+    "SHIPPING_FEE_PAISE": "7900",
+    "COD_MAX_OPEN_PER_PHONE": "2",
+    "COD_MAX_ORDER_PAISE": "0",
+    "ORDER_EXPIRY_MINUTES": "30",
+    "MEDIA_BASE_URL": "/media",
+    "GITHUB_REPO": ""
+  }
+}

@@ -1,0 +1,23 @@
+---
+import Admin from '../../../layouts/Admin.astro';
+---
+<Admin title="Products" current="products">
+  <div class="admin-head">
+    <div>
+      <h1 class="display h2">Products</h1>
+      <p class="muted" style="margin:6px 0 0;max-width:680px">Price and stock changes are live immediately. New products, names, descriptions and photos appear in the shop after you press <strong>Publish storefront</strong>.</p>
+    </div>
+    <div class="card" style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+      <span class="small muted" data-publish-info>—</span>
+      <button type="button" class="btn btn-sm" data-publish>Publish storefront</button>
+    </div>
+  </div>
+  <details class="card" data-new-product>
+    <summary style="cursor:pointer;font-weight:600">+ Add a new product</summary>
+    <form data-product-form="new" style="margin-top:16px"></form>
+  </details>
+  <div data-products style="display:flex;flex-direction:column;gap:12px"><p class="muted">Loading…</p></div>
+  <script>
+    import '../../../scripts/admin/products';
+  </script>
+</Admin>

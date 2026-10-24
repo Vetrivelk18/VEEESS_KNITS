@@ -1,0 +1,14 @@
+---
+import Base from '../../layouts/Base.astro';
+import ProductListing from '../../components/ProductListing.astro';
+import { catalog, products } from '../../lib/catalog';
+export function getStaticPaths() {
+  return catalog.categories.map((c) => ({ params: { category: c.slug }, props: { name: c.name } }));
+}
+const { category } = Astro.params;
+const { name } = Astro.props as { name: string };
+const items = products.filter((p) => p.category.slug === category);
+---
+<Base title={name} current="shop" description={`Shop ${name.toLowerCase()} from Wordle and Max8.`}>
+  <ProductListing title={name} items={items} activeCategory={category} />
+</Base>

@@ -1,0 +1,18 @@
+---
+import { formatINR, discountPct, inStock, type Product } from '../lib/catalog';
+interface Props { product: Product; eager?: boolean }
+const { product: p, eager = false } = Astro.props;
+const img = p.images[0];
+const off = discountPct(p.minPricePaise, p.mrpPaise);
+---
+<a class="pcard" href={`/p/${p.slug}/`} data-brand={p.brand.slug} data-category={p.category.slug}>
+  <div class="img">
+    {img && <img src={img.src} alt={img.alt} loading={eager ? 'eager' : 'lazy'} decoding="async" width="600" height="800" />}
+    <span class="tagb">{p.brand.name}</span>
+    {!inStock(p) && <span class="soldout">Sold out</span>}
+  </div>
+  <span class="name">{p.name}</span>
+  <span class="meta">{p.category.name}{p.gsm ? ` · ${p.gsm} GSM` : ''}</span>
+  <span class="price">{p.variants.some((v) => v.price_paise !== p.minPricePaise) ? 'From ' : ''}{formatINR(p.minPricePaise)}{p.mrpPaise && p.mrpPaise > p.minPricePaise && <><s>{formatINR(p.mrpPaise)}</s><span class="off">{off}% off</span></>}</span>
+  {p.colours.length > 1 && <span class="swatches" aria-label={`${p.colours.length} colours`}>{p.colours.map((c) => <span style={`background:${c.hex}`} title={c.name}></span>)}</span>}
+</a>

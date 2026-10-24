@@ -1,0 +1,11 @@
+---
+import Base from '../../layouts/Base.astro';
+---
+<Base title="Your order" noindex>
+  <div class="wrap" style="max-width:820px;padding-bottom:48px">
+    <div data-order aria-live="polite"><p class="muted" style="padding:40px 0">Loading your order…</p></div>
+  </div>
+  <script>
+    import '../../scripts/order';
+  </script>
+</Base>

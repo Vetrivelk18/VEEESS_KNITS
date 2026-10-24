@@ -1,0 +1,123 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import ProductCard from '../components/ProductCard.astro';
+import { catalog, products, categoryImage } from '../lib/catalog';
+const newArrivals = products.filter((p) => p.is_new).slice(0, 4);
+const featured = newArrivals.length >= 4 ? newArrivals : products.slice(0, 4);
+const wordle = catalog.brands.find((b) => b.slug === 'wordle');
+const max8 = catalog.brands.find((b) => b.slug === 'max8');
+const steps = [
+  ['Fabric sourcing', 'Knitted fabric sourced and inspected roll by roll.'],
+  ['Pattern & grading', 'Professional patterns and size grading for a consistent fit.'],
+  ['Cutting & stitching', 'Precision cutting and stitching in our own unit.'],
+  ['Dyeing & finishing', 'Controlled garment dyeing and finishing.'],
+  ['GSM & shrinkage tests', 'Fabric weight and shrinkage checked to spec.'],
+  ['QC & packing', 'Measurement checks, final inspection, careful packing.'],
+];
+---
+<Base title="Veeess Knits — T-shirts and knitwear from Tiruppur" current="home">
+  <section class="wrap hero">
+    <div>
+      <span class="pill">Tiruppur knitwear · 15+ years</span>
+      <h1 class="display h1" style="margin-top:24px">From production to brand perfection.</h1>
+      <p class="lead">Export-standard T-shirts and everyday knitwear, made in our own unit. Shop our own brands, Wordle and Max8, straight from the factory. Pay online or cash on delivery.</p>
+      <div style="display:flex;flex-wrap:wrap;gap:12px">
+        <a class="btn" href="/shop/">Shop Wordle &amp; Max8</a>
+        <a class="btn btn-outline" href="#about">How we make them</a>
+      </div>
+    </div>
+    <div class="hero-grid">
+      <a class="tall" href="/p/wordle-heavyweight-oversized-tee/" aria-label="Wordle heavyweight oversized tee"><img src="/images/products/hero.jpg" alt="Black Wordle oversized tee" width="1000" height="1300" fetchpriority="high" /></a>
+      <a class="drop" href="/shop/t-shirts/" style="text-decoration:none">
+        <span style="font-size:13px;letter-spacing:.1em;text-transform:uppercase;opacity:.85">New drop</span>
+        <span class="big">Heavyweight<br />oversized tees</span>
+      </a>
+      <img src="/images/products/fabric.jpg" alt="Close-up of indigo knit fabric" width="1000" height="1000" style="min-height:254px" />
+    </div>
+  </section>
+
+  <section class="trust" aria-label="Why shop with us">
+    <div class="wrap">
+      <div><span class="num">15+</span><span>years of<br />manufacturing</span></div>
+      <div><Icon name="shield" size={28} /><span>Export-standard<br />quality checks</span></div>
+      <div><Icon name="chart" size={28} /><span>GSM &amp; shrinkage<br />tested fabric</span></div>
+      <div><Icon name="cash" size={28} /><span>UPI, cards, or cash on<br />delivery at no extra charge</span></div>
+    </div>
+  </section>
+
+  <section class="wrap section" aria-labelledby="cat-h">
+    <div class="section-head">
+      <h2 id="cat-h" class="display h2">Shop by category</h2>
+      <a href="/shop/">View all products →</a>
+    </div>
+    <div class="cat-grid">
+      {catalog.categories.map((c) => (
+        <a class="cat-card" href={`/shop/${c.slug}/`}>
+          <img src={categoryImage(c.slug)} alt="" loading="lazy" width="800" height="1000" />
+          <span>{c.name}</span>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <section class="wrap section" aria-labelledby="brand-h">
+    <h2 id="brand-h" class="display h2" style="margin-bottom:28px">Our brands</h2>
+    <div class="brands">
+      <a class="brand-card brand-dark" href="/brand/wordle/">
+        <span class="eyebrow" style="color:var(--marigold)">by Veeess</span>
+        <div>
+          <div class="name">WORDLe</div>
+          <p>{wordle?.tagline}</p>
+          <span class="tag" style="background:var(--marigold);color:var(--ink)">Shop Wordle</span>
+        </div>
+      </a>
+      <a class="brand-card brand-light" href="/brand/max8/">
+        <span class="eyebrow">by Veeess</span>
+        <div>
+          <div class="name">MAX8</div>
+          <p>{max8?.tagline}</p>
+          <span class="tag" style="background:var(--indigo);color:#fff">Shop Max8</span>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <section class="wrap section" aria-labelledby="new-h" style="padding-bottom:64px">
+    <div class="section-head">
+      <h2 id="new-h" class="display h2">New arrivals</h2>
+      <a href="/shop/">Shop new →</a>
+    </div>
+    <div class="product-grid">
+      {featured.map((p) => <ProductCard product={p} />)}
+    </div>
+  </section>
+
+  <section id="about" class="band">
+    <div class="wrap">
+      <div>
+        <span class="eyebrow">Made in our own unit</span>
+        <h2 class="display" style="font-size:clamp(32px,4vw,48px);margin:16px 0 20px">Every piece made and checked in Tiruppur.</h2>
+        <p>Every Wordle and Max8 piece is cut, stitched, finished and inspected in our own unit, to the export standard we have kept for 15+ years.</p>
+        <a class="btn btn-accent" href="/shop/" style="margin-top:12px">Shop the collection</a>
+      </div>
+      <ol class="steps">
+        {steps.map(([t, d], i) => <li><span class="n">0{i + 1}</span><span class="t">{t}</span><span class="d">{d}</span></li>)}
+      </ol>
+    </div>
+  </section>
+
+  <section class="wrap section" aria-labelledby="studio-h">
+    <div class="section-head">
+      <h2 id="studio-h" class="display h2">Inside the studio</h2>
+      <a href="https://www.instagram.com/wordle_byveeess/" rel="noopener noreferrer" target="_blank">Follow @wordle_byveeess →</a>
+    </div>
+    <div class="gallery">
+      <img src="/images/products/studio-cutting.jpg" alt="Fabric rolls ready for cutting" loading="lazy" width="900" height="900" />
+      <img src="/images/products/studio-stitching.jpg" alt="Finished tees on the rack" loading="lazy" width="900" height="900" />
+      <img src="/images/products/studio-print.jpg" alt="Printed Wordle tee" loading="lazy" width="900" height="900" />
+      <img src="/images/products/studio-qc.jpg" alt="Folded tees after quality check" loading="lazy" width="900" height="900" />
+      <img src="/images/products/studio-packing.jpg" alt="Packed cartons ready to dispatch" loading="lazy" width="900" height="900" />
+    </div>
+  </section>
+</Base>

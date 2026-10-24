@@ -1,0 +1,74 @@
+---
+import Base from '../../layouts/Base.astro';
+export function getStaticPaths() {
+  return ['shipping', 'returns', 'privacy', 'terms'].map((slug) => ({ params: { slug } }));
+}
+const { slug } = Astro.params;
+const titles: Record<string, string> = {
+  shipping: 'Shipping policy',
+  returns: 'Returns & refunds',
+  privacy: 'Privacy policy',
+  terms: 'Terms & conditions',
+};
+const title = titles[slug!]!;
+---
+<Base title={title}>
+  <div class="wrap prose">
+    <div class="page-title"><h1 class="display h2">{title}</h1></div>
+    <p class="draft-note">Draft wording — Veeess Knits must review and fill in the bracketed details before launch. This is not legal advice.</p>
+
+    {slug === 'shipping' && (
+      <>
+        <h2>Dispatch</h2>
+        <p>Orders are packed and dispatched from our unit in Tiruppur within [X] working days of confirmation.</p>
+        <h2>Delivery charges</h2>
+        <p>Delivery is free on orders of ₹999 or more. Orders below ₹999 have a flat delivery charge of ₹79.</p>
+        <h2>Cash on delivery</h2>
+        <p>Cash on delivery is available with no extra charge. We may call to confirm a cash-on-delivery order before dispatch.</p>
+        <h2>Delivery time</h2>
+        <p>Delivery usually takes [X–Y] working days depending on your PIN code. You will receive a courier tracking number by email once your order ships.</p>
+      </>
+    )}
+
+    {slug === 'returns' && (
+      <>
+        <h2>Returns and exchanges</h2>
+        <p>You can request a return or size exchange within [X] days of delivery for unused items with original tags. Call or WhatsApp +91 96005 77555 with your order number.</p>
+        <h2>Refunds</h2>
+        <p>Online payments are refunded to the original payment method through Razorpay within [X] working days of us receiving the return. Cash-on-delivery orders are refunded by [bank transfer / UPI].</p>
+        <h2>Cancellations</h2>
+        <p>You can cancel an order before it is shipped. Online payments for cancelled orders are refunded in full.</p>
+      </>
+    )}
+
+    {slug === 'privacy' && (
+      <>
+        <p>This policy explains how Veeess Knits ("we") collects and uses your personal data, in line with India's Digital Personal Data Protection Act, 2023.</p>
+        <h2>What we collect</h2>
+        <p>Your name, mobile number, email address and delivery address, and the items you order. We do not see or store your card, UPI or bank details — payments are handled by Razorpay.</p>
+        <h2>Why we use it</h2>
+        <p>Only to process, deliver and support your order, to send you order updates, and to meet tax and accounting rules. We do not sell your data or send marketing without your consent.</p>
+        <h2>Who processes it for us</h2>
+        <p>Razorpay (payments), Cloudflare (website hosting and security), our email provider (order emails) and our courier partner (delivery).</p>
+        <h2>How long we keep it</h2>
+        <p>Order records are kept for as long as tax law requires, then anonymised.</p>
+        <h2>Your rights</h2>
+        <p>You can ask to see, correct or delete your personal data, or withdraw consent, by emailing info.veeessknits@gmail.com. Grievance officer: [Name], [email].</p>
+      </>
+    )}
+
+    {slug === 'terms' && (
+      <>
+        <p>By placing an order on veeessknits.com you agree to these terms.</p>
+        <h2>Products and prices</h2>
+        <p>Prices are in Indian rupees and include GST. Colours may vary slightly from photos. We may correct obvious pricing errors and will contact you before shipping if this affects your order.</p>
+        <h2>Orders</h2>
+        <p>An order is accepted when payment is confirmed or, for cash on delivery, when we confirm it. We may cancel and fully refund an order if an item is unavailable or if we suspect misuse.</p>
+        <h2>Limits</h2>
+        <p>A maximum of 10 of one item and 20 items per order applies. Cash-on-delivery orders may be limited per customer.</p>
+        <h2>Contact</h2>
+        <p>Veeess Knits, 32-A, Padmavathi Puram 7th Street, Gandhi Nagar, Tiruppur 641603 · info.veeessknits@gmail.com · +91 96005 77555.</p>
+      </>
+    )}
+  </div>
+</Base>
