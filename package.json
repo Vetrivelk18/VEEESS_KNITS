@@ -1,6 +1,6 @@
 {
   "name": "veeess-knits",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -9,11 +9,15 @@
     "catalog:export": "node scripts/export-catalog.mjs",
     "build:site": "astro build",
     "build": "npm run catalog:export && astro build",
-    "dev": "npm run build && wrangler dev",
-    "deploy": "npm run build && wrangler deploy",
+    "dev": "node scripts/check-local.mjs --quiet && npm run build && wrangler dev --port 8787",
+    "deploy": "node scripts/check-prod-config.mjs && npm run build && wrangler deploy",
     "typecheck": "tsc -p tsconfig.worker.json && tsc --noEmit -p tsconfig.json",
     "test": "vitest run",
-    "gen:vapid": "node scripts/gen-vapid.mjs"
+    "gen:vapid": "node scripts/gen-vapid.mjs",
+    "setup:local": "node scripts/setup-local.mjs",
+    "check:local": "node scripts/check-local.mjs",
+    "check:prod": "node scripts/check-prod-config.mjs",
+    "smoke": "node scripts/smoke.mjs"
   },
   "dependencies": {
     "hono": "4.13.13",

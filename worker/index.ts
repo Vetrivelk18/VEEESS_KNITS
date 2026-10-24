@@ -3,6 +3,7 @@ import type { Env } from './lib/env';
 import { errorResponse, sameOriginWrites, securityHeaders } from './lib/http';
 import { publicApi } from './routes/public';
 import { adminApi } from './routes/admin';
+import { localLogin } from './routes/locallogin';
 import { requireAdmin, type AdminVars } from './lib/access';
 import { runScheduled } from './cron';
 
@@ -19,6 +20,7 @@ app.get('/api/health', async (c) => {
   return c.json({ ok: row?.ok === 1, time: new Date().toISOString() });
 });
 
+app.route('/__local', localLogin); // local testing only; 404 on the live site
 app.route('/api/admin', adminApi);
 app.route('/api', publicApi);
 
