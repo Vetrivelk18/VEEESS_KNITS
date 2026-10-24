@@ -14,9 +14,11 @@ let lastSeenId = Number(sessionStorage.getItem('vk_admin_last_alert') ?? '0');
 let firstLoad = true;
 let audio: AudioContext | null = null;
 
-export const me = api<{ email: string; vapidPublicKey: string | null; alertEmail: string | null }>('/api/admin/me');
+export const me = api<{ email: string; authMode: 'access' | 'local'; logoutUrl: string; vapidPublicKey: string | null; alertEmail: string | null }>('/api/admin/me');
 me.then((m) => {
   $('[data-admin-email]').textContent = m.email;
+  ($('[data-logout]') as HTMLAnchorElement).href = m.logoutUrl;
+  if (m.authMode === 'local') $('[data-local-banner]').hidden = false;
   const ae = document.querySelector('[data-alert-email]');
   if (ae && m.alertEmail) ae.textContent = m.alertEmail;
 }).catch(() => {});

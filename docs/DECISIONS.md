@@ -2,7 +2,7 @@
 
 A running log of the important choices made while building, so you can review and change them. Each entry says **what** was decided, **why**, and **how to change it**. Items marked **ASSUMPTION** are guesses that need confirming with Veeess Knits.
 
-Last updated: 24 Oct 2026 · Code version 0.1.0
+Last updated: 24 Oct 2026 · Code version 0.2.0
 
 ---
 
@@ -183,6 +183,19 @@ Last updated: 24 Oct 2026 · Code version 0.1.0
 
 ### D32. Backups
 - D1 Time Travel (point-in-time restore) plus a weekly JSON export of all business tables to the private R2 bucket (`backups/`, last 12 kept). Backups are not reachable through `/media/`.
+
+### D34. Local admin sign-in replaces Cloudflare Access on your computer
+- **What:** On `localhost`, unauthenticated admin pages redirect to `/__local/login`, where you pick an admin from `ADMIN_EMAILS`. A signed, HttpOnly session cookie (8 hours, invalid after a dev-server restart) then works like the Access session; **Sign out** clears it. The admin panel shows a yellow **LOCAL TEST MODE** bar.
+- **Why:** Cloudflare Access only exists on the live site, so the admin panel couldn't be opened locally. This keeps the real flow (redirect → sign in → act as a named admin → sign out) instead of silently skipping login, so you can test two admins, "seen by" and shared alerts.
+- **When it is on:** only if `ENVIRONMENT=development` **and** `LOCAL_ADMIN_BYPASS=1` (both in `.dev.vars`) **and** the request is to localhost/127.0.0.1. Otherwise `/__local/*` returns 404 and admin pages require Cloudflare Access as before.
+- **Guards:** `npm run check:prod` blocks deploys containing local settings; CI boots the Worker with live settings and checks the admin area stays locked (`npm run smoke`); 14 automated tests cover the on/off rules, forged/expired cookies, cross-site sign-in and redirects. In development only, a locked admin page explains which setting is missing; production never shows these hints.
+- **Replaces:** the earlier `DEV_ADMIN_EMAIL` auto-login (now it only pre-selects the email on the sign-in page).
+- **Cause of the original problem:** the first upload to GitHub didn't include hidden files (`.dev.vars.example`, `.github/`). Without `.dev.vars`, the app ran with live settings locally and asked for Cloudflare Access. Both are restored, and `npm run setup:local` creates `.dev.vars` in one step.
+
+### D35. CI blocks known-vulnerable dependencies
+- CI runs `npm audit --omit=dev --audit-level=high`; a high-severity advisory in any production dependency fails the build.
+- **24 Oct 2026:** it caught GHSA-mrhx-c7xc-m3w5 in `zod` 3.x (memory exhaustion when validating oversized collections). Upgraded to **zod 4.6.7**. Two code changes: the consent error message syntax and the shared `parse()` helper type. Validation messages shown to customers are unchanged. The app was already partly protected (request bodies are capped at 32 KB before validation), but the upgrade removes the issue.
+- Dependabot opens weekly update PRs so fixes like this arrive automatically.
 
 ### D33. Not built yet (later phases)
 - GST invoices (waiting on GST registration answer).
