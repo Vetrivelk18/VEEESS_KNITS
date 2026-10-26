@@ -22,7 +22,7 @@ const title = titles[slug!]!;
         <h2>Dispatch</h2>
         <p>Orders are packed and dispatched from our unit in Tiruppur within [X] working days of confirmation.</p>
         <h2>Delivery charges</h2>
-        <p>Delivery is free on orders of ₹999 or more. Orders below ₹999 have a flat delivery charge of ₹79.</p>
+        <p>Delivery charges, if any, are shown in your cart and at checkout before you pay.</p>
         <h2>Cash on delivery</h2>
         <p>Cash on delivery is available with no extra charge. We may call to confirm a cash-on-delivery order before dispatch.</p>
         <h2>Delivery time</h2>
@@ -32,12 +32,12 @@ const title = titles[slug!]!;
 
     {slug === 'returns' && (
       <>
-        <h2>Returns and exchanges</h2>
-        <p>You can request a return or size exchange within [X] days of delivery for unused items with original tags. Call or WhatsApp +91 96005 77555 with your order number.</p>
-        <h2>Refunds</h2>
-        <p>Online payments are refunded to the original payment method through Razorpay within [X] working days of us receiving the return. Cash-on-delivery orders are refunded by [bank transfer / UPI].</p>
+        <h2>No returns or exchanges</h2>
+        <p>All sales are final. We do not accept returns or exchanges once an order has been delivered, including for size. Please check the size details on the product page before you order, and call or WhatsApp +91 96005 77555 if you are unsure.</p>
         <h2>Cancellations</h2>
-        <p>You can cancel an order before it is shipped. Online payments for cancelled orders are refunded in full.</p>
+        <p>You can cancel an order before it is shipped by calling +91 96005 77555 with your order number.</p>
+        <h2>Refunds</h2>
+        <p>Refunds are made only when an order is cancelled before it ships, or when we cannot fulfil it. Online payments are refunded in full to the original payment method through Razorpay within [X] working days.</p>
       </>
     )}
 
@@ -64,6 +64,8 @@ const title = titles[slug!]!;
         <p>Prices are in Indian rupees and include GST. Colours may vary slightly from photos. We may correct obvious pricing errors and will contact you before shipping if this affects your order.</p>
         <h2>Orders</h2>
         <p>An order is accepted when payment is confirmed or, for cash on delivery, when we confirm it. We may cancel and fully refund an order if an item is unavailable or if we suspect misuse.</p>
+        <h2>Returns</h2>
+        <p>All sales are final. We do not accept returns or exchanges. See our <a href="/policies/returns/">returns policy</a>.</p>
         <h2>Limits</h2>
         <p>A maximum of 10 of one item and 20 items per order applies. Cash-on-delivery orders may be limited per customer.</p>
         <h2>Contact</h2>

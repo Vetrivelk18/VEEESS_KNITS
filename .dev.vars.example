@@ -7,7 +7,7 @@ SITE_URL=http://localhost:8787
 # Cloudflare Access only exists on the live site. With these two settings the
 # admin panel shows a LOCAL sign-in page instead (localhost only).
 LOCAL_ADMIN_BYPASS=1
-ADMIN_EMAILS=admin1@example.com,admin2@example.com
+ADMIN_EMAILS=admin1@example.com,admin2@example.com,admin3@example.com
 # Pre-selected on the local sign-in page:
 DEV_ADMIN_EMAIL=admin1@example.com
 

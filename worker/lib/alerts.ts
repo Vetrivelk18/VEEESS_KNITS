@@ -1,6 +1,6 @@
 import type { Env } from './env';
 import { pushToAdmins } from './webpush';
-import { adminBackupAlert, customerConfirmation, sendEmail } from './email';
+import { adminBackupAlert, customerConfirmation, emailList, sendEmail } from './email';
 import { signOrderToken } from './crypto';
 
 /**
@@ -19,7 +19,8 @@ export async function dispatchNewOrder(env: Env, orderId: string): Promise<void>
 
   const adminUrl = `${env.SITE_URL.replace(/\/$/, '')}/admin/?order=${encodeURIComponent(orderId)}`;
   const a = adminBackupAlert(n.title, n.body, adminUrl);
-  if (env.ALERT_EMAIL_TO) tasks.push(sendEmail(env, env.ALERT_EMAIL_TO, a.subject, a.html, a.text));
+  const alertTo = emailList(env.ALERT_EMAIL_TO);
+  if (alertTo.length) tasks.push(sendEmail(env, alertTo, a.subject, a.html, a.text));
 
   const o = await env.DB.prepare(
     `SELECT o.number, o.total_paise, o.payment_method, COALESCE(o.contact_name, c.name) AS customer_name, COALESCE(o.contact_email, c.email) AS customer_email
