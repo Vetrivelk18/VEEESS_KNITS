@@ -21,6 +21,10 @@ for (const env of Object.keys(cfg.env ?? {})) {
   const ev = cfg.env[env].vars ?? {};
   for (const k of ['LOCAL_ADMIN_BYPASS', 'DEV_ADMIN_EMAIL', 'RAZORPAY_MOCK']) if (k in ev) problems.push(`env.${env}.vars.${k} must not be deployed`);
 }
+const admins = String(vars.ADMIN_EMAILS ?? '').split(',').map((s) => s.trim()).filter(Boolean);
+if (!admins.length || admins.some((e) => e.endsWith('@example.com'))) {
+  console.warn('⚠ ADMIN_EMAILS still has placeholder addresses — nobody can open the live admin panel until the real admin emails are set.');
+}
 if (problems.length) {
   console.error('✖ Refusing to deploy — local-only settings found in wrangler.jsonc:\n  - ' + problems.join('\n  - '));
   process.exit(1);

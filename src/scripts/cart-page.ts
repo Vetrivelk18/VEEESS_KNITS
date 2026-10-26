@@ -2,7 +2,7 @@ import { getCart, setQty } from './cart';
 import { refreshQuote } from './quote';
 import { api, el, formatINR, $ } from './util';
 
-let freeMin = 99900;
+let freeMin = 0;
 api<{ freeShippingMinPaise: number }>('/api/config').then((c) => { freeMin = c.freeShippingMinPaise; }).catch(() => {});
 
 const linesEl = $('[data-lines]');
@@ -61,7 +61,7 @@ async function render() {
     $('[data-shipping]').textContent = quote.shipping ? formatINR(quote.shipping) : 'Free';
     $('[data-shipping]').className = quote.shipping ? '' : 'free';
     $('[data-total]').textContent = formatINR(quote.total);
-    $('[data-ship-hint]').textContent = quote.shipping ? `Add ${formatINR(freeMin - quote.subtotal)} more for free shipping.` : '';
+    $('[data-ship-hint]').textContent = quote.shipping && freeMin > quote.subtotal ? `Add ${formatINR(freeMin - quote.subtotal)} more for free delivery.` : '';
     const checkout = $('[data-checkout]') as HTMLAnchorElement;
     const blocked = quote.unavailable.length > 0;
     checkout.setAttribute('aria-disabled', String(blocked));

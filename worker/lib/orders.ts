@@ -74,7 +74,7 @@ export async function quoteCart(env: Env, items: { variantId: number; qty: numbe
   }
   const subtotal = lines.reduce((a, l) => a + l.linePaise, 0);
   const shipping = lines.length
-    ? shippingFor(subtotal, intVar(env.FREE_SHIPPING_MIN_PAISE, 99900), intVar(env.SHIPPING_FEE_PAISE, 7900))
+    ? shippingFor(subtotal, intVar(env.FREE_SHIPPING_MIN_PAISE, 0), intVar(env.SHIPPING_FEE_PAISE, 0))
     : 0;
   return { lines, unavailable, subtotal, shipping, total: subtotal + shipping };
 }

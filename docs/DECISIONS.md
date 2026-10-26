@@ -39,8 +39,9 @@ Last updated: 24 Oct 2026 · Code version 0.2.0
 - 8 sample products (originally across Wordle and Max8; all Wordle since D36) and all 6 categories, with **sample prices, MRPs, stock levels and descriptions**. The product photos are the generated mock-up images.
 - **Replace** all of these in the admin panel before launch (open question in the HLD: real photos, prices, size charts).
 
-### D7. Shipping charge — ASSUMPTION
-- Free shipping on orders of **₹999 or more**, otherwise **₹79**. These are placeholder numbers in `wrangler.jsonc` (`FREE_SHIPPING_MIN_PAISE`, `SHIPPING_FEE_PAISE`). Change them once the shipping partner is chosen.
+### D7. Shipping charge — PENDING (owner will set)
+- **26 Oct 2026:** the ₹999 free-shipping offer and ₹79 fee were removed from the site (owner decision). Delivery is **free for now** (`SHIPPING_FEE_PAISE` = `0`, `FREE_SHIPPING_MIN_PAISE` = `0` in `wrangler.jsonc`).
+- To charge later: set `SHIPPING_FEE_PAISE` (e.g. `7900` = ₹79) and optionally `FREE_SHIPPING_MIN_PAISE` for a free-delivery threshold, then deploy. The cart and checkout show whatever is set; no page advertises a fixed amount.
 
 ### D8. Prices include GST
 - Prices are shown and charged as GST-inclusive ("Inclusive of all taxes"). GST invoice generation is **not** built yet — waiting on whether the company is GST-registered (HLD open question).
@@ -207,6 +208,10 @@ Last updated: 24 Oct 2026 · Code version 0.2.0
 - **Wordle artwork:** the large "WORDLe" text block on the home page is replaced by the supplied `wordle.jpeg` (trimmed, `wordle-wordmark.jpg`) on its matching cream background (#FDECD8). The sample product photos that showed "MAX8" now show the Wordle print.
 - Not changed: the HLD and design canvas documents still show Max8 (historical design docs).
 
+### D37. No returns; 3 admins (26 Oct 2026)
+- **No returns or exchanges (owner decision, strict).** The returns policy, terms, product pages and checkout consent all say all sales are final. Cancellation before shipping (with a full refund for online payments) is unchanged. ASSUMPTION/NOTE: Indian consumer law can still require a remedy for defective or wrong items regardless of a no-returns policy — worth confirming with a lawyer/CA before launch. This is not legal advice.
+- **3 admins.** `ADMIN_EMAILS` holds three placeholders until the real emails are given; they must match the Cloudflare Access policy. The deploy check warns while placeholders remain. `ALERT_EMAIL_TO` now accepts several comma-separated inboxes, so all 3 admins can get the backup alert email; push alerts already work per admin device.
+
 ### D33. Not built yet (later phases)
 - GST invoices (waiting on GST registration answer).
 - Courier integration (Shiprocket etc.) — tracking numbers are typed in by the admin for now.
@@ -217,8 +222,8 @@ Last updated: 24 Oct 2026 · Code version 0.2.0
 
 ## 8. Open items for Veeess Knits (before launch)
 - [ ] Real products, photos, prices, MRPs, stock, size charts.
-- [ ] Shipping charge and free-shipping threshold (D7), dispatch time, return window.
-- [ ] Admin email addresses (D17) and the alert inbox.
+- [ ] Shipping charge (D7) and dispatch time. ~~Return window~~ — no returns (D37).
+- [ ] The 3 admin email addresses (D17, D37) and the alert inbox(es).
 - [ ] Any COD maximum order value (D12) and whether to phone-confirm every COD order.
 - [ ] GST registration / invoice requirement (D8).
 - [ ] WhatsApp number (D28) and grievance officer for the privacy policy (D29).

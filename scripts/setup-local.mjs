@@ -17,7 +17,7 @@ const vars = parseVars(text);
 const ensure = (k, v) => { if (!vars[k]) { text = setVar(text, k, v); console.log(`✔ Set ${k}`); } };
 ensure('ENVIRONMENT', 'development');
 ensure('LOCAL_ADMIN_BYPASS', '1');
-ensure('ADMIN_EMAILS', 'admin1@example.com,admin2@example.com');
+ensure('ADMIN_EMAILS', 'admin1@example.com,admin2@example.com,admin3@example.com');
 ensure('ORDER_LINK_SECRET', randomBytes(32).toString('base64url'));
 if (!vars.VAPID_PUBLIC_KEY || !vars.VAPID_PRIVATE_JWK) {
   const { privateKey, publicKey } = generateKeyPairSync('ec', { namedCurve: 'P-256' });

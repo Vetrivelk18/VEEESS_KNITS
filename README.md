@@ -87,7 +87,7 @@ Do every account step **with the company's email**, then add the developer as a 
    npx wrangler d1 create veeess_db          # copy the database_id into wrangler.jsonc
    npx wrangler r2 bucket create veeess-media
    ```
-3. Edit `wrangler.jsonc` → `vars`: `SITE_URL`, `ADMIN_EMAILS` (the 2–3 admins), `ALERT_EMAIL_TO`, `RAZORPAY_KEY_ID`, `TURNSTILE_SITE_KEY`, `VAPID_PUBLIC_KEY`, `GITHUB_REPO`.
+3. Edit `wrangler.jsonc` → `vars`: `SITE_URL`, `ADMIN_EMAILS` (the 3 admins, comma-separated), `ALERT_EMAIL_TO` (one or more inboxes, comma-separated), `SHIPPING_FEE_PAISE` / `FREE_SHIPPING_MIN_PAISE` (delivery charge; both `0` = free delivery), `RAZORPAY_KEY_ID`, `TURNSTILE_SITE_KEY`, `VAPID_PUBLIC_KEY`, `GITHUB_REPO`.
 4. Add a **custom domain** to the Worker (Workers → veeess-knits → Settings → Domains): `www.veeessknits.com`, plus a redirect from the bare domain.
 
 ### 2.2 Secrets (never in code)
@@ -105,10 +105,12 @@ The app refuses to take payments if a Razorpay secret is missing or still a plac
 ### 2.3 Admin login — Cloudflare Access (free up to 50 users)
 1. Zero Trust → Access → Applications → **Add self-hosted application**.
 2. Domain `www.veeessknits.com`, paths **`/admin`** and **`/api/admin`** (add both).
-3. Policy: **Allow** → Emails → the 2–3 admin emails. Login method: **One-time PIN**.
+3. Policy: **Allow** → Emails → the 3 admin emails (exactly the same list as `ADMIN_EMAILS`). Login method: **One-time PIN**.
 4. Copy the application's **AUD tag** into `ACCESS_AUD` and your team domain (e.g. `veeess.cloudflareaccess.com`) into `ACCESS_TEAM_DOMAIN`.
 
 The Worker also verifies the Access token itself and checks `ADMIN_EMAILS`, so a mistake in Access does not open the admin panel.
+
+**Adding or removing an admin:** change the email in **both** places — the Access policy (takes effect immediately) and `ADMIN_EMAILS` in `wrangler.jsonc` (takes effect on the next deploy). Each admin then opens `/admin/` on their phone and switches on **Alerts on this device** to get push notifications.
 
 ### 2.4 Razorpay
 1. Complete KYC in the company's name (see the HLD for documents).

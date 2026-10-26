@@ -20,8 +20,8 @@ publicApi.get('/config', (c) => {
     razorpayKeyId: c.env.RAZORPAY_KEY_ID,
     turnstileSiteKey: c.env.TURNSTILE_SITE_KEY,
     mockPayments: isMock(c.env),
-    freeShippingMinPaise: intVar(c.env.FREE_SHIPPING_MIN_PAISE, 99900),
-    shippingFeePaise: intVar(c.env.SHIPPING_FEE_PAISE, 7900),
+    freeShippingMinPaise: intVar(c.env.FREE_SHIPPING_MIN_PAISE, 0),
+    shippingFeePaise: intVar(c.env.SHIPPING_FEE_PAISE, 0),
   });
 });
 

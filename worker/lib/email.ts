@@ -6,16 +6,23 @@ export function escapeHtml(s: string): string {
   return s.replace(/[&<>"']/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[ch] as string);
 }
 
-export async function sendEmail(env: Env, to: string, subject: string, html: string, text: string): Promise<boolean> {
+/** Comma-separated address list (e.g. ALERT_EMAIL_TO) → clean, de-duplicated array (max 10). */
+export function emailList(value: string | undefined): string[] {
+  return [...new Set((value ?? '').split(',').map((e) => e.trim()).filter((e) => /^[^\s@,<>]+@[^\s@,<>]+\.[^\s@,<>]+$/.test(e)))].slice(0, 10);
+}
+
+export async function sendEmail(env: Env, to: string | string[], subject: string, html: string, text: string): Promise<boolean> {
+  const recipients = Array.isArray(to) ? to : [to];
+  if (!recipients.length) return false;
   if (!env.RESEND_API_KEY) {
-    console.log(`[email skipped: no RESEND_API_KEY] to=${to.replace(/(.).*@/, '$1***@')} subject="${subject}"`);
+    console.log(`[email skipped: no RESEND_API_KEY] to=${recipients.map((r) => r.replace(/(.).*@/, '$1***@')).join(',')} subject="${subject}"`);
     return false;
   }
   try {
     const res = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: { Authorization: `Bearer ${env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ from: env.EMAIL_FROM, to: [to], subject, html, text }),
+      body: JSON.stringify({ from: env.EMAIL_FROM, to: recipients, subject, html, text }),
     });
     if (!res.ok) console.error('Email send failed', res.status);
     return res.ok;

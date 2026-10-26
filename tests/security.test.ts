@@ -5,7 +5,7 @@ import { verifyPaymentSignature, verifyWebhookSignature, isMock } from '../worke
 import { checkoutSchema, normalisePhone, parse } from '../worker/lib/validation';
 import { isAllowedPushEndpoint, vapidAuthHeader } from '../worker/lib/webpush';
 import { sniffImage } from '../worker/routes/admin';
-import { escapeHtml } from '../worker/lib/email';
+import { emailList, escapeHtml } from '../worker/lib/email';
 import { formatINR, shippingFor } from '../worker/lib/money';
 import type { Env } from '../worker/lib/env';
 
@@ -145,10 +145,18 @@ describe('Output safety and money', () => {
   it('escapes HTML in emails', () => {
     expect(escapeHtml(`<img src=x onerror="a">'`)).toBe('&lt;img src=x onerror=&quot;a&quot;&gt;&#39;');
   });
+  it('reads a list of alert emails safely', () => {
+    expect(emailList('a@x.com, b@y.in ,a@x.com,,not-an-email,c@z.org')).toEqual(['a@x.com', 'b@y.in', 'c@z.org']);
+    expect(emailList('')).toEqual([]);
+    expect(emailList('evil@x.com>, <bcc@y.com')).toEqual([]);
+  });
   it('formats rupees and shipping', () => {
     expect(formatINR(159800)).toBe('₹1,598');
     expect(formatINR(12345678)).toBe('₹1,23,456.78');
     expect(shippingFor(99900, 99900, 7900)).toBe(0);
     expect(shippingFor(99800, 99900, 7900)).toBe(7900);
+    expect(shippingFor(500000, 0, 7900)).toBe(7900); // no free-delivery threshold
+    expect(shippingFor(100, 0, 0)).toBe(0); // free delivery
+    expect(shippingFor(100, 99900, 0)).toBe(0);
   });
 });
