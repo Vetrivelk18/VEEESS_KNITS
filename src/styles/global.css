@@ -197,6 +197,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .site-footer h2 { color: #fff; font-size: 15px; margin: 0 0 10px; }
 .site-footer a { color: #d5d7de; text-decoration: none; display: block; padding: 4px 0; font-size: 14px; }
 .site-footer a:hover { color: #fff; text-decoration: underline; }
+.site-footer a.social { display: inline-flex; align-items: center; gap: 8px; color: #fff; margin-top: 6px; }
 .site-footer .legal { border-top: 1px solid #2e3140; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; padding-block: 20px 28px; font-size: 13px; color: #a8acb8; }
 .site-footer .wa { display: inline-flex; background: #fff; color: var(--ink); font-weight: 600; padding: 10px 16px; border-radius: 4px; margin-top: 8px; }
 
