@@ -10,7 +10,7 @@ Mobile-first store for **Wordle**, Veeess Knits' own label, with Razorpay, cash 
 src/            Storefront and admin pages (Astro), browser scripts, styles
 worker/         API (Hono): checkout, payments, webhook, admin, cron jobs
   lib/          security, orders, Razorpay, push, email, validation
-migrations/     D1 schema (0001) and sample catalogue (0002)
+migrations/     D1 schema (0001), sample catalogue (0002) and later changes (0003+)
 public/         Images, security headers (_headers), admin service worker
 scripts/        Catalogue export, VAPID key generator, seed generator
 tests/          Security unit tests (vitest)

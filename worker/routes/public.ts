@@ -174,7 +174,7 @@ publicApi.get('/orders/:id', async (c) => {
     throw new ApiError(404, 'not_found', 'Order not found or link expired.');
   }
   const o = await c.env.DB.prepare(
-    `SELECT o.id, o.number, o.status, o.payment_method, o.subtotal_paise, o.shipping_paise, o.total_paise, o.tracking_number, o.created_at,
+    `SELECT o.id, o.number, o.status, o.payment_method, o.subtotal_paise, o.shipping_paise, o.total_paise, o.tracking_number, o.courier, o.created_at,
             COALESCE(o.contact_name, c.name) AS name, a.line1, a.line2, a.city, a.state, a.pincode
        FROM orders o JOIN customers c ON c.id = o.customer_id JOIN addresses a ON a.id = o.address_id WHERE o.id = ?1`,
   )

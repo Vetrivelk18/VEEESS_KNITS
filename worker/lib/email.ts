@@ -57,6 +57,22 @@ export function customerConfirmation(o: EmailOrder, orderUrl: string) {
   return { subject: `Order ${label} confirmed — Veeess Knits`, html, text };
 }
 
+export function shippedEmail(o: { number: number; customer_name: string }, courierName: string, trackUrl: string | null, tracking: string, orderUrl: string) {
+  const label = orderLabel(o.number);
+  const first = o.customer_name.split(' ')[0] ?? '';
+  const track = trackUrl
+    ? `<p><a href="${escapeHtml(trackUrl)}" style="display:inline-block;background:#14161F;color:#fff;padding:12px 18px;border-radius:4px;text-decoration:none;font-weight:600">Track on ${escapeHtml(courierName)}</a><br><small>Enter the tracking number on the ${escapeHtml(courierName)} page.</small></p>`
+    : '';
+  const html = `<div style="font-family:Arial,sans-serif;color:#14161F;max-width:560px">
+<h2>Good news, ${escapeHtml(first)}! Your order ${label} has shipped.</h2>
+<p>Courier: <strong>${escapeHtml(courierName)}</strong><br>Tracking number: <strong>${escapeHtml(tracking)}</strong></p>
+${track}
+<p><a href="${escapeHtml(orderUrl)}">View your order status</a></p>
+<p style="color:#5A5F6E;font-size:13px">Questions? Call or WhatsApp +91 96005 77555.<br>Veeess Knits · Gandhi Nagar, Tiruppur 641603</p></div>`;
+  const text = `Your order ${label} has shipped.\nCourier: ${courierName}\nTracking number: ${tracking}\n${trackUrl ? `Track: ${trackUrl}\n` : ''}Order status: ${orderUrl}\nQuestions? Call or WhatsApp +91 96005 77555.`;
+  return { subject: `Order ${label} has shipped — Veeess Knits`, html, text };
+}
+
 export function adminBackupAlert(title: string, body: string, adminUrl: string) {
   // No address or phone in the email either: open the admin panel for details.
   const html = `<div style="font-family:Arial,sans-serif"><h3>${escapeHtml(title)}</h3><p>${escapeHtml(body)}</p><p><a href="${escapeHtml(adminUrl)}">Open admin panel</a></p></div>`;

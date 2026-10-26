@@ -10,5 +10,5 @@
     "skipLibCheck": true,
     "noEmit": true
   },
-  "include": ["worker/**/*.ts", "tests/**/*.ts"]
+  "include": ["worker/**/*.ts", "shared/**/*.ts", "tests/**/*.ts"]
 }

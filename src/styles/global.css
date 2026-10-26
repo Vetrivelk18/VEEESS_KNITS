@@ -300,3 +300,9 @@ legend { font-weight: 700; font-size: 17px; padding: 0 6px; }
 @media (max-width: 640px) { .toast-host { bottom: 76px; left: 16px; } }
 .toast { background: var(--ink); color: #fff; border-radius: 8px; padding: 14px 16px; box-shadow: 0 12px 32px rgba(20, 22, 31, .3); font-size: 15px; display: flex; gap: 12px; align-items: center; width: 360px; max-width: 100%; }
 .toast a { color: var(--marigold); font-weight: 600; }
+
+/* Courier tracking on the customer's order page */
+.track-box { display: flex; flex-direction: column; gap: 10px; }
+.track-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.track-no { font-family: ui-monospace, Menlo, monospace; letter-spacing: .03em; }
+.track-box .small { font-size: 13px; }

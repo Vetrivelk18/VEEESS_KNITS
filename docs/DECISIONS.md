@@ -144,8 +144,8 @@ Last updated: 24 Oct 2026 · Code version 0.2.0
 ### D23. Two-step confirm for risky actions
 - "Cancel order" and "Refund" need a second tap within 4 seconds instead of a pop-up dialog. Refunds are always the full amount; partial refunds can be done in the Razorpay dashboard.
 
-### D24. Shipping requires a tracking number
-- An order can't be marked **Shipped** without a courier tracking number; the customer sees it on their order page.
+### D24. Shipping requires a courier and a tracking number
+- An order can't be marked **Shipped** without choosing the courier and typing its tracking number (see D38).
 
 ### D25. Mobile-first admin
 - On phones the orders table becomes cards with one big action button ("Confirm COD", "Mark packed", …). The admin panel can be installed to the Home Screen (it has a web app manifest and icon).
@@ -211,6 +211,13 @@ Last updated: 24 Oct 2026 · Code version 0.2.0
 ### D37. No returns; 3 admins (26 Oct 2026)
 - **No returns or exchanges (owner decision, strict).** The returns policy, terms, product pages and checkout consent all say all sales are final. Cancellation before shipping (with a full refund for online payments) is unchanged. ASSUMPTION/NOTE: Indian consumer law can still require a remedy for defective or wrong items regardless of a no-returns policy — worth confirming with a lawyer/CA before launch. This is not legal advice.
 - **3 admins.** `ADMIN_EMAILS` holds three placeholders until the real emails are given; they must match the Cloudflare Access policy. The deploy check warns while placeholders remain. `ALERT_EMAIL_TO` now accepts several comma-separated inboxes, so all 3 admins can get the backup alert email; push alerts already work per admin device.
+
+### D38. Courier choice, tracking button and "shipped" email (26 Oct 2026)
+- When marking an order shipped, the admin picks the courier — **DTDC, Delhivery, ST Courier, India Post, The Professional Couriers or Other** — and types the tracking number. The list lives in `shared/couriers.ts`; the database only accepts these values (migration `0005`).
+- The customer's order page shows "Shipped with DTDC", the tracking number with a **Copy** button, and a **Track on DTDC →** button that opens the courier's official tracking page. "Other" shows the number and our phone/WhatsApp instead.
+- ASSUMPTION: courier sites don't reliably accept the tracking number inside the link (Delhivery returns 404, DTDC needs a captcha), so the button opens the tracking page and the customer pastes the number. Links checked 26 Oct 2026; if a courier changes its site, update `shared/couriers.ts`.
+- The customer automatically gets a **"Your order has shipped"** email (courier, tracking number, track button, order-status link). It is sent at most once per order, and the admin panel shows when it was sent. Needs the Resend email key (go-live setup); without it nothing is sent and the panel shows no "sent" time.
+- Not done: changing the courier/tracking number after marking shipped (call the customer if a number was mistyped), and SMS/WhatsApp messages.
 
 ### D33. Not built yet (later phases)
 - GST invoices (waiting on GST registration answer).

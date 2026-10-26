@@ -1,6 +1,7 @@
 import type { Env } from './env';
 import { pushToAdmins } from './webpush';
-import { adminBackupAlert, customerConfirmation, emailList, sendEmail } from './email';
+import { adminBackupAlert, customerConfirmation, emailList, sendEmail, shippedEmail } from './email';
+import { courierById } from '../../shared/couriers';
 import { signOrderToken } from './crypto';
 
 /**
@@ -50,4 +51,34 @@ export async function realertUnread(env: Env): Promise<number> {
   const n = res.meta.changes ?? 0;
   if (n > 0) await pushToAdmins(env);
   return n;
+}
+
+/**
+ * "Your order has shipped" email. Sent at most once per order: the
+ * shipped_email_at claim makes a repeated call (retry, double tap) a no-op,
+ * and it is cleared again if sending fails.
+ */
+export async function sendShippedEmail(env: Env, orderId: string): Promise<boolean> {
+  const claim = await env.DB.prepare(
+    `UPDATE orders SET shipped_email_at = strftime('%Y-%m-%dT%H:%M:%fZ','now')
+      WHERE id = ?1 AND status = 'shipped' AND shipped_email_at IS NULL AND tracking_number IS NOT NULL`,
+  )
+    .bind(orderId)
+    .run();
+  if (!claim.meta.changes) return false;
+  const o = await env.DB.prepare(
+    `SELECT o.number, o.tracking_number, o.courier, COALESCE(o.contact_name, c.name) AS customer_name, COALESCE(o.contact_email, c.email) AS customer_email
+       FROM orders o JOIN customers c ON c.id = o.customer_id WHERE o.id = ?1`,
+  )
+    .bind(orderId)
+    .first<{ number: number; tracking_number: string; courier: string | null; customer_name: string; customer_email: string }>();
+  if (!o?.customer_email) return false;
+  const courier = courierById(o.courier);
+  const token = await signOrderToken(env.ORDER_LINK_SECRET, orderId);
+  const url = `${env.SITE_URL.replace(/\/$/, '')}/order/?id=${encodeURIComponent(orderId)}&t=${encodeURIComponent(token)}`;
+  const m = shippedEmail(o, courier?.name ?? 'our courier', courier?.trackUrl ?? null, o.tracking_number, url);
+  const sent = await sendEmail(env, o.customer_email, m.subject, m.html, m.text);
+  // Only record it as sent if it really went out (e.g. no email key locally).
+  if (!sent) await env.DB.prepare('UPDATE orders SET shipped_email_at = NULL WHERE id = ?1').bind(orderId).run();
+  return sent;
 }

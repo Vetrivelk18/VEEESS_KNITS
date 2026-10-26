@@ -1,8 +1,9 @@
 import { api, el, formatINR, setChildren, $ } from './util';
+import { courierById } from '../../shared/couriers';
 
 interface Order {
   label: string; status: string; payment_method: string; subtotal_paise: number; shipping_paise: number; total_paise: number;
-  tracking_number: string | null; created_at: string; name: string; line1: string; line2: string; city: string; state: string; pincode: string;
+  tracking_number: string | null; courier: string | null; created_at: string; name: string; line1: string; line2: string; city: string; state: string; pincode: string;
   items: { product_name: string; variant_label: string; qty: number; unit_price_paise: number }[];
 }
 
@@ -17,6 +18,28 @@ const LABELS: Record<string, string> = {
   shipped: 'Shipped', delivered: 'Delivered', cancelled: 'Cancelled', refunded: 'Refunded', expired: 'Payment not completed', failed: 'Payment not completed',
 };
 const STEP = (s: string) => (['created', 'cod_pending', 'paid', 'confirmed'].includes(s) ? 1 : s === 'packed' ? 2 : s === 'shipped' ? 3 : s === 'delivered' ? 4 : 0);
+
+function trackingBox(tracking: string, courierId: string | null): HTMLElement {
+  const courier = courierById(courierId);
+  const copy = el('button', { type: 'button', class: 'btn btn-sm btn-outline' }, 'Copy') as HTMLButtonElement;
+  copy.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(tracking);
+      copy.textContent = 'Copied';
+    } catch {
+      copy.textContent = 'Select and copy the number';
+    }
+    setTimeout(() => { copy.textContent = 'Copy'; }, 2500);
+  });
+  return el('div', { class: 'notice track-box', style: 'margin-top:16px' },
+    el('div', {}, el('strong', {}, 'Shipped with ', courier && courier.id !== 'other' ? courier.name : 'our courier')),
+    el('div', { class: 'track-row' }, el('span', {}, 'Tracking number: ', el('strong', { class: 'track-no' }, tracking)), copy),
+    courier?.trackUrl
+      ? el('div', {}, el('a', { class: 'btn btn-sm', href: courier.trackUrl, target: '_blank', rel: 'noopener noreferrer' }, `Track on ${courier.name} →`),
+          el('p', { class: 'muted small', style: 'margin:8px 0 0' }, `Copy the number, then paste it on the ${courier.name} page.`))
+      : el('p', { class: 'muted small', style: 'margin:0' }, 'Call or WhatsApp +91 96005 77555 if you need help tracking your parcel.'),
+  );
+}
 
 async function load(tries = 0) {
   let o: Order;
@@ -41,7 +64,7 @@ async function load(tries = 0) {
       ? el('ol', { class: 'status-steps', 'aria-label': 'Order progress' },
           ...['Confirmed', 'Packed', 'Shipped', 'Delivered'].map((t, i) => el('li', { class: i < step ? 'done' : '', 'aria-current': i === step - 1 ? 'step' : undefined }, t)))
       : el('div', { class: 'notice bad' }, o.status === 'created' ? 'We are waiting for the payment confirmation. This page updates automatically.' : 'This order is not active. If money was deducted, Razorpay returns it automatically.'),
-    o.tracking_number ? el('p', { class: 'notice', style: 'margin-top:16px' }, `Courier tracking number: ${o.tracking_number}`) : null,
+    o.tracking_number ? trackingBox(o.tracking_number, o.courier) : null,
     el('div', { class: 'summary', style: 'margin-top:24px' },
       el('strong', {}, 'Items'),
       ...o.items.map((i) => el('div', { class: 'r' }, el('span', {}, `${i.product_name} · ${i.variant_label} × ${i.qty}`), el('span', {}, formatINR(i.unit_price_paise * i.qty)))),
