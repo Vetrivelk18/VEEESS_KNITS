@@ -1,3 +1,4 @@
+import { COURIER_IDS } from '../../shared/couriers';
 import { z } from 'zod';
 import { ApiError } from './http';
 
@@ -69,6 +70,7 @@ export type OrderStatus = (typeof ORDER_STATUSES)[number];
 export const statusUpdateSchema = z.object({
   status: z.enum(['confirmed', 'packed', 'shipped', 'delivered', 'cancelled']),
   trackingNumber: safeText(0, 60).optional(),
+  courier: z.enum(COURIER_IDS).optional(),
 });
 
 export const variantUpdateSchema = z.object({

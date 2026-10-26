@@ -15,6 +15,7 @@ import {
 } from '../lib/validation';
 import { orderLabel } from '../lib/money';
 import { refundPayment } from '../lib/razorpay';
+import { sendShippedEmail } from '../lib/alerts';
 import { isAllowedPushEndpoint, pushToAdmins } from '../lib/webpush';
 
 type AdminEnv = { Bindings: Env; Variables: AdminVars };
@@ -133,6 +134,9 @@ adminApi.patch('/orders/:id', async (c) => {
   if (body.status === 'cancelled' && o.payment_method !== 'cod') {
     throw new ApiError(409, 'refund_required', 'Online-paid orders are cancelled by issuing a refund.');
   }
+  if (body.status === 'shipped' && !body.courier) {
+    throw new ApiError(400, 'courier_required', 'Choose the courier before marking as shipped.');
+  }
   if (body.status === 'shipped' && !body.trackingNumber) {
     throw new ApiError(400, 'tracking_required', 'Add the courier tracking number before marking as shipped.');
   }
@@ -152,14 +156,16 @@ adminApi.patch('/orders/:id', async (c) => {
   }
   stmts.push(
     db
-      .prepare(`UPDATE orders SET status = ?2, tracking_number = COALESCE(?3, tracking_number), handled_by = ?4, updated_at = ${NOW} WHERE id = ?1 AND status = ?5`)
-      .bind(id, body.status, body.trackingNumber || null, admin, o.status),
+      .prepare(`UPDATE orders SET status = ?2, tracking_number = COALESCE(?3, tracking_number), courier = COALESCE(?6, courier), handled_by = ?4, updated_at = ${NOW} WHERE id = ?1 AND status = ?5`)
+      .bind(id, body.status, body.trackingNumber || null, admin, o.status, body.courier ?? null),
     db.prepare(`UPDATE notifications SET read_at = ${NOW}, read_by = ?2 WHERE order_id = ?1 AND read_at IS NULL`).bind(id, admin),
-    auditStmt(db, admin, `order.${body.status}`, 'order', id, { from: o.status, tracking: body.trackingNumber ?? null }, clientIp(c)),
+    auditStmt(db, admin, `order.${body.status}`, 'order', id, { from: o.status, tracking: body.trackingNumber ?? null, courier: body.courier ?? null }, clientIp(c)),
   );
   const res = await db.batch(stmts);
   const changed = res[body.status === 'cancelled' ? 1 : 0]?.meta.changes ?? 0;
   if (!changed) throw new ApiError(409, 'conflict', 'The order changed meanwhile. Refresh and try again.');
+  // Tell the customer, in the background (never blocks or fails the admin action).
+  if (body.status === 'shipped') c.executionCtx.waitUntil(sendShippedEmail(c.env, id));
   return c.json({ ok: true, status: body.status });
 });
 

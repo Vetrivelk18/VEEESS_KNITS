@@ -1,3 +1,4 @@
+import { COURIERS, courierById } from '../../../shared/couriers';
 import { api, el, formatINR, HttpError, setChildren, toast, $ } from '../util';
 import { poll, timeAgo } from './shell';
 import { currentSubscription, disablePush, enablePush, pushSupported } from './push';
@@ -80,9 +81,11 @@ function primaryAction(r: Row): { label: string; primary: boolean; run: () => vo
   return null;
 }
 
-async function setStatus(id: string, status: string, trackingNumber?: string) {
+async function setStatus(id: string, status: string, trackingNumber?: string, courier?: string) {
+  if (status === 'shipped' && !courier) return toast('Choose the courier first.');
+  if (status === 'shipped' && !trackingNumber) return toast('Type the courier tracking number first.');
   try {
-    await api(`/api/admin/orders/${id}`, { method: 'PATCH', body: { status, trackingNumber } });
+    await api(`/api/admin/orders/${id}`, { method: 'PATCH', body: { status, trackingNumber, courier } });
     toast(`Order marked ${STATUS[status]?.toLowerCase() ?? status}.`);
     await Promise.all([load(), poll()]);
     if (openId === id) openDrawer(id);
@@ -146,8 +149,13 @@ async function openDrawer(id: string) {
   if (s === 'cod_pending') actions.push(el('button', { type: 'button', class: 'btn btn-sm', onclick: () => setStatus(id, 'confirmed') }, 'Confirm COD order'));
   if (s === 'paid' || s === 'confirmed') actions.push(el('button', { type: 'button', class: 'btn btn-sm', onclick: () => setStatus(id, 'packed') }, 'Mark packed'));
   if (s === 'packed') {
-    const input = el('input', { class: 'inline-input', placeholder: 'Courier tracking no.', 'aria-label': 'Tracking number', maxlength: 60 });
-    actions.push(el('div', { style: 'display:flex;gap:8px;width:100%' }, input, el('button', { type: 'button', class: 'btn btn-sm', onclick: () => setStatus(id, 'shipped', (input as HTMLInputElement).value.trim()) }, 'Mark shipped')));
+    const courier = el('select', { class: 'inline-input', 'aria-label': 'Courier', style: 'flex:0 0 auto;max-width:46%' },
+      el('option', { value: '' }, 'Courier…'),
+      ...COURIERS.map((c) => el('option', { value: c.id }, c.name))) as HTMLSelectElement;
+    const input = el('input', { class: 'inline-input', placeholder: 'Tracking no.', 'aria-label': 'Tracking number', maxlength: 60 }) as HTMLInputElement;
+    actions.push(el('div', { style: 'display:flex;gap:8px;width:100%;flex-wrap:wrap' }, courier, input,
+      el('button', { type: 'button', class: 'btn btn-sm', onclick: () => setStatus(id, 'shipped', input.value.trim(), courier.value) }, 'Mark shipped')));
+    actions.push(el('p', { class: 'muted small', style: 'margin:0;width:100%' }, 'The customer gets a “Your order has shipped” email with the courier and tracking number.'));
   }
   if (s === 'shipped') actions.push(el('button', { type: 'button', class: 'btn btn-sm', onclick: () => setStatus(id, 'delivered') }, 'Mark delivered'));
   if (cod && ['cod_pending', 'confirmed', 'packed'].includes(s)) actions.push(confirmButton('Cancel order', 'Tap again to cancel', 'btn btn-sm btn-outline', () => setStatus(id, 'cancelled')));
@@ -183,7 +191,8 @@ async function openDrawer(id: string) {
           el('dt', {}, 'Method'), el('dd', {}, cod ? 'Cash on delivery (no extra charge)' : 'Online via Razorpay'),
           ...(o.payments.length ? o.payments.flatMap((p) => [el('dt', {}, String(p.source)), el('dd', {}, `${p.razorpay_payment_id} · ${p.status} · ${formatINR(Number(p.amount_paise))}${p.method ? ' · ' + p.method : ''}`)]) : []),
           o.razorpay_order_id ? el('dt', {}, 'Razorpay order') : null, o.razorpay_order_id ? el('dd', {}, String(o.razorpay_order_id)) : null,
-          o.tracking_number ? el('dt', {}, 'Tracking') : null, o.tracking_number ? el('dd', {}, String(o.tracking_number)) : null,
+          o.tracking_number ? el('dt', {}, 'Tracking') : null, o.tracking_number ? el('dd', {}, `${courierById(o.courier as string | null)?.name ?? 'Courier'} · ${String(o.tracking_number)}`) : null,
+          o.shipped_email_at ? el('dt', {}, 'Shipped email') : null, o.shipped_email_at ? el('dd', {}, `Sent ${new Date(String(o.shipped_email_at)).toLocaleString('en-IN')}`) : null,
         )),
       el('div', { class: 'card' },
         el('strong', {}, 'History'),
