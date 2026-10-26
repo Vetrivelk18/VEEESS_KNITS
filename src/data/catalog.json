@@ -1,17 +1,11 @@
 {
-  "generatedAt": "2026-10-24T09:05:04.190Z",
+  "generatedAt": "2026-10-24T13:49:27.087Z",
   "brands": [
     {
       "id": 1,
       "name": "Wordle",
       "slug": "wordle",
-      "tagline": "Graphic, statement pieces with heavy workmanship."
-    },
-    {
-      "id": 2,
-      "name": "Max8",
-      "slug": "max8",
-      "tagline": "Clean, minimal everyday essentials."
+      "tagline": "Our own label — T-shirts and everyday knitwear, made and checked in Tiruppur."
     }
   ],
   "categories": [
@@ -68,7 +62,7 @@
         "id": 1,
         "name": "Wordle",
         "slug": "wordle",
-        "tagline": "Graphic, statement pieces with heavy workmanship."
+        "tagline": "Our own label — T-shirts and everyday knitwear, made and checked in Tiruppur."
       },
       "category": {
         "id": 1,
@@ -212,20 +206,20 @@
     },
     {
       "id": 2,
-      "name": "Max8 Classic Crew Tee",
-      "slug": "max8-classic-crew-tee",
-      "description": "An everyday regular-fit crew neck with a small Max8 print. Soft, breathable and made to last wash after wash.",
+      "name": "Wordle Classic Crew Tee",
+      "slug": "wordle-classic-crew-tee",
+      "description": "An everyday regular-fit crew neck with a small Wordle print. Soft, breathable and made to last wash after wash.",
       "fabric": "100% combed cotton",
       "gsm": 180,
       "care": "Machine wash cold, inside out. Do not bleach. Dry in shade.",
       "is_new": 1,
-      "brand_id": 2,
+      "brand_id": 1,
       "category_id": 1,
       "brand": {
-        "id": 2,
-        "name": "Max8",
-        "slug": "max8",
-        "tagline": "Clean, minimal everyday essentials."
+        "id": 1,
+        "name": "Wordle",
+        "slug": "wordle",
+        "tagline": "Our own label — T-shirts and everyday knitwear, made and checked in Tiruppur."
       },
       "category": {
         "id": 1,
@@ -260,7 +254,7 @@
           "size": "S",
           "price_paise": 59900,
           "mrp_paise": 69900,
-          "available": 10
+          "available": 12
         },
         {
           "id": 12,
@@ -269,7 +263,7 @@
           "size": "M",
           "price_paise": 59900,
           "mrp_paise": 69900,
-          "available": 12
+          "available": 11
         },
         {
           "id": 13,
@@ -347,12 +341,12 @@
       "images": [
         {
           "src": "/images/products/p2.jpg",
-          "alt": "Max8 Classic Crew Tee in Olive",
+          "alt": "Wordle Classic Crew Tee in Olive",
           "colour": "Olive"
         },
         {
           "src": "/images/products/cat-tshirts.jpg",
-          "alt": "Max8 Classic Crew Tee in Indigo",
+          "alt": "Wordle Classic Crew Tee in Indigo",
           "colour": "Indigo"
         }
       ]
@@ -372,7 +366,7 @@
         "id": 1,
         "name": "Wordle",
         "slug": "wordle",
-        "tagline": "Graphic, statement pieces with heavy workmanship."
+        "tagline": "Our own label — T-shirts and everyday knitwear, made and checked in Tiruppur."
       },
       "category": {
         "id": 4,
@@ -506,20 +500,20 @@
     },
     {
       "id": 4,
-      "name": "Max8 Kids Crew Tee",
-      "slug": "max8-kids-crew-tee",
-      "description": "A soft, easy-wear tee for kids with a playful Max8 print.",
+      "name": "Wordle Kids Crew Tee",
+      "slug": "wordle-kids-crew-tee",
+      "description": "A soft, easy-wear tee for kids with a playful Wordle print.",
       "fabric": "100% soft cotton",
       "gsm": 160,
       "care": "Machine wash cold, inside out. Do not bleach. Dry in shade.",
       "is_new": 1,
-      "brand_id": 2,
+      "brand_id": 1,
       "category_id": 6,
       "brand": {
-        "id": 2,
-        "name": "Max8",
-        "slug": "max8",
-        "tagline": "Clean, minimal everyday essentials."
+        "id": 1,
+        "name": "Wordle",
+        "slug": "wordle",
+        "tagline": "Our own label — T-shirts and everyday knitwear, made and checked in Tiruppur."
       },
       "category": {
         "id": 6,
@@ -622,32 +616,32 @@
       "images": [
         {
           "src": "/images/products/p4.jpg",
-          "alt": "Max8 Kids Crew Tee in Sky",
+          "alt": "Wordle Kids Crew Tee in Sky",
           "colour": "Sky"
         },
         {
           "src": "/images/products/cat-kids.jpg",
-          "alt": "Max8 Kids Crew Tee in Mustard",
+          "alt": "Wordle Kids Crew Tee in Mustard",
           "colour": "Mustard"
         }
       ]
     },
     {
       "id": 5,
-      "name": "Max8 Knit Casual Shirt",
-      "slug": "max8-knit-casual-shirt",
+      "name": "Wordle Knit Casual Shirt",
+      "slug": "wordle-knit-casual-shirt",
       "description": "A relaxed knit shirt with a chest pocket — the comfort of a tee with the look of a shirt.",
       "fabric": "Cotton knit",
       "gsm": 200,
       "care": "Machine wash cold, inside out. Do not bleach. Dry in shade.",
       "is_new": 0,
-      "brand_id": 2,
+      "brand_id": 1,
       "category_id": 2,
       "brand": {
-        "id": 2,
-        "name": "Max8",
-        "slug": "max8",
-        "tagline": "Clean, minimal everyday essentials."
+        "id": 1,
+        "name": "Wordle",
+        "slug": "wordle",
+        "tagline": "Our own label — T-shirts and everyday knitwear, made and checked in Tiruppur."
       },
       "category": {
         "id": 2,
@@ -720,7 +714,7 @@
       "images": [
         {
           "src": "/images/products/cat-shirts.jpg",
-          "alt": "Max8 Knit Casual Shirt in Sage",
+          "alt": "Wordle Knit Casual Shirt in Sage",
           "colour": "Sage"
         }
       ]
@@ -740,7 +734,7 @@
         "id": 1,
         "name": "Wordle",
         "slug": "wordle",
-        "tagline": "Graphic, statement pieces with heavy workmanship."
+        "tagline": "Our own label — T-shirts and everyday knitwear, made and checked in Tiruppur."
       },
       "category": {
         "id": 3,
@@ -820,20 +814,20 @@
     },
     {
       "id": 7,
-      "name": "Max8 Sleeveless Vest",
-      "slug": "max8-sleeveless-vest",
+      "name": "Wordle Sleeveless Vest",
+      "slug": "wordle-sleeveless-vest",
       "description": "A clean sleeveless vest for training or warm days.",
       "fabric": "100% combed cotton",
       "gsm": 180,
       "care": "Machine wash cold, inside out. Do not bleach. Dry in shade.",
       "is_new": 0,
-      "brand_id": 2,
+      "brand_id": 1,
       "category_id": 5,
       "brand": {
-        "id": 2,
-        "name": "Max8",
-        "slug": "max8",
-        "tagline": "Clean, minimal everyday essentials."
+        "id": 1,
+        "name": "Wordle",
+        "slug": "wordle",
+        "tagline": "Our own label — T-shirts and everyday knitwear, made and checked in Tiruppur."
       },
       "category": {
         "id": 5,
@@ -906,7 +900,7 @@
       "images": [
         {
           "src": "/images/products/cat-sleeveless.jpg",
-          "alt": "Max8 Sleeveless Vest in Rust",
+          "alt": "Wordle Sleeveless Vest in Rust",
           "colour": "Rust"
         }
       ]
@@ -926,7 +920,7 @@
         "id": 1,
         "name": "Wordle",
         "slug": "wordle",
-        "tagline": "Graphic, statement pieces with heavy workmanship."
+        "tagline": "Our own label — T-shirts and everyday knitwear, made and checked in Tiruppur."
       },
       "category": {
         "id": 1,

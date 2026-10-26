@@ -2,13 +2,13 @@
 import '../styles/global.css';
 import Icon from '../components/Icon.astro';
 interface Props { title: string; description?: string; current?: string; noindex?: boolean; image?: string }
-const { title, description = 'Export-standard T-shirts and everyday knitwear from Tiruppur. Shop Wordle and Max8 — pay online or cash on delivery, no extra charge.', current = '', noindex = false, image = '/images/products/hero.jpg' } = Astro.props;
+const { title, description = 'Export-standard T-shirts and everyday knitwear from Tiruppur. Shop Wordle, our own label — pay online or cash on delivery, no extra charge.', current = '', noindex = false, image = '/images/products/hero.jpg' } = Astro.props;
 const fullTitle = title.includes('Veeess') ? title : `${title} | Veeess Knits`;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const nav = [
   { href: '/shop/', label: 'Shop', key: 'shop' },
-  { href: '/brand/wordle/', label: 'Wordle', key: 'wordle' },
-  { href: '/brand/max8/', label: 'Max8', key: 'max8' },
+  { href: '/shop/t-shirts/', label: 'T-shirts', key: 't-shirts' },
+  { href: '/shop/kidswear/', label: 'Kidswear', key: 'kidswear' },
   { href: '/#about', label: 'Our story', key: 'about' },
   { href: '/track/', label: 'Track order', key: 'track' },
 ];
@@ -27,7 +27,8 @@ const nav = [
   <meta property="og:description" content={description} />
   <meta property="og:image" content={new URL(image, Astro.site)} />
   <meta name="theme-color" content="#1F2B5C" />
-  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 </head>
 <body class="has-tabbar">
   <a class="skip" href="#main">Skip to content</a>
@@ -35,7 +36,7 @@ const nav = [
   <header class="site-header">
     <div class="wrap bar">
       <button class="icon-btn menu-btn" type="button" aria-label="Menu" aria-expanded="false" aria-controls="mobile-menu" data-menu-toggle><Icon name="menu" /></button>
-      <a class="logo" href="/">VEEESS KNITS</a>
+      <a class="logo" href="/"><img class="logo-mark" src="/images/brand/logo-vk-128.png" srcset="/images/brand/logo-vk-64.png 1x, /images/brand/logo-vk-128.png 2x, /images/brand/logo-vk-256.png 4x" alt="" width="44" height="44" /><span>VEEESS KNITS</span></a>
       <nav class="main-nav" aria-label="Main">
         {nav.map((n) => <a href={n.href} aria-current={current === n.key ? 'page' : undefined}>{n.label}</a>)}
       </nav>
@@ -58,12 +59,13 @@ const nav = [
         <div class="logo" style="color:#fff;font-size:20px">VEEESS KNITS</div>
         <p style="font-size:14px;line-height:1.6;margin:12px 0">32-A, Padmavathi Puram 7th Street,<br />Gandhi Nagar, Tiruppur 641603</p>
         <a href="mailto:info.veeessknits@gmail.com" style="color:#fff">info.veeessknits@gmail.com</a>
+        <a class="social" href="https://www.instagram.com/wordle_byveeess/" rel="noopener noreferrer" target="_blank" aria-label="Instagram: @wordle_byveeess (opens in a new tab)"><Icon name="instagram" size={18} />@wordle_byveeess</a>
       </div>
       <div>
         <h2>Shop</h2>
         <a href="/shop/">All products</a>
-        <a href="/brand/wordle/">Wordle</a>
-        <a href="/brand/max8/">Max8</a>
+        <a href="/shop/t-shirts/">T-shirts</a>
+        <a href="/shop/track-pants/">Track pants</a>
         <a href="/shop/kidswear/">Kidswear</a>
       </div>
       <div>

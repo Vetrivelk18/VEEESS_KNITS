@@ -1,5 +1,7 @@
 // One-off generator for migrations/0002_seed.sql (sample catalogue).
 // Prices, stock and descriptions are SAMPLE values — replace via the admin panel.
+// HISTORICAL: this produced 0002 with two brands. Max8 was retired later; migration
+// 0004_wordle_only.sql moves everything to Wordle. Do not re-run to change 0002.
 import { writeFileSync } from 'node:fs';
 const q = (s) => (s === null || s === undefined ? 'NULL' : `'${String(s).replace(/'/g, "''")}'`);
 const brands = [

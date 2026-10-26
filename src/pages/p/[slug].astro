@@ -10,7 +10,7 @@ const { p } = Astro.props as { p: Product };
 const first = p.colours[0]!;
 const imgs = p.images.filter((i) => i.colour === first.name);
 const gallery = (imgs.length ? imgs : p.images).slice(0, 3);
-const related = products.filter((x) => x.id !== p.id && (x.category.id === p.category.id || x.brand.id === p.brand.id)).slice(0, 4);
+const related = products.filter((x) => x.id !== p.id && x.category.id === p.category.id).slice(0, 4);
 const off = discountPct(p.minPricePaise, p.mrpPaise);
 const data = JSON.stringify({
   slug: p.slug, name: p.name, brand: p.brand.name,
@@ -27,14 +27,14 @@ const jsonLd = JSON.stringify({
   <script type="application/ld+json" is:inline set:html={jsonLd}></script>
   <script type="application/json" id="product-data" is:inline set:html={data}></script>
   <div class="wrap">
-    <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a> / <a href={`/brand/${p.brand.slug}/`}>{p.brand.name}</a> / <a href={`/shop/${p.category.slug}/`}>{p.category.name}</a></nav>
+    <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a> / <a href="/shop/">Shop</a> / <a href={`/shop/${p.category.slug}/`}>{p.category.name}</a></nav>
     <div class="pdp">
       <div class="gal" data-gallery>
         {gallery.map((g, i) => <div class={i === 0 ? 'main' : ''}><img src={g.src} alt={g.alt} width="1200" height={i === 0 ? 900 : 1200} loading={i === 0 ? 'eager' : 'lazy'} /></div>)}
       </div>
       <div class="info">
         <div>
-          <a class="eyebrow" href={`/brand/${p.brand.slug}/`} style="text-decoration:none">{p.brand.name}</a>
+          <a class="eyebrow" href="/shop/" style="text-decoration:none">{p.brand.name}</a>
           <h1 class="display">{p.name}</h1>
           <div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap">
             <span class="pricebig" data-price>{formatINR(p.minPricePaise)}</span>
