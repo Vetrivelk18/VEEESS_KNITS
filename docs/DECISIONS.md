@@ -221,7 +221,8 @@ Last updated: 24 Oct 2026 · Code version 0.2.0
 
 ### D39. Size charts and Men / Women / Kids (27 Oct 2026)
 - **Size charts are images** uploaded by admins (owner decision: upload as-is). They live in a **library** (Products → Size charts): upload a chart once, then pick it on each product that uses it. The 10 charts supplied on 27 Oct 2026 are pre-loaded (migration `0006`), and the sample products have a sensible chart linked.
-- The product page shows the chart under **Size chart** (tap to open full size), with the no-returns reminder. Without a chart, it shows the call/WhatsApp line instead.
+- On the product page, the **Size chart** link next to the sizes opens the chart in a **popup** (Esc, ✕ or tapping outside closes it), with the no-returns reminder. Products without a chart show the call/WhatsApp line in the same popup.
+- **New products can be created with photos** straight from "Add a new product"; the panel then scrolls to the new product to add sizes and prices.
 - Each product has **For: Men, Women, Unisex or Kids** (database-checked). New pages **/men/**, **/women/**, **/kids/** and "Everyone · Men · Women · Kids" chips on the shop; **Unisex shows under both Men and Women**. The main menu is now Shop · Men · Women · Kids · Our story · Track order.
 - Uploaded charts are stored in R2 under `size-charts/`; only that exact pattern (and product photos) is publicly served — backups stay private.
 - ASSUMPTION: chart names are my descriptions of the supplied images (e.g. "Women's T-shirt · S–3XL"); admins can upload a renamed copy. Charts are images, so they can't be searched or converted to cm.

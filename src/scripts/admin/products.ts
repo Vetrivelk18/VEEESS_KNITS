@@ -11,6 +11,7 @@ interface SizeChart { id: number; name: string; src: string; used_by: number }
 
 let cat: Catalog;
 const openIds = new Set<number>();
+let scrollToId: number | null = null;
 
 const rupees = (paise: number | null) => (paise == null ? '' : String(paise / 100));
 const toPaise = (v: string) => (v.trim() === '' ? null : Math.round(Number(v) * 100));
@@ -43,6 +44,9 @@ function productForm(form: HTMLFormElement, p?: P) {
       el('label', { class: 'field full' }, 'Care', el('input', { name: 'care', maxlength: 300, value: p?.care ?? 'Machine wash cold, inside out. Do not bleach. Dry in shade.' })),
       el('label', { class: 'check' }, el('input', { type: 'checkbox', name: 'isActive', checked: p ? p.is_active === 1 : true }), 'Show in shop'),
       el('label', { class: 'check' }, el('input', { type: 'checkbox', name: 'isNew', checked: p ? p.is_new === 1 : true }), 'Mark as new arrival'),
+      p ? null : el('label', { class: 'field full' }, 'Photos (optional — you can add more later)',
+        el('input', { type: 'file', name: 'photos', multiple: true, accept: 'image/jpeg,image/png,image/webp', 'aria-describedby': 'new-photos-help' }),
+        el('span', { id: 'new-photos-help', class: 'muted small', style: 'font-weight:400' }, 'JPG, PNG or WebP, up to 5 MB each. Portrait 3:4 photos look best. After creating, add sizes and prices, and set a colour on each photo if needed.')),
     ),
     el('div', { style: 'margin-top:14px' }, el('button', { type: 'submit', class: 'btn btn-sm' }, p ? 'Save product details' : 'Create product')),
   );
@@ -66,9 +70,22 @@ function productForm(form: HTMLFormElement, p?: P) {
         await api(`/api/admin/products/${p.id}`, { method: 'PATCH', body });
         toast('Saved. Press "Publish storefront" to update the shop pages.');
       } else {
+        const photos = (f.getAll('photos') as File[]).filter((x) => x instanceof File && x.size > 0);
+        const big = photos.find((x) => x.size > 5 * 1024 * 1024);
+        if (big) return toast(`"${big.name}" is larger than 5 MB. Choose a smaller photo.`);
         const r = await api<{ id: number }>('/api/admin/products', { body });
         openIds.add(r.id);
-        toast('Product created. Add sizes and photos below, then publish.');
+        scrollToId = r.id;
+        let failed = 0;
+        for (const ph of photos) {
+          const fd = new FormData();
+          fd.append('file', ph);
+          fd.append('colour', '');
+          try { await api(`/api/admin/products/${r.id}/images`, { form: fd }); } catch { failed++; }
+        }
+        toast(failed
+          ? `Product created, but ${failed} photo${failed === 1 ? '' : 's'} could not be uploaded. Add ${failed === 1 ? 'it' : 'them'} again below.`
+          : `Product created${photos.length ? ` with ${photos.length} photo${photos.length === 1 ? '' : 's'}` : ''}. Now add sizes and prices below, then publish.`);
         ($('[data-new-product]') as HTMLDetailsElement).open = false;
         form.reset();
       }
@@ -230,7 +247,7 @@ function render() {
     const stock = vs.reduce((a, v) => a + v.stock, 0);
     const low = vs.filter((v) => v.is_active && v.stock - v.reserved <= 2).length;
     const prices = vs.map((v) => v.price_paise);
-    const d = el('details', { class: 'prod', open: openIds.has(p.id) }) as HTMLDetailsElement;
+    const d = el('details', { class: 'prod', open: openIds.has(p.id), 'data-product-id': p.id }) as HTMLDetailsElement;
     d.addEventListener('toggle', () => (d.open ? openIds.add(p.id) : openIds.delete(p.id)));
     const editForm = el('form') as HTMLFormElement;
     productForm(editForm, p);
@@ -263,6 +280,10 @@ async function load() {
   try {
     cat = await api<Catalog>('/api/admin/catalog');
     render();
+    if (scrollToId !== null) {
+      document.querySelector(`[data-product-id="${scrollToId}"]`)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      scrollToId = null;
+    }
     const nf = $('[data-product-form="new"]') as HTMLFormElement;
     // Rebuild the new-product form unless it is open (keeps the size-chart list current).
     if (!nf.childElementCount || !($('[data-new-product]') as HTMLDetailsElement).open) productForm(nf);
