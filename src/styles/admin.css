@@ -106,3 +106,6 @@ table.vars td, table.vars th { padding: 8px 10px; }
 
 .local-banner { background: var(--marigold); color: var(--ink); text-align: center; font-size: 13px; font-weight: 600; padding: 6px 12px; }
 .admin-signout { color: #c9ccd6; font-size: 14px; padding: 10px 4px; }
+/* Size-chart library: wider thumbnails, whole chart visible */
+.thumbs.charts figure { width: 168px; }
+.thumbs.charts img { width: 168px; height: 112px; object-fit: contain; background: #fff; border: 1px solid var(--line); }

@@ -54,7 +54,10 @@ export function randomId(): string {
  * Signed, expiring link token for the customer's order page.
  * token = <expUnix>.<hmac(orderId.exp)>  — proves the link came from us.
  */
-export async function signOrderToken(secret: string, orderId: string, ttlSeconds = 60 * 60 * 24 * 30): Promise<string> {
+/** Order links last 6 months (D40): long enough to follow an order until delivery and look back at it later. */
+export const ORDER_LINK_DAYS = 183;
+
+export async function signOrderToken(secret: string, orderId: string, ttlSeconds = 60 * 60 * 24 * ORDER_LINK_DAYS): Promise<string> {
   const exp = Math.floor(Date.now() / 1000) + ttlSeconds;
   const mac = await hmacSha256B64url(secret, `order:${orderId}.${exp}`);
   return `${exp}.${mac}`;

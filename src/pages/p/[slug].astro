@@ -86,9 +86,18 @@ const jsonLd = JSON.stringify({
       </div>
     </div>
 
-    <section id="size-chart" style="padding-bottom:48px">
+    <section id="size-chart" class="size-chart" style="padding-bottom:48px">
       <h2 class="display" style="font-size:28px;margin:0 0 16px">Size chart</h2>
-      <p class="draft-note">Measurements for this style will be added by Veeess Knits. Need help choosing? Call <a href="tel:+919600577555">+91 96005 77555</a>.</p>
+      {p.sizeChart ? (
+        <>
+          <a class="size-chart-img" href={p.sizeChart.src} target="_blank" rel="noopener" aria-label={`Open the ${p.sizeChart.name} size chart full size`}>
+            <img src={p.sizeChart.src} alt={`Size chart: ${p.sizeChart.name}`} loading="lazy" decoding="async" />
+          </a>
+          <p class="muted small-note">{p.sizeChart.name} · Tap the chart to open it full size. All sales are final, so please check your size before ordering. Unsure? Call or WhatsApp <a href="tel:+919600577555">+91 96005 77555</a>.</p>
+        </>
+      ) : (
+        <p class="muted">Need help choosing a size? Call or WhatsApp <a href="tel:+919600577555">+91 96005 77555</a> before you order — we don't accept returns or exchanges.</p>
+      )}
     </section>
 
     {related.length > 0 && (

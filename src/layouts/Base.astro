@@ -7,8 +7,9 @@ const fullTitle = title.includes('Veeess') ? title : `${title} | Veeess Knits`;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const nav = [
   { href: '/shop/', label: 'Shop', key: 'shop' },
-  { href: '/shop/t-shirts/', label: 'T-shirts', key: 't-shirts' },
-  { href: '/shop/kidswear/', label: 'Kidswear', key: 'kidswear' },
+  { href: '/men/', label: 'Men', key: 'men' },
+  { href: '/women/', label: 'Women', key: 'women' },
+  { href: '/kids/', label: 'Kids', key: 'kids' },
   { href: '/#about', label: 'Our story', key: 'about' },
   { href: '/track/', label: 'Track order', key: 'track' },
 ];
@@ -60,13 +61,15 @@ const nav = [
         <p style="font-size:14px;line-height:1.6;margin:12px 0">32-A, Padmavathi Puram 7th Street,<br />Gandhi Nagar, Tiruppur 641603</p>
         <a href="mailto:info.veeessknits@gmail.com" style="color:#fff">info.veeessknits@gmail.com</a>
         <a class="social" href="https://www.instagram.com/wordle_byveeess/" rel="noopener noreferrer" target="_blank" aria-label="Instagram: @wordle_byveeess (opens in a new tab)"><Icon name="instagram" size={18} />@wordle_byveeess</a>
+        <p class="more-queries">For more queries, visit <a href="https://www.veeessknits.com" rel="noopener">www.veeessknits.com</a></p>
       </div>
       <div>
         <h2>Shop</h2>
         <a href="/shop/">All products</a>
+        <a href="/men/">Men</a>
+        <a href="/women/">Women</a>
+        <a href="/kids/">Kids</a>
         <a href="/shop/t-shirts/">T-shirts</a>
-        <a href="/shop/track-pants/">Track pants</a>
-        <a href="/shop/kidswear/">Kidswear</a>
       </div>
       <div>
         <h2>Help</h2>

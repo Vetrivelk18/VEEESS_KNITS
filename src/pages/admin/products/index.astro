@@ -16,6 +16,10 @@ import Admin from '../../../layouts/Admin.astro';
     <summary style="cursor:pointer;font-weight:600">+ Add a new product</summary>
     <form data-product-form="new" style="margin-top:16px"></form>
   </details>
+  <details class="card" data-size-charts>
+    <summary style="cursor:pointer;font-weight:600">Size charts</summary>
+    <div data-size-charts-body><p class="muted">Loading…</p></div>
+  </details>
   <div data-products style="display:flex;flex-direction:column;gap:12px"><p class="muted">Loading…</p></div>
   <script>
     import '../../../scripts/admin/products';

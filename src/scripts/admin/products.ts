@@ -1,10 +1,13 @@
+import { AUDIENCES } from '../../../shared/audience';
 import { api, el, formatINR, HttpError, setChildren, toast, $ } from '../util';
 import './shell';
 
-interface P { id: number; name: string; slug: string; description: string; fabric: string; gsm: number | null; care: string; is_active: number; is_new: number; category_id: number }
+interface P { id: number; name: string; slug: string; description: string; fabric: string; gsm: number | null; care: string; is_active: number; is_new: number; category_id: number; audience: string; size_chart_id: number | null }
 interface V { id: number; product_id: number; colour: string; colour_hex: string; size: string; sku: string; price_paise: number; mrp_paise: number | null; stock: number; reserved: number; is_active: number }
 interface I { id: number; product_id: number; colour: string | null; src: string; alt: string }
-interface Catalog { products: P[]; variants: V[]; images: I[]; categories: { id: number; name: string }[]; lastPublish: { value: string; updated_at: string } | null; mediaBase: string }
+interface Catalog { products: P[]; variants: V[]; images: I[]; categories: { id: number; name: string }[]; sizeCharts: SizeChart[]; lastPublish: { value: string; updated_at: string } | null; mediaBase: string }
+
+interface SizeChart { id: number; name: string; src: string; used_by: number }
 
 let cat: Catalog;
 const openIds = new Set<number>();
@@ -27,6 +30,13 @@ function productForm(form: HTMLFormElement, p?: P) {
     el('div', { class: 'form-grid' },
       el('label', { class: 'field full' }, 'Product name', el('input', { name: 'name', required: true, minlength: 3, maxlength: 100, value: p?.name ?? '' })),
       sel('categoryId', cat.categories, p?.category_id),
+      el('label', { class: 'field' }, 'For',
+        el('select', { name: 'audience', required: true },
+          ...AUDIENCES.map((a) => el('option', { value: a.id, selected: (p?.audience ?? 'unisex') === a.id }, a.id === 'unisex' ? 'Unisex (shows under Men and Women)' : a.label)))),
+      el('label', { class: 'field' }, 'Size chart',
+        el('select', { name: 'sizeChartId' },
+          el('option', { value: '' }, 'No size chart'),
+          ...cat.sizeCharts.map((s) => el('option', { value: s.id, selected: p?.size_chart_id === s.id }, s.name)))),
       el('label', { class: 'field full' }, 'Description', el('textarea', { name: 'description', rows: 3, maxlength: 2000, style: 'border:1px solid var(--line-2);border-radius:4px;padding:10px;font-weight:400' }, p?.description ?? '')),
       el('label', { class: 'field' }, 'Fabric', el('input', { name: 'fabric', maxlength: 120, value: p?.fabric ?? '' })),
       el('label', { class: 'field' }, 'GSM', el('input', { name: 'gsm', type: 'number', min: 80, max: 600, value: p?.gsm ?? '' })),
@@ -48,6 +58,8 @@ function productForm(form: HTMLFormElement, p?: P) {
       care: String(f.get('care') ?? '').trim(),
       isActive: f.get('isActive') === 'on',
       isNew: f.get('isNew') === 'on',
+      audience: String(f.get('audience') ?? 'unisex'),
+      sizeChartId: f.get('sizeChartId') ? Number(f.get('sizeChartId')) : null,
     };
     try {
       if (p) {
@@ -166,7 +178,51 @@ function imagesBlock(p: P, imgs: I[], colours: string[]): HTMLElement {
   );
 }
 
+function sizeChartsBlock(): HTMLElement {
+  const name = el('input', { class: 'inline-input', placeholder: 'Chart name, e.g. Women\u2019s T-shirt · S–3XL', maxlength: 80, 'aria-label': 'Size chart name' }) as HTMLInputElement;
+  const file = el('input', { type: 'file', accept: 'image/jpeg,image/png,image/webp', 'aria-label': 'Choose size chart image' }) as HTMLInputElement;
+  const up = el('button', { type: 'button', class: 'btn btn-sm' }, 'Upload chart');
+  up.addEventListener('click', async () => {
+    const f = file.files?.[0];
+    if (name.value.trim().length < 2) return toast('Give the chart a name first.');
+    if (!f) return toast('Choose the size chart image.');
+    if (f.size > 5 * 1024 * 1024) return toast('Image must be 5 MB or smaller.');
+    const form = new FormData();
+    form.append('file', f);
+    form.append('name', name.value.trim());
+    up.setAttribute('disabled', '');
+    try {
+      await api('/api/admin/size-charts', { form });
+      toast('Size chart added. Pick it in a product\u2019s details, then publish.');
+      await load();
+    } catch (e) {
+      err(e, 'Upload failed.');
+    } finally {
+      up.removeAttribute('disabled');
+    }
+  });
+  return el('div', {},
+    el('div', { class: 'thumbs charts', style: 'margin:12px 0' },
+      ...cat.sizeCharts.map((s) => {
+        const del = el('button', { type: 'button', class: 'link-btn' }, 'Remove');
+        let armed = false;
+        del.addEventListener('click', async () => {
+          if (!armed) { armed = true; del.textContent = s.used_by ? `Used by ${s.used_by} — tap to remove anyway` : 'Tap to confirm'; return; }
+          try { await api(`/api/admin/size-charts/${s.id}`, { method: 'DELETE', body: {} }); await load(); } catch (e) { err(e, 'Could not remove.'); }
+        });
+        return el('figure', {},
+          el('a', { href: imgSrc(s.src), target: '_blank', rel: 'noopener' }, el('img', { src: imgSrc(s.src), alt: s.name, loading: 'lazy' })),
+          el('figcaption', {}, s.name, el('br'), el('span', { class: 'muted' }, s.used_by ? `Used by ${s.used_by} product${s.used_by === 1 ? '' : 's'}` : 'Not used yet')),
+          del);
+      }),
+    ),
+    el('div', { class: 'toolbar', style: 'gap:8px' }, name, file, up),
+    el('p', { class: 'muted small', style: 'margin:6px 0 0' }, 'Upload a chart once, then choose it on every product that uses it (product → Details → Size chart). JPG, PNG or WebP, up to 5 MB.'),
+  );
+}
+
 function render() {
+  setChildren($('[data-size-charts-body]'), sizeChartsBlock());
   const root = $('[data-products]');
   setChildren(root, ...cat.products.map((p) => {
     const vs = cat.variants.filter((v) => v.product_id === p.id);
@@ -183,7 +239,7 @@ function render() {
         imgs[0] ? el('img', { src: imgSrc(imgs[0].src), alt: '' }) : el('span', { style: 'width:56px;height:70px;background:var(--placeholder);border-radius:4px' }),
         el('span', { style: 'flex:1;min-width:0' },
           el('strong', { style: 'display:block' }, p.name),
-          el('span', { class: 'muted small' }, `${cat.categories.find((c) => c.id === p.category_id)?.name ?? ''} · ${prices.length ? formatINR(Math.min(...prices)) : 'no sizes yet'} · ${stock} in stock${low ? ` · ${low} size${low === 1 ? '' : 's'} low` : ''}`)),
+          el('span', { class: 'muted small' }, `${AUDIENCES.find((a) => a.id === p.audience)?.label ?? 'Unisex'} · ${cat.categories.find((c) => c.id === p.category_id)?.name ?? ''}${p.size_chart_id ? '' : ' · no size chart'} · ${prices.length ? formatINR(Math.min(...prices)) : 'no sizes yet'} · ${stock} in stock${low ? ` · ${low} size${low === 1 ? '' : 's'} low` : ''}`)),
         el('span', { class: `pill-s ${p.is_active ? 'st-paid' : 'st-cancelled'}` }, p.is_active ? 'In shop' : 'Hidden'),
       ),
       el('div', { class: 'pbody' },
@@ -208,7 +264,8 @@ async function load() {
     cat = await api<Catalog>('/api/admin/catalog');
     render();
     const nf = $('[data-product-form="new"]') as HTMLFormElement;
-    if (!nf.childElementCount) productForm(nf);
+    // Rebuild the new-product form unless it is open (keeps the size-chart list current).
+    if (!nf.childElementCount || !($('[data-new-product]') as HTMLDetailsElement).open) productForm(nf);
   } catch (e) {
     setChildren($('[data-products]'), el('p', {}, e instanceof HttpError ? e.message : 'Could not load products.'));
   }

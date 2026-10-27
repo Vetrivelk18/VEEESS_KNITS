@@ -306,3 +306,15 @@ legend { font-weight: 700; font-size: 17px; padding: 0 6px; }
 .track-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
 .track-no { font-family: ui-monospace, Menlo, monospace; letter-spacing: .03em; }
 .track-box .small { font-size: 13px; }
+
+/* Size chart on the product page */
+.size-chart-img { display: block; max-width: 720px; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: #fff; }
+.size-chart-img img { display: block; width: 100%; height: auto; }
+.small-note { font-size: 14px; margin: 10px 0 0; max-width: 720px; }
+
+/* Footer: website line under Instagram */
+.site-footer .more-queries { font-size: 14px; margin: 10px 0 0; color: #d5d7de; }
+.site-footer .more-queries a { display: inline; color: #fff; text-decoration: underline; padding: 0; }
+
+/* Order page: save/copy the order link */
+.save-link { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 12px; font-size: 14px; }

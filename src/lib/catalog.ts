@@ -3,6 +3,8 @@ import data from '../data/catalog.json';
 export interface Variant { id: number; colour: string; colour_hex: string; size: string; price_paise: number; mrp_paise: number | null; available: number }
 export interface Product {
   id: number; name: string; slug: string; description: string; fabric: string; gsm: number | null; care: string; is_new: number;
+  audience: 'men' | 'women' | 'unisex' | 'kids';
+  sizeChart: { name: string; src: string } | null;
   brand: { id: number; name: string; slug: string; tagline: string };
   category: { id: number; name: string; slug: string };
   minPricePaise: number; mrpPaise: number | null;

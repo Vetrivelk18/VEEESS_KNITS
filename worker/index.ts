@@ -24,10 +24,12 @@ app.route('/__local', localLogin); // local testing only; 404 on the live site
 app.route('/api/admin', adminApi);
 app.route('/api', publicApi);
 
-/** Admin-uploaded product images from R2 (only the products/ prefix is public). */
+/** Admin-uploaded product photos and size charts from R2. Only these exact
+ *  key shapes are public; everything else in the bucket (e.g. backups) is not. */
+export const PUBLIC_MEDIA_KEY = /^(products\/\d+|size-charts)\/[0-9a-f-]{36}\.(jpg|png|webp)$/;
 app.get('/media/*', async (c) => {
   const key = decodeURIComponent(c.req.path.slice('/media/'.length));
-  if (!/^products\/\d+\/[0-9a-f-]{36}\.(jpg|png|webp)$/.test(key)) return c.text('Not found', 404);
+  if (!PUBLIC_MEDIA_KEY.test(key)) return c.text('Not found', 404);
   const obj = await c.env.MEDIA.get(key);
   if (!obj) return c.text('Not found', 404);
   const headers = new Headers();

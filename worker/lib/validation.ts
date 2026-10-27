@@ -1,4 +1,5 @@
 import { COURIER_IDS } from '../../shared/couriers';
+import { AUDIENCE_IDS } from '../../shared/audience';
 import { z } from 'zod';
 import { ApiError } from './http';
 
@@ -91,7 +92,11 @@ export const productUpsertSchema = z.object({
   care: safeText(0, 300),
   isActive: z.boolean(),
   isNew: z.boolean(),
+  audience: z.enum(AUDIENCE_IDS).default('unisex'),
+  sizeChartId: z.number().int().positive().nullable().default(null),
 });
+
+export const sizeChartNameSchema = safeText(2, 80);
 
 export const newVariantSchema = z.object({
   colour: safeText(2, 40),

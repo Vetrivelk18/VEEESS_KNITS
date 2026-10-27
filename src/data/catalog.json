@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-24T13:49:27.087Z",
+  "generatedAt": "2026-10-27T10:55:56.455Z",
   "brands": [
     {
       "id": 1,
@@ -58,6 +58,11 @@
       "is_new": 1,
       "brand_id": 1,
       "category_id": 1,
+      "audience": "unisex",
+      "sizeChart": {
+        "name": "Drop shoulder T-shirt · M–XL (chest 42–46)",
+        "src": "/images/size-charts/drop-shoulder-tee-42-46.jpg"
+      },
       "brand": {
         "id": 1,
         "name": "Wordle",
@@ -215,6 +220,11 @@
       "is_new": 1,
       "brand_id": 1,
       "category_id": 1,
+      "audience": "unisex",
+      "sizeChart": {
+        "name": "T-shirt · S–4XL (shoulder 15–21)",
+        "src": "/images/size-charts/tee-s-4xl-shoulder-15-21.jpg"
+      },
       "brand": {
         "id": 1,
         "name": "Wordle",
@@ -362,6 +372,8 @@
       "is_new": 1,
       "brand_id": 1,
       "category_id": 4,
+      "audience": "unisex",
+      "sizeChart": null,
       "brand": {
         "id": 1,
         "name": "Wordle",
@@ -509,6 +521,11 @@
       "is_new": 1,
       "brand_id": 1,
       "category_id": 6,
+      "audience": "kids",
+      "sizeChart": {
+        "name": "Boys' T-shirt · 6 months–16 years",
+        "src": "/images/size-charts/boys-tee-6m-16y.jpg"
+      },
       "brand": {
         "id": 1,
         "name": "Wordle",
@@ -637,6 +654,8 @@
       "is_new": 0,
       "brand_id": 1,
       "category_id": 2,
+      "audience": "unisex",
+      "sizeChart": null,
       "brand": {
         "id": 1,
         "name": "Wordle",
@@ -730,6 +749,11 @@
       "is_new": 0,
       "brand_id": 1,
       "category_id": 3,
+      "audience": "unisex",
+      "sizeChart": {
+        "name": "Wordle shorts · M–XL",
+        "src": "/images/size-charts/wordle-shorts-m-xl.jpg"
+      },
       "brand": {
         "id": 1,
         "name": "Wordle",
@@ -823,6 +847,8 @@
       "is_new": 0,
       "brand_id": 1,
       "category_id": 5,
+      "audience": "unisex",
+      "sizeChart": null,
       "brand": {
         "id": 1,
         "name": "Wordle",
@@ -916,6 +942,11 @@
       "is_new": 0,
       "brand_id": 1,
       "category_id": 1,
+      "audience": "unisex",
+      "sizeChart": {
+        "name": "T-shirt · S–4XL (shoulder 15–21)",
+        "src": "/images/size-charts/tee-s-4xl-shoulder-15-21.jpg"
+      },
       "brand": {
         "id": 1,
         "name": "Wordle",
