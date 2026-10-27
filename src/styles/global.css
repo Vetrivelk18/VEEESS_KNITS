@@ -306,3 +306,19 @@ legend { font-weight: 700; font-size: 17px; padding: 0 6px; }
 .track-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
 .track-no { font-family: ui-monospace, Menlo, monospace; letter-spacing: .03em; }
 .track-box .small { font-size: 13px; }
+
+/* Size chart popup on the product page */
+.link-like { background: none; border: 0; padding: 0 0 0 6px; font: inherit; font-weight: 400; font-size: 14px; color: var(--indigo, #1f2a5c); text-decoration: underline; cursor: pointer; min-height: 32px; }
+.size-dialog { width: min(760px, calc(100vw - 24px)); max-height: calc(100vh - 32px); padding: 16px 20px 20px; border: 0; border-radius: 10px; background: #fff; color: var(--ink); box-shadow: 0 20px 60px rgba(0,0,0,.25); }
+.size-dialog::backdrop { background: rgba(20, 22, 31, .6); }
+.size-dialog-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 8px; }
+.size-dialog-head h2 { font-size: 24px; margin: 0; }
+.size-dialog-img { display: block; width: 100%; height: auto; border: 1px solid var(--line); border-radius: 6px; }
+.small-note { font-size: 14px; margin: 10px 0 0; }
+
+/* Footer: website line under Instagram */
+.site-footer .more-queries { font-size: 14px; margin: 10px 0 0; color: #d5d7de; }
+.site-footer .more-queries a { display: inline; color: #fff; text-decoration: underline; padding: 0; }
+
+/* Order page: save/copy the order link */
+.save-link { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 12px; font-size: 14px; }

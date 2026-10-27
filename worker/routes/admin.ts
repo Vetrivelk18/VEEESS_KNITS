@@ -10,6 +10,7 @@ import {
   parse,
   productUpsertSchema,
   pushSubscriptionSchema,
+  sizeChartNameSchema,
   statusUpdateSchema,
   variantUpdateSchema,
 } from '../lib/validation';
@@ -283,13 +284,14 @@ adminApi.post('/push/test', async (c) => {
 // ---------------------------------------------------------------- catalogue
 adminApi.get('/catalog', async (c) => {
   const db = c.env.DB;
-  const [products, variants, images, brands, categories, publish] = await Promise.all([
+  const [products, variants, images, brands, categories, publish, sizeCharts] = await Promise.all([
     db.prepare('SELECT * FROM products ORDER BY id').all(),
     db.prepare('SELECT id, product_id, colour, colour_hex, size, sku, price_paise, mrp_paise, stock, reserved, is_active FROM product_variants ORDER BY product_id, sort_order').all(),
     db.prepare('SELECT id, product_id, colour, src, alt, sort_order FROM product_images ORDER BY product_id, sort_order').all(),
     db.prepare('SELECT id, name FROM brands ORDER BY id').all(),
     db.prepare('SELECT id, name FROM categories ORDER BY sort_order').all(),
     db.prepare("SELECT value, updated_at FROM settings WHERE key = 'last_publish'").first(),
+    db.prepare('SELECT s.id, s.name, s.src, (SELECT COUNT(*) FROM products p WHERE p.size_chart_id = s.id) AS used_by FROM size_charts s ORDER BY s.name').all(),
   ]);
   return c.json({
     products: products.results,
@@ -298,6 +300,7 @@ adminApi.get('/catalog', async (c) => {
     brands: brands.results,
     categories: categories.results,
     lastPublish: publish,
+    sizeCharts: sizeCharts.results,
     mediaBase: c.env.MEDIA_BASE_URL,
   });
 });
@@ -341,19 +344,26 @@ function slugify(s: string): string {
   return s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 80);
 }
 
+async function checkSizeChart(db: D1Database, id: number | null): Promise<void> {
+  if (id === null) return;
+  const s = await db.prepare('SELECT 1 FROM size_charts WHERE id = ?1').bind(id).first();
+  if (!s) throw new ApiError(400, 'invalid_size_chart', 'That size chart no longer exists. Refresh and choose again.');
+}
+
 adminApi.post('/products', async (c) => {
   const body = parse(productUpsertSchema, await readJson(c));
   const db = c.env.DB;
   const brandId = await wordleBrandId(db);
+  await checkSizeChart(db, body.sizeChartId);
   let slug = slugify(body.name);
   const clash = await db.prepare('SELECT 1 FROM products WHERE slug = ?1').bind(slug).first();
   if (clash) slug = `${slug}-${Math.random().toString(36).slice(2, 6)}`;
   const r = await db
     .prepare(
-      `INSERT INTO products (brand_id, category_id, name, slug, description, fabric, gsm, care, is_active, is_new)
-       VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10) RETURNING id`,
+      `INSERT INTO products (brand_id, category_id, name, slug, description, fabric, gsm, care, is_active, is_new, audience, size_chart_id)
+       VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12) RETURNING id`,
     )
-    .bind(brandId, body.categoryId, body.name, slug, body.description, body.fabric, body.gsm, body.care, body.isActive ? 1 : 0, body.isNew ? 1 : 0)
+    .bind(brandId, body.categoryId, body.name, slug, body.description, body.fabric, body.gsm, body.care, body.isActive ? 1 : 0, body.isNew ? 1 : 0, body.audience, body.sizeChartId)
     .first<{ id: number }>();
   await audit(db, c.get('adminEmail'), 'product.create', 'product', r?.id ?? 0, { name: body.name }, clientIp(c));
   return c.json({ ok: true, id: r?.id, slug });
@@ -365,12 +375,13 @@ adminApi.patch('/products/:id', async (c) => {
   const body = parse(productUpsertSchema, await readJson(c));
   const db = c.env.DB;
   const brandId = await wordleBrandId(db);
+  await checkSizeChart(db, body.sizeChartId);
   const r = await db
     .prepare(
       `UPDATE products SET brand_id = ?2, category_id = ?3, name = ?4, description = ?5, fabric = ?6, gsm = ?7, care = ?8,
-              is_active = ?9, is_new = ?10, updated_at = ${NOW} WHERE id = ?1`,
+              is_active = ?9, is_new = ?10, audience = ?11, size_chart_id = ?12, updated_at = ${NOW} WHERE id = ?1`,
     )
-    .bind(id, brandId, body.categoryId, body.name, body.description, body.fabric, body.gsm, body.care, body.isActive ? 1 : 0, body.isNew ? 1 : 0)
+    .bind(id, brandId, body.categoryId, body.name, body.description, body.fabric, body.gsm, body.care, body.isActive ? 1 : 0, body.isNew ? 1 : 0, body.audience, body.sizeChartId)
     .run();
   if (!r.meta.changes) throw new ApiError(404, 'not_found', 'Product not found.');
   await audit(db, c.get('adminEmail'), 'product.update', 'product', id, { name: body.name, active: body.isActive }, clientIp(c));
@@ -437,6 +448,44 @@ adminApi.delete('/images/:id', async (c) => {
   await c.env.DB.prepare('DELETE FROM product_images WHERE id = ?1').bind(id).run();
   if (img.src.startsWith('r2:')) await c.env.MEDIA.delete(img.src.slice(3));
   await audit(c.env.DB, c.get('adminEmail'), 'image.delete', 'product', img.product_id, { src: img.src }, clientIp(c));
+  return c.json({ ok: true });
+});
+
+// ---------------------------------------------------------------- size charts
+/** Upload a size-chart image to the library: admin only, JPG/PNG/WebP checked by file signature, max 5 MB. */
+adminApi.post('/size-charts', async (c) => {
+  const admin = c.get('adminEmail');
+  await rateLimit(c.env.DB, `upload:${admin}`, 60, 3600);
+  const len = Number(c.req.header('Content-Length') ?? '0');
+  if (len > 6 * 1024 * 1024) throw new ApiError(413, 'too_large', 'Image must be 5 MB or smaller.');
+  const form = await c.req.formData();
+  const file = form.get('file');
+  const name = parse(sizeChartNameSchema, String(form.get('name') ?? '').trim());
+  if (!(file instanceof File)) throw new ApiError(400, 'no_file', 'Choose the size chart image.');
+  if (file.size > 5 * 1024 * 1024) throw new ApiError(413, 'too_large', 'Image must be 5 MB or smaller.');
+  const buf = new Uint8Array(await file.arrayBuffer());
+  const kind = sniffImage(buf);
+  if (!kind) throw new ApiError(415, 'bad_type', 'Only JPG, PNG or WebP images are allowed.');
+  const dup = await c.env.DB.prepare('SELECT 1 FROM size_charts WHERE name = ?1').bind(name).first();
+  if (dup) throw new ApiError(409, 'duplicate', 'A size chart with that name already exists.');
+  const key = `size-charts/${crypto.randomUUID()}.${kind.ext}`;
+  await c.env.MEDIA.put(key, buf, { httpMetadata: { contentType: kind.mime, cacheControl: 'public, max-age=31536000, immutable' } });
+  const r = await c.env.DB.prepare('INSERT INTO size_charts (name, src) VALUES (?1, ?2) RETURNING id').bind(name, `r2:${key}`).first<{ id: number }>();
+  await audit(c.env.DB, admin, 'size_chart.upload', 'size_chart', r?.id ?? 0, { name, key, bytes: buf.length }, clientIp(c));
+  return c.json({ ok: true, id: r?.id });
+});
+
+adminApi.delete('/size-charts/:id', async (c) => {
+  const id = Number(c.req.param('id'));
+  if (!Number.isInteger(id) || id <= 0) throw new ApiError(404, 'not_found', 'Size chart not found.');
+  const s = await c.env.DB.prepare('SELECT name, src FROM size_charts WHERE id = ?1').bind(id).first<{ name: string; src: string }>();
+  if (!s) throw new ApiError(404, 'not_found', 'Size chart not found.');
+  await c.env.DB.batch([
+    c.env.DB.prepare('UPDATE products SET size_chart_id = NULL WHERE size_chart_id = ?1').bind(id),
+    c.env.DB.prepare('DELETE FROM size_charts WHERE id = ?1').bind(id),
+  ]);
+  if (s.src.startsWith('r2:')) await c.env.MEDIA.delete(s.src.slice(3));
+  await audit(c.env.DB, c.get('adminEmail'), 'size_chart.delete', 'size_chart', id, { name: s.name }, clientIp(c));
   return c.json({ ok: true });
 });
 

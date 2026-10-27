@@ -82,7 +82,7 @@ Last updated: 24 Oct 2026 · Code version 0.2.0
 - Abandoned online checkouts (never paid) are hidden from the main order list.
 
 ### D14. Customer order page uses a signed link
-- The order confirmation page and email link carry a signed token valid for **30 days**. Without it, an order ID shows nothing, so nobody can look up other people's orders by guessing.
+- The order confirmation page and email link carry a signed token valid for **6 months** (was 30 days; see D40). Without it, an order ID shows nothing, so nobody can look up other people's orders by guessing.
 
 ### D15. Guest checkout only
 - No customer accounts or passwords (nothing to leak or reset). Customers are identified by mobile number. Accounts can be added later.
@@ -218,6 +218,19 @@ Last updated: 24 Oct 2026 · Code version 0.2.0
 - ASSUMPTION: courier sites don't reliably accept the tracking number inside the link (Delhivery returns 404, DTDC needs a captcha), so the button opens the tracking page and the customer pastes the number. Links checked 26 Oct 2026; if a courier changes its site, update `shared/couriers.ts`.
 - The customer automatically gets a **"Your order has shipped"** email (courier, tracking number, track button, order-status link). It is sent at most once per order, and the admin panel shows when it was sent. Needs the Resend email key (go-live setup); without it nothing is sent and the panel shows no "sent" time.
 - Not done: changing the courier/tracking number after marking shipped (call the customer if a number was mistyped), and SMS/WhatsApp messages.
+
+### D39. Size charts and Men / Women / Kids (27 Oct 2026)
+- **Size charts are images** uploaded by admins (owner decision: upload as-is). They live in a **library** (Products → Size charts): upload a chart once, then pick it on each product that uses it. The 10 charts supplied on 27 Oct 2026 are pre-loaded (migration `0006`), and the sample products have a sensible chart linked.
+- On the product page, the **Size chart** link next to the sizes opens the chart in a **popup** (Esc, ✕ or tapping outside closes it), with the no-returns reminder. Products without a chart show the call/WhatsApp line in the same popup.
+- **New products can be created with photos** straight from "Add a new product"; the panel then scrolls to the new product to add sizes and prices.
+- Each product has **For: Men, Women, Unisex or Kids** (database-checked). New pages **/men/**, **/women/**, **/kids/** and "Everyone · Men · Women · Kids" chips on the shop; **Unisex shows under both Men and Women**. The main menu is now Shop · Men · Women · Kids · Our story · Track order.
+- Uploaded charts are stored in R2 under `size-charts/`; only that exact pattern (and product photos) is publicly served — backups stay private.
+- ASSUMPTION: chart names are my descriptions of the supplied images (e.g. "Women's T-shirt · S–3XL"); admins can upload a renamed copy. Charts are images, so they can't be searched or converted to cm.
+
+### D40. Order tracking without customer accounts (27 Oct 2026)
+- **Owner decision:** no login for now. Customers track with their private order link (in the confirmation and "shipped" emails), now valid for **6 months**.
+- The order page **refreshes itself** every minute while the order is still moving, and when the customer comes back to the tab; it has a **Copy order link** button.
+- **Parked for later** (discussed 26–27 Oct): "Find my orders" by email code (free), then mobile OTP by SMS (needs an SMS provider and DLT registration), and full customer accounts.
 
 ### D33. Not built yet (later phases)
 - GST invoices (waiting on GST registration answer).

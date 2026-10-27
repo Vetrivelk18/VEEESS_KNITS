@@ -23,8 +23,10 @@ try {
   const brands = q('SELECT id, name, slug, tagline FROM brands ORDER BY id');
   const categories = q('SELECT id, name, slug, sort_order FROM categories ORDER BY sort_order');
   const products = q(
-    `SELECT p.id, p.name, p.slug, p.description, p.fabric, p.gsm, p.care, p.is_new, p.brand_id, p.category_id
-       FROM products p WHERE p.is_active = 1 ORDER BY p.is_new DESC, p.id`,
+    `SELECT p.id, p.name, p.slug, p.description, p.fabric, p.gsm, p.care, p.is_new, p.brand_id, p.category_id, p.audience,
+            s.name AS size_chart_name, s.src AS size_chart_src
+       FROM products p LEFT JOIN size_charts s ON s.id = p.size_chart_id
+      WHERE p.is_active = 1 ORDER BY p.is_new DESC, p.id`,
   );
   const variants = q(
     `SELECT id, product_id, colour, colour_hex, size, price_paise, mrp_paise, MAX(stock - reserved, 0) AS available
@@ -46,8 +48,11 @@ try {
         const imgs = images.filter((i) => i.product_id === p.id).map((i) => ({ src: resolve(i.src), alt: i.alt, colour: i.colour }));
         const prices = vs.map((v) => v.price_paise);
         const mrps = vs.map((v) => v.mrp_paise).filter(Boolean);
+        const { size_chart_name, size_chart_src, ...rest } = p;
         return {
-          ...p,
+          ...rest,
+          audience: p.audience ?? 'unisex',
+          sizeChart: size_chart_src ? { name: size_chart_name, src: resolve(size_chart_src) } : null,
           brand: brands.find((b) => b.id === p.brand_id),
           category: categories.find((c) => c.id === p.category_id),
           minPricePaise: Math.min(...prices),

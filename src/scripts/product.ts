@@ -127,3 +127,11 @@ api<{ variants: V[] }>(`/api/products/${encodeURIComponent(data.slug)}`)
     render();
   })
   .catch(() => {});
+
+// Size chart popup (a native <dialog>: Esc closes it and focus returns to the button).
+const sizeDialog = q<HTMLDialogElement>('[data-size-chart]');
+const sizeOpen = q<HTMLButtonElement>('[data-size-chart-open]');
+sizeOpen?.addEventListener('click', () => sizeDialog?.showModal());
+q('[data-size-chart-close]')?.addEventListener('click', () => sizeDialog?.close());
+// Tap outside the chart (on the dark backdrop) to close.
+sizeDialog?.addEventListener('click', (e) => { if (e.target === sizeDialog) sizeDialog.close(); });

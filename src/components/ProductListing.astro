@@ -1,18 +1,29 @@
 ---
 import ProductCard from './ProductCard.astro';
 import { catalog, type Product } from '../lib/catalog';
-interface Props { title: string; intro?: string; items: Product[]; activeCategory?: string }
-const { title, intro, items, activeCategory = '' } = Astro.props;
+interface Props { title: string; intro?: string; items: Product[]; activeCategory?: string; activeAudience?: '' | 'men' | 'women' | 'kids'; showCategories?: boolean }
+const { title, intro, items, activeCategory = '', activeAudience = '', showCategories = true } = Astro.props;
+const forLinks = [
+  { key: '', label: 'Everyone', href: '/shop/' },
+  { key: 'men', label: 'Men', href: '/men/' },
+  { key: 'women', label: 'Women', href: '/women/' },
+  { key: 'kids', label: 'Kids', href: '/kids/' },
+];
 ---
 <section class="wrap">
   <div class="page-title">
     <h1 class="display h2">{title}</h1>
     {intro && <p class="muted" style="max-width:640px;margin:10px 0 0">{intro}</p>}
   </div>
-  <nav class="chips" aria-label="Categories">
-    <a class="chip" href="/shop/" aria-current={activeCategory === '' ? 'page' : undefined}>All</a>
-    {catalog.categories.map((c) => <a class="chip" href={`/shop/${c.slug}/`} aria-current={activeCategory === c.slug ? 'page' : undefined}>{c.name}</a>)}
+  <nav class="chips chips-for" aria-label="Shop for">
+    {forLinks.map((f) => <a class="chip" href={f.href} aria-current={activeAudience === f.key && (f.key !== '' || activeCategory === '') ? 'page' : undefined}>{f.label}</a>)}
   </nav>
+  {showCategories && (
+    <nav class="chips" aria-label="Categories">
+      <a class="chip" href="/shop/" aria-current={activeCategory === '' && activeAudience === '' ? 'page' : undefined}>All</a>
+      {catalog.categories.map((c) => <a class="chip" href={`/shop/${c.slug}/`} aria-current={activeCategory === c.slug ? 'page' : undefined}>{c.name}</a>)}
+    </nav>
+  )}
   {items.length ? (
     <div class="product-grid" style="padding-bottom:40px">{items.map((p, i) => <ProductCard product={p} eager={i < 4} />)}</div>
   ) : (

@@ -9,6 +9,6 @@ const { category } = Astro.params;
 const { name } = Astro.props as { name: string };
 const items = products.filter((p) => p.category.slug === category);
 ---
-<Base title={name} current={category === 't-shirts' || category === 'kidswear' ? category : 'shop'} description={`Shop Wordle ${name.toLowerCase()}, made in Tiruppur.`}>
+<Base title={name} current="shop" description={`Shop Wordle ${name.toLowerCase()}, made in Tiruppur.`}>
   <ProductListing title={name} items={items} activeCategory={category} />
 </Base>

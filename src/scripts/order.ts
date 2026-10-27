@@ -41,16 +41,58 @@ function trackingBox(tracking: string, courierId: string | null): HTMLElement {
   );
 }
 
+// Statuses that can still change: the page refreshes itself while the order is one of these.
+const LIVE = new Set(['created', 'cod_pending', 'paid', 'confirmed', 'packed', 'shipped']);
+const REFRESH_MS = 60_000;
+let timer: ReturnType<typeof setTimeout> | undefined;
+let shown = false;
+
+function schedule(ms: number) {
+  clearTimeout(timer);
+  timer = setTimeout(() => load(), ms);
+}
+
+// Coming back to the tab: refresh straight away.
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible' && shown) load();
+});
+
+/** The order link without the one-time "new=1" flag, for saving or sharing. */
+function orderLink(): string {
+  const u = new URL(location.href);
+  u.searchParams.delete('new');
+  return u.toString();
+}
+
+function copyLinkButton(): HTMLElement {
+  const b = el('button', { type: 'button', class: 'btn btn-sm btn-outline' }, 'Copy order link') as HTMLButtonElement;
+  b.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(orderLink());
+      b.textContent = 'Link copied';
+    } catch {
+      b.textContent = 'Bookmark this page instead';
+    }
+    setTimeout(() => { b.textContent = 'Copy order link'; }, 2500);
+  });
+  return b;
+}
+
 async function load(tries = 0) {
   let o: Order;
   try {
     o = await api<Order>(`/api/orders/${encodeURIComponent(id)}?t=${encodeURIComponent(token)}`);
   } catch {
+    // A failed background refresh keeps what is on screen and tries again later.
+    if (shown) return schedule(REFRESH_MS);
     root.replaceChildren(el('div', { class: 'empty', style: 'margin-top:32px' }, el('p', {}, 'We could not find this order, or the link has expired. Please use the link in your confirmation email, or call +91 96005 77555.')));
     return;
   }
-  // Payment confirmations can take a few seconds: poll briefly.
-  if (o.status === 'created' && tries < 6) setTimeout(() => load(tries + 1), 3000);
+  // Payment confirmations can take a few seconds: check quickly at first, then every minute.
+  if (o.status === 'created' && tries < 6) { clearTimeout(timer); timer = setTimeout(() => load(tries + 1), 3000); }
+  else if (LIVE.has(o.status)) schedule(REFRESH_MS);
+  else clearTimeout(timer);
+  shown = true;
   const step = STEP(o.status);
   const cod = o.payment_method === 'cod';
   setChildren(root,
@@ -58,7 +100,10 @@ async function load(tries = 0) {
       el('span', { class: 'eyebrow' }, `Order ${o.label}`),
       el('h1', { class: 'display h2', style: 'margin-top:8px' }, isNew && step === 1 ? `Thank you, ${o.name.split(' ')[0]}! Your order is placed.` : LABELS[o.status] ?? o.status),
       el('p', { class: 'muted' }, cod ? `Cash on delivery: please keep ${formatINR(o.total_paise)} ready when it arrives. No extra charge.` : `Paid online: ${formatINR(o.total_paise)}.`,
-        ' A confirmation has been emailed to you. Save this page to check your order later.'),
+        ' A confirmation has been emailed to you.'),
+      el('div', { class: 'save-link' },
+        el('span', { class: 'muted' }, LIVE.has(o.status) ? 'This page updates by itself. Save the link to check your order any time in the next 6 months.' : 'Save the link to look at this order any time in the next 6 months.'),
+        copyLinkButton()),
     ),
     step > 0
       ? el('ol', { class: 'status-steps', 'aria-label': 'Order progress' },

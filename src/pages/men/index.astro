@@ -1,0 +1,10 @@
+---
+import Base from '../../layouts/Base.astro';
+import ProductListing from '../../components/ProductListing.astro';
+import { products } from '../../lib/catalog';
+import { showsOn } from '../../../shared/audience';
+const items = products.filter((p) => showsOn('men', p.audience));
+---
+<Base title="Men" current="men" description="Shop Wordle for men: T-shirts and everyday knitwear for men — including our unisex styles. Made in our own unit in Tiruppur.">
+  <ProductListing title="Men" intro="T-shirts and everyday knitwear for men — including our unisex styles. Made in our own unit in Tiruppur." items={items} activeAudience="men" showCategories={false} />
+</Base>
