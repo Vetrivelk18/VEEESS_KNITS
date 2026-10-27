@@ -109,3 +109,8 @@ table.vars td, table.vars th { padding: 8px 10px; }
 /* Size-chart library: wider thumbnails, whole chart visible */
 .thumbs.charts figure { width: 168px; }
 .thumbs.charts img { width: 168px; height: 112px; object-fit: contain; background: #fff; border: 1px solid var(--line); }
+
+/* Delete product */
+.danger-zone { border-top: 1px solid var(--line); padding-top: 14px; }
+.btn-danger { background: #B3261E; border-color: #B3261E; color: #fff; }
+.btn-danger:hover { background: #8C1D17; }

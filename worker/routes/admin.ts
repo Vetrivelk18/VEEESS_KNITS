@@ -285,7 +285,10 @@ adminApi.post('/push/test', async (c) => {
 adminApi.get('/catalog', async (c) => {
   const db = c.env.DB;
   const [products, variants, images, brands, categories, publish, sizeCharts] = await Promise.all([
-    db.prepare('SELECT * FROM products ORDER BY id').all(),
+    db.prepare(
+      `SELECT p.*, (SELECT COUNT(*) FROM order_items oi JOIN product_variants v ON v.id = oi.variant_id WHERE v.product_id = p.id) AS order_count
+         FROM products p ORDER BY p.id`,
+    ).all(),
     db.prepare('SELECT id, product_id, colour, colour_hex, size, sku, price_paise, mrp_paise, stock, reserved, is_active FROM product_variants ORDER BY product_id, sort_order').all(),
     db.prepare('SELECT id, product_id, colour, src, alt, sort_order FROM product_images ORDER BY product_id, sort_order').all(),
     db.prepare('SELECT id, name FROM brands ORDER BY id').all(),
@@ -385,6 +388,45 @@ adminApi.patch('/products/:id', async (c) => {
     .run();
   if (!r.meta.changes) throw new ApiError(404, 'not_found', 'Product not found.');
   await audit(db, c.get('adminEmail'), 'product.update', 'product', id, { name: body.name, active: body.isActive }, clientIp(c));
+  return c.json({ ok: true });
+});
+
+/**
+ * Permanently delete a product — only if it has never been ordered (D41).
+ * Products with orders must be hidden instead ("Show in shop" off), so order
+ * history stays intact. The database's foreign keys enforce this too: the
+ * whole delete is one transaction and fails if an order appears meanwhile.
+ */
+adminApi.delete('/products/:id', async (c) => {
+  const id = Number(c.req.param('id'));
+  if (!Number.isInteger(id) || id <= 0) throw new ApiError(404, 'not_found', 'Product not found.');
+  const db = c.env.DB;
+  const p = await db.prepare('SELECT name FROM products WHERE id = ?1').bind(id).first<{ name: string }>();
+  if (!p) throw new ApiError(404, 'not_found', 'Product not found.');
+  const ordered = await db
+    .prepare('SELECT COUNT(*) AS n FROM order_items oi JOIN product_variants v ON v.id = oi.variant_id WHERE v.product_id = ?1')
+    .bind(id)
+    .first<{ n: number }>();
+  if ((ordered?.n ?? 0) > 0) {
+    throw new ApiError(409, 'has_orders', 'This product has orders, so it can\'t be deleted. Untick "Show in shop" to hide it instead.');
+  }
+  const { results: imgs } = await db.prepare('SELECT src FROM product_images WHERE product_id = ?1').bind(id).all<{ src: string }>();
+  try {
+    await db.batch([
+      db.prepare('DELETE FROM product_images WHERE product_id = ?1').bind(id),
+      db.prepare('DELETE FROM product_variants WHERE product_id = ?1').bind(id),
+      db.prepare('DELETE FROM products WHERE id = ?1').bind(id),
+      auditStmt(db, c.get('adminEmail'), 'product.delete', 'product', id, { name: p.name, images: imgs.length }, clientIp(c)),
+    ]);
+  } catch (err) {
+    if (/FOREIGN KEY/i.test(String(err))) {
+      throw new ApiError(409, 'has_orders', 'This product was just ordered, so it can\'t be deleted. Untick "Show in shop" to hide it instead.');
+    }
+    throw err;
+  }
+  // Photos are removed from storage only after the database delete succeeded.
+  const keys = imgs.filter((i) => i.src.startsWith('r2:')).map((i) => i.src.slice(3));
+  if (keys.length) await c.env.MEDIA.delete(keys);
   return c.json({ ok: true });
 });
 
