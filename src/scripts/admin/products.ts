@@ -2,7 +2,7 @@ import { AUDIENCES } from '../../../shared/audience';
 import { api, el, formatINR, HttpError, setChildren, toast, $ } from '../util';
 import './shell';
 
-interface P { id: number; name: string; slug: string; description: string; fabric: string; gsm: number | null; care: string; is_active: number; is_new: number; category_id: number; audience: string; size_chart_id: number | null }
+interface P { id: number; name: string; slug: string; description: string; fabric: string; gsm: number | null; care: string; is_active: number; is_new: number; category_id: number; audience: string; size_chart_id: number | null; order_count: number }
 interface V { id: number; product_id: number; colour: string; colour_hex: string; size: string; sku: string; price_paise: number; mrp_paise: number | null; stock: number; reserved: number; is_active: number }
 interface I { id: number; product_id: number; colour: string | null; src: string; alt: string }
 interface Catalog { products: P[]; variants: V[]; images: I[]; categories: { id: number; name: string }[]; sizeCharts: SizeChart[]; lastPublish: { value: string; updated_at: string } | null; mediaBase: string }
@@ -238,6 +238,44 @@ function sizeChartsBlock(): HTMLElement {
   );
 }
 
+function deleteBlock(p: P): HTMLElement {
+  if (p.order_count > 0) {
+    return el('div', { class: 'danger-zone' },
+      el('strong', {}, 'Delete product'),
+      el('p', { class: 'muted small', style: 'margin:6px 0 0' },
+        `This product has ${p.order_count} order${p.order_count === 1 ? '' : 's'}, so it can't be deleted (order history must stay). To remove it from the shop, untick "Show in shop" above, save, and publish.`));
+  }
+  const btn = el('button', { type: 'button', class: 'btn btn-sm btn-danger' }, 'Delete product') as HTMLButtonElement;
+  let armed = false;
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  btn.addEventListener('click', async () => {
+    if (!armed) {
+      armed = true;
+      btn.textContent = `Tap again to delete "${p.name}" for good`;
+      timer = setTimeout(() => { armed = false; btn.textContent = 'Delete product'; }, 5000);
+      return;
+    }
+    clearTimeout(timer);
+    btn.disabled = true;
+    try {
+      await api(`/api/admin/products/${p.id}`, { method: 'DELETE', body: {} });
+      openIds.delete(p.id);
+      toast(p.is_active ? 'Product deleted. Press "Publish storefront" to remove it from the shop pages.' : 'Product deleted.');
+      await load();
+    } catch (e) {
+      btn.disabled = false;
+      armed = false;
+      btn.textContent = 'Delete product';
+      err(e, 'Could not delete.');
+      await load();
+    }
+  });
+  return el('div', { class: 'danger-zone' },
+    el('strong', {}, 'Delete product'),
+    el('p', { class: 'muted small', style: 'margin:6px 0 10px' }, 'Removes this product, its sizes and photos permanently. Only possible because it has never been ordered.'),
+    btn);
+}
+
 function render() {
   setChildren($('[data-size-charts-body]'), sizeChartsBlock());
   const root = $('[data-products]');
@@ -268,6 +306,7 @@ function render() {
           el('div', { style: 'margin-top:10px' }, addVariantForm(p))),
         imagesBlock(p, imgs, [...new Set(vs.map((v) => v.colour))]),
         el('div', {}, el('strong', {}, 'Details'), editForm),
+        deleteBlock(p),
       ),
     );
     return d;

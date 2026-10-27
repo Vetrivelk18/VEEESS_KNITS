@@ -232,6 +232,11 @@ Last updated: 24 Oct 2026 · Code version 0.2.0
 - The order page **refreshes itself** every minute while the order is still moving, and when the customer comes back to the tab; it has a **Copy order link** button.
 - **Parked for later** (discussed 26–27 Oct): "Find my orders" by email code (free), then mobile OTP by SMS (needs an SMS provider and DLT registration), and full customer accounts.
 
+### D41. Deleting products (27 Oct 2026)
+- Admins can **permanently delete a product that has never been ordered** (Products → open product → Delete product, tap twice). It removes the product, its sizes and its photos (also from storage). Useful for test products and mistakes.
+- A product with any order (including unpaid online checkouts) **can't be deleted** — the panel says how many orders it has and suggests unticking "Show in shop" instead. The server checks this, and the database's foreign keys block it too, so order history always stays intact.
+- After deleting a product that was in the shop, press **Publish storefront** to remove it from the shop pages; until then its page shows sizes as unavailable.
+
 ### D33. Not built yet (later phases)
 - GST invoices (waiting on GST registration answer).
 - Courier integration (Shiprocket etc.) — tracking numbers are typed in by the admin for now.
