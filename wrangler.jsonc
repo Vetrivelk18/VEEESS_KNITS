@@ -19,8 +19,7 @@
     {
       "binding": "DB",
       "database_name": "veeess_db",
-      // Replace with the id printed by: npx wrangler d1 create veeess_db
-      "database_id": "00000000-0000-0000-0000-000000000000",
+      "database_id": "26c465ab-bbdc-4723-bf23-90a4fc9d14c2",
       "migrations_dir": "migrations"
     }
   ],
@@ -37,13 +36,14 @@
   // For local development, .dev.vars overrides these values.
   "vars": {
     "ENVIRONMENT": "production",
-    "SITE_URL": "https://www.veeessknits.com",
+    // Phase A (testing): the workers.dev address. Change to https://www.veeessknits.com when the domain moves (Phase B).
+    "SITE_URL": "https://veeess-knits.info-veeessknits.workers.dev",
     // The 3 admins. Must match the Cloudflare Access policy emails (README §2.3).
     "ADMIN_EMAILS": "admin1@example.com,admin2@example.com,admin3@example.com",
     "ACCESS_TEAM_DOMAIN": "veeess.cloudflareaccess.com",
     "ACCESS_AUD": "REPLACE_WITH_ACCESS_APPLICATION_AUD",
-    "RAZORPAY_KEY_ID": "rzp_test_REPLACE",
-    "TURNSTILE_SITE_KEY": "REPLACE_WITH_TURNSTILE_SITE_KEY",
+    "RAZORPAY_KEY_ID": "rzp_test_TstfMLHmKhnOUg",
+    "TURNSTILE_SITE_KEY": "0x4AAAAAAFpVM1al0WbyCPFm",
     "VAPID_PUBLIC_KEY": "REPLACE_WITH_OUTPUT_OF_npm_run_gen:vapid",
     "VAPID_SUBJECT": "mailto:info.veeessknits@gmail.com",
     "EMAIL_FROM": "Veeess Knits <orders@veeessknits.com>",
