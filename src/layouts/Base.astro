@@ -47,8 +47,8 @@ const nav = [
       </div>
     </div>
     <nav id="mobile-menu" class="wrap mobile-menu" aria-label="Mobile" hidden>
-      {nav.map((n) => <a href={n.href}>{n.label}</a>)}
-      <a href="/cart/">Cart</a>
+      {nav.map((n) => <a href={n.href} aria-current={current === n.key ? 'page' : undefined}>{n.label}</a>)}
+      <a href="/cart/" aria-current={current === 'cart' ? 'page' : undefined}>Cart</a>
     </nav>
   </header>
 
