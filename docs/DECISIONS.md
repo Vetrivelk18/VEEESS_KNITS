@@ -237,6 +237,13 @@ Last updated: 24 Oct 2026 · Code version 0.2.0
 - A product with any order (including unpaid online checkouts) **can't be deleted** — the panel says how many orders it has and suggests unticking "Show in shop" instead. The server checks this, and the database's foreign keys block it too, so order history always stays intact.
 - After deleting a product that was in the shop, press **Publish storefront** to remove it from the shop pages; until then its page shows sizes as unavailable.
 
+### D42. Go-live Phase A: test site on workers.dev (28 Oct 2026)
+- The new store runs first at **https://veeess-knits.info-veeessknits.workers.dev** (Cloudflare account of Veeess Knits, company email) while the old Wix site stays on veeessknits.com. Phase B moves the domain.
+- Live resources: D1 `veeess_db` (APAC), R2 `veeess-media`, Turnstile widget (hostnames: the workers.dev address, veeessknits.com, www.veeessknits.com), Razorpay **test** keys and a test-mode webhook to `/api/webhooks/razorpay`. Secrets are stored with `wrangler secret put` only.
+- `SITE_URL` is the workers.dev address for now (used in email links); switch to `https://www.veeessknits.com` in Phase B, together with the Razorpay webhook URL.
+- ASSUMPTION: the admin login (Cloudflare Access) is set up on www.veeessknits.com in Phase B; until then the live admin panel stays locked, and admin flows are tested locally.
+- Lesson: when Wrangler asks "add it on your behalf?" / "connect to the remote resource for local dev?", answer **no** — it rewrites `wrangler.jsonc` and can point local testing at the live database.
+
 ### D33. Not built yet (later phases)
 - GST invoices (waiting on GST registration answer).
 - Courier integration (Shiprocket etc.) — tracking numbers are typed in by the admin for now.
