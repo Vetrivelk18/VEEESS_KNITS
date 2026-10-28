@@ -44,7 +44,7 @@
     "ACCESS_AUD": "ee0dd178bd248bf09ea9f6d89c3eb19b4f155032084df851a1788a2abab6b2fe",
     "RAZORPAY_KEY_ID": "rzp_test_TstfMLHmKhnOUg",
     "TURNSTILE_SITE_KEY": "0x4AAAAAAFpVM1al0WbyCPFm",
-    "VAPID_PUBLIC_KEY": "REPLACE_WITH_OUTPUT_OF_npm_run_gen:vapid",
+    "VAPID_PUBLIC_KEY": "BAuXv3Vwv-qxXjbLUyNIY9QgDRW2F_AZIFu-xWiBBn6KNcXuuJG92fyKcCFgn7AFpoEKGaiC-SweqSwXZQr1do0",
     "VAPID_SUBJECT": "mailto:info.veeessknits@gmail.com",
     "EMAIL_FROM": "Veeess Knits <orders@veeessknits.com>",
     // New-order alert emails. Comma-separated for several inboxes (e.g. all 3 admins).
