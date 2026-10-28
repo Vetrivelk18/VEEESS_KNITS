@@ -83,8 +83,12 @@ button, input, select, textarea { font: inherit; color: inherit; }
   .logo-mark { width: 30px; height: 30px; flex-basis: 30px; }
   .site-header .bar { gap: 8px; }
 }
-.mobile-menu { border-top: 1px solid var(--line); padding: 8px 0 16px; }
-.mobile-menu a { display: block; padding: 12px 0; font-size: 18px; color: var(--ink); text-decoration: none; border-bottom: 1px solid var(--line); }
+.mobile-menu { border-top: 1px solid var(--line); padding: 4px 16px 12px; background: var(--bg, #F6F5F1); }
+.mobile-menu a { display: flex; align-items: center; justify-content: space-between; min-height: 52px; padding: 0 4px; font-size: 17px; font-weight: 500; color: var(--ink); text-decoration: none; border-bottom: 1px solid var(--line); }
+.mobile-menu a::after { content: '›'; font-size: 22px; line-height: 1; color: #8A8E99; }
+.mobile-menu a:last-child { border-bottom: 0; }
+.mobile-menu a[aria-current='page'] { font-weight: 700; box-shadow: inset 3px 0 0 var(--marigold); padding-left: 12px; }
+.mobile-menu a:active { background: rgba(0,0,0,.04); }
 
 /* Bottom tab bar (phones) */
 .tabbar { display: none; }
