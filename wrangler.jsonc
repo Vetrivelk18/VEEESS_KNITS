@@ -38,10 +38,10 @@
     "ENVIRONMENT": "production",
     // Phase A (testing): the workers.dev address. Change to https://www.veeessknits.com when the domain moves (Phase B).
     "SITE_URL": "https://veeess-knits.info-veeessknits.workers.dev",
-    // The 3 admins. Must match the Cloudflare Access policy emails (README §2.3).
-    "ADMIN_EMAILS": "admin1@example.com,admin2@example.com,admin3@example.com",
-    "ACCESS_TEAM_DOMAIN": "veeess.cloudflareaccess.com",
-    "ACCESS_AUD": "REPLACE_WITH_ACCESS_APPLICATION_AUD",
+    // Admins (2 now, a 3rd later). Must match the Cloudflare Access policy "Veeess admins" (README §2.3).
+    "ADMIN_EMAILS": "vetrivelpandiank@gmail.com,info.veeessknits@gmail.com",
+    "ACCESS_TEAM_DOMAIN": "veeessknits.cloudflareaccess.com",
+    "ACCESS_AUD": "ee0dd178bd248bf09ea9f6d89c3eb19b4f155032084df851a1788a2abab6b2fe",
     "RAZORPAY_KEY_ID": "rzp_test_TstfMLHmKhnOUg",
     "TURNSTILE_SITE_KEY": "0x4AAAAAAFpVM1al0WbyCPFm",
     "VAPID_PUBLIC_KEY": "REPLACE_WITH_OUTPUT_OF_npm_run_gen:vapid",

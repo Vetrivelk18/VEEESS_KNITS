@@ -241,7 +241,7 @@ Last updated: 24 Oct 2026 · Code version 0.2.0
 - The new store runs first at **https://veeess-knits.info-veeessknits.workers.dev** (Cloudflare account of Veeess Knits, company email) while the old Wix site stays on veeessknits.com. Phase B moves the domain.
 - Live resources: D1 `veeess_db` (APAC), R2 `veeess-media`, Turnstile widget (hostnames: the workers.dev address, veeessknits.com, www.veeessknits.com), Razorpay **test** keys and a test-mode webhook to `/api/webhooks/razorpay`. Secrets are stored with `wrangler secret put` only.
 - `SITE_URL` is the workers.dev address for now (used in email links); switch to `https://www.veeessknits.com` in Phase B, together with the Razorpay webhook URL.
-- ASSUMPTION: the admin login (Cloudflare Access) is set up on www.veeessknits.com in Phase B; until then the live admin panel stays locked, and admin flows are tested locally.
+- **Admin login (Cloudflare Access), 28 Oct 2026:** Zero Trust Free, team `veeessknits.cloudflareaccess.com`, login by **One-time PIN** (email code). Access app **"Veeess Admin"** protects `/admin` and `/api/admin` on the workers.dev address; policy **"Veeess admins"** allows vetrivelpandiank@gmail.com and info.veeessknits@gmail.com (the 3rd admin to be added — in the policy **and** `ADMIN_EMAILS`). In Phase B, add the same two paths for `www.veeessknits.com` to this app.
 - Lesson: when Wrangler asks "add it on your behalf?" / "connect to the remote resource for local dev?", answer **no** — it rewrites `wrangler.jsonc` and can point local testing at the live database.
 
 ### D33. Not built yet (later phases)
