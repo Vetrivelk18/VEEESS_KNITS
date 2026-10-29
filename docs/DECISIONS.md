@@ -261,3 +261,10 @@ Last updated: 24 Oct 2026 · Code version 0.2.0
 - [ ] GST registration / invoice requirement (D8).
 - [ ] WhatsApp number (D28) and grievance officer for the privacy policy (D29).
 - [ ] Razorpay KYC, automatic capture on, webhook configured (README §2.4).
+
+### D43. Go-live Phase B: veeessknits.com moves to the new store (29 Oct 2026)
+- Domain stays registered at Wix (renews 2 Mar 2029); its nameservers now point to Cloudflare (`ivan` / `meiling.ns.cloudflare.com`), zone on the Free plan. The old Wix DNS records were removed.
+- **www.veeessknits.com** is the store (Worker custom domain). **veeessknits.com** redirects 301 to www with the path and query string kept (Redirect Rule "Root to www"). Both custom domains are also listed under `routes` in `wrangler.jsonc` so deploys keep them.
+- `SITE_URL` is now `https://www.veeessknits.com` (email and order links). The workers.dev address still works for testing.
+- Admin login: `www.veeessknits.com/admin` and `/api/admin` are added to the Access app "Veeess Admin". The Razorpay webhook URL moves to `https://www.veeessknits.com/api/webhooks/razorpay`.
+- The old Wix site is kept at its free Wix address and is planned at **info.veeessknits.com** (CNAME from Wix, DNS only in Cloudflare; needs a Wix Premium plan to connect a subdomain).
