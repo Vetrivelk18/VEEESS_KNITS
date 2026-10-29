@@ -31,6 +31,8 @@ export interface Env {
 
   FREE_SHIPPING_MIN_PAISE: string;
   SHIPPING_FEE_PAISE: string;
+  /** "1" turns cash on delivery on. Anything else: online payment only. */
+  COD_ENABLED?: string;
   COD_MAX_OPEN_PER_PHONE: string;
   COD_MAX_ORDER_PAISE: string;
   ORDER_EXPIRY_MINUTES: string;

@@ -42,7 +42,7 @@ const STATES = [
           <legend>Payment</legend>
           <div style="display:flex;flex-direction:column;gap:10px">
             <label class="pay-opt"><input type="radio" name="paymentMethod" value="razorpay" checked /><span><span class="t">Pay online</span><br /><span class="s">UPI (GPay, PhonePe, Paytm), cards, netbanking — secured by Razorpay</span></span></label>
-            <label class="pay-opt"><input type="radio" name="paymentMethod" value="cod" /><span><span class="t">Cash on delivery</span><br /><span class="s">Pay in cash at your door · no extra charge</span></span></label>
+            <p class="muted" style="font-size:13px;margin:0">Cash on delivery is not available. All orders are paid online.</p>
           </div>
         </fieldset>
         <div data-turnstile style="min-height:65px"></div>
@@ -59,7 +59,6 @@ const STATES = [
           <div data-items style="display:flex;flex-direction:column;gap:8px;font-size:14px"></div>
           <div class="r" style="border-top:1px solid var(--line);padding-top:10px"><span>Subtotal</span><span data-subtotal>—</span></div>
           <div class="r"><span>Shipping</span><span data-shipping>—</span></div>
-          <div class="r" data-cod-row hidden><span>Cash on delivery charge</span><span class="free">Free</span></div>
           <div class="r total"><span>Total</span><span data-total>—</span></div>
           <button type="submit" class="btn btn-block" style="min-height:54px" data-submit>Pay securely</button>
           <p class="muted" style="font-size:12px;margin:0;display:flex;gap:6px;align-items:center;justify-content:center"><Icon name="lock" size={14} />Secured by Razorpay · Card details never touch our servers</p>

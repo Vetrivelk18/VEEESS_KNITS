@@ -90,6 +90,10 @@ export interface CreatedOrder {
 }
 
 export async function createOrder(env: Env, input: CheckoutInput, ip: string): Promise<CreatedOrder> {
+  // Online payment only unless COD_ENABLED is "1" (D44). Checked before any database work.
+  if (input.paymentMethod === 'cod' && env.COD_ENABLED !== '1') {
+    throw new ApiError(400, 'cod_unavailable', 'Cash on delivery is not available. Please pay online.');
+  }
   const q = await quoteCart(env, input.items);
   if (q.unavailable.length) {
     throw new ApiError(409, 'out_of_stock', 'Some items are no longer available in that quantity.', { unavailable: q.unavailable });
