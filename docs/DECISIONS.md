@@ -242,6 +242,7 @@ Last updated: 24 Oct 2026 · Code version 0.2.0
 - Live resources: D1 `veeess_db` (APAC), R2 `veeess-media`, Turnstile widget (hostnames: the workers.dev address, veeessknits.com, www.veeessknits.com), Razorpay **test** keys and a test-mode webhook to `/api/webhooks/razorpay`. Secrets are stored with `wrangler secret put` only.
 - `SITE_URL` is the workers.dev address for now (used in email links); switch to `https://www.veeessknits.com` in Phase B, together with the Razorpay webhook URL.
 - **Admin login (Cloudflare Access), 28 Oct 2026:** Zero Trust Free, team `veeessknits.cloudflareaccess.com`, login by **One-time PIN** (email code). Access app **"Veeess Admin"** protects `/admin` and `/api/admin` on the workers.dev address; policy **"Veeess admins"** allows vetrivelpandiank@gmail.com and info.veeessknits@gmail.com (the 3rd admin to be added — in the policy **and** `ADMIN_EMAILS`). In Phase B, add the same two paths for `www.veeessknits.com` to this app.
+- **Push alerts and auto-deploy, 28 Oct 2026:** VAPID public key in `wrangler.jsonc`, private key only as the `VAPID_PRIVATE_JWK` secret (never stored anywhere else). `GITHUB_REPO` set so "Publish storefront" can start the GitHub deploy (`GITHUB_DISPATCH_TOKEN` secret: fine-grained, this repo only, Contents read & write). GitHub Actions secrets `CLOUDFLARE_API_TOKEN` (Workers + D1 edit) and `CLOUDFLARE_ACCOUNT_ID` let every merge to `main` deploy automatically.
 - Lesson: when Wrangler asks "add it on your behalf?" / "connect to the remote resource for local dev?", answer **no** — it rewrites `wrangler.jsonc` and can point local testing at the live database.
 
 ### D33. Not built yet (later phases)
@@ -260,3 +261,10 @@ Last updated: 24 Oct 2026 · Code version 0.2.0
 - [ ] GST registration / invoice requirement (D8).
 - [ ] WhatsApp number (D28) and grievance officer for the privacy policy (D29).
 - [ ] Razorpay KYC, automatic capture on, webhook configured (README §2.4).
+
+### D43. Go-live Phase B: veeessknits.com moves to the new store (29 Oct 2026)
+- Domain stays registered at Wix (renews 2 Mar 2029); its nameservers now point to Cloudflare (`ivan` / `meiling.ns.cloudflare.com`), zone on the Free plan. The old Wix DNS records were removed.
+- **www.veeessknits.com** is the store (Worker custom domain). **veeessknits.com** redirects 301 to www with the path and query string kept (Redirect Rule "Root to www"). Both custom domains are also listed under `routes` in `wrangler.jsonc` so deploys keep them.
+- `SITE_URL` is now `https://www.veeessknits.com` (email and order links). The workers.dev address still works for testing.
+- Admin login: `www.veeessknits.com/admin` and `/api/admin` are added to the Access app "Veeess Admin". The Razorpay webhook URL moves to `https://www.veeessknits.com/api/webhooks/razorpay`.
+- The old Wix site is kept at its free Wix address and is planned at **info.veeessknits.com** (CNAME from Wix, DNS only in Cloudflare; needs a Wix Premium plan to connect a subdomain).

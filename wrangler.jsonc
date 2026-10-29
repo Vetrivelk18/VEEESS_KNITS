@@ -6,6 +6,11 @@
   "name": "veeess-knits",
   "main": "worker/index.ts",
   "compatibility_date": "2026-10-01",
+  // Custom domains (Phase B). Kept here so every deploy keeps them attached to this Worker.
+  "routes": [
+    { "pattern": "www.veeessknits.com", "custom_domain": true },
+    { "pattern": "veeessknits.com", "custom_domain": true }
+  ],
   "assets": {
     "directory": "./dist",
     "binding": "ASSETS",
@@ -36,8 +41,8 @@
   // For local development, .dev.vars overrides these values.
   "vars": {
     "ENVIRONMENT": "production",
-    // Phase A (testing): the workers.dev address. Change to https://www.veeessknits.com when the domain moves (Phase B).
-    "SITE_URL": "https://veeess-knits.info-veeessknits.workers.dev",
+    // Phase B (29 Oct 2026): the store's public address. veeessknits.com redirects here (Cloudflare Redirect Rule).
+    "SITE_URL": "https://www.veeessknits.com",
     // Admins (2 now, a 3rd later). Must match the Cloudflare Access policy "Veeess admins" (README §2.3).
     "ADMIN_EMAILS": "vetrivelpandiank@gmail.com,info.veeessknits@gmail.com",
     "ACCESS_TEAM_DOMAIN": "veeessknits.cloudflareaccess.com",
@@ -57,6 +62,6 @@
     "COD_MAX_ORDER_PAISE": "0",
     "ORDER_EXPIRY_MINUTES": "30",
     "MEDIA_BASE_URL": "/media",
-    "GITHUB_REPO": ""
+    "GITHUB_REPO": "Vetrivelk18/VEEESS_KNITS"
   }
 }
