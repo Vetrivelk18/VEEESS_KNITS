@@ -41,7 +41,7 @@ On the live site, Cloudflare Access asks admins for an email code before the adm
 3. You land back on the page you asked for. A yellow **LOCAL TEST MODE** bar shows you are not using Cloudflare Access.
 4. **Sign out** (top right) takes you back to the sign-in page. Sign in as the other admin to test "seen by" and shared alerts.
 
-To test a new-order alert: keep the admin panel open in one window and place a COD order from the shop in another (or a private window). The bell, pop-up and chime appear within 20 seconds.
+To test a new-order alert: keep the admin panel open in one window and place a test online order (Razorpay test mode) from the shop in another (or a private window). The bell, pop-up and chime appear within 20 seconds.
 
 **It only switches on when all three are true** — so it can never work on the live site:
 
@@ -142,7 +142,7 @@ Create a free Resend account, verify the domain, set `EMAIL_FROM` and `RESEND_AP
 
 ## 3. Before launch — test checklist (Razorpay test mode)
 - [ ] Online order: UPI success, card success, payment failure, closing the payment window, paying again.
-- [ ] COD order: arrives as "COD to confirm" with no extra charge; third open COD order from the same phone is refused.
+- [ ] Cash on delivery is off (`COD_ENABLED` "0"): checkout shows online payment only and a COD request is refused.
 - [ ] New-order alert: bell + chime in the panel, push on every admin phone/laptop, backup email, re-alert after 15 minutes unread.
 - [ ] Webhook: Razorpay dashboard → webhook → "Test" shows 200; a duplicate is ignored.
 - [ ] Refund from the admin panel shows in Razorpay; stock goes back.
@@ -156,7 +156,7 @@ Create a free Resend account, verify the domain, set `EMAIL_FROM` and `RESEND_AP
 | Problem | Do this |
 | --- | --- |
 | Site broken after a change | Cloudflare → Workers → veeess-knits → Deployments → **Rollback** to the previous version. |
-| Payments failing | Check Razorpay status page and dashboard; customers can still choose COD. |
+| Payments failing | Check Razorpay status page and dashboard; orders cannot be paid until it recovers (COD is off; set `COD_ENABLED` to "1" to allow it temporarily). |
 | Suspected key leak | Regenerate the key in Razorpay / Cloudflare, `wrangler secret put` the new value. Old one stops working immediately. |
 | Wrong data / accidental deletion | D1 → Time Travel → restore to a time before the problem; weekly JSON backups are also in R2 under `backups/`. |
 | Admin locked out | Another admin signs in; or add their email in Access and `ADMIN_EMAILS`. |

@@ -268,3 +268,9 @@ Last updated: 24 Oct 2026 · Code version 0.2.0
 - `SITE_URL` is now `https://www.veeessknits.com` (email and order links). The workers.dev address still works for testing.
 - Admin login: `www.veeessknits.com/admin` and `/api/admin` are added to the Access app "Veeess Admin". The Razorpay webhook URL moves to `https://www.veeessknits.com/api/webhooks/razorpay`.
 - The old Wix site is kept at its free Wix address and is planned at **info.veeessknits.com** (CNAME from Wix, DNS only in Cloudflare; needs a Wix Premium plan to connect a subdomain).
+
+### D44. Online payment only; footer points to the old site (29 Oct 2026)
+- Cash on delivery is **off**. Customers pay online (UPI, cards, netbanking via Razorpay). Replaces the "COD at no extra charge" decision.
+- Switch: `COD_ENABLED` in `wrangler.jsonc` ("0" off, "1" on). The Worker refuses a COD checkout before any database work; the checkout page no longer offers it. The admin panel still shows and handles any older COD orders.
+- Wording across the site now says "Secure online payment" / "No cash on delivery" (banner, home, shop, product, cart, checkout, shipping policy, terms).
+- Footer line "For more queries, visit …" links to the old Wix site, **infoveeessknits.wixsite.com/my-site-5**, until info.veeessknits.com is connected.

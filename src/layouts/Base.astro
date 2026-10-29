@@ -2,7 +2,7 @@
 import '../styles/global.css';
 import Icon from '../components/Icon.astro';
 interface Props { title: string; description?: string; current?: string; noindex?: boolean; image?: string }
-const { title, description = 'Export-standard T-shirts and everyday knitwear from Tiruppur. Shop Wordle, our own label — pay online or cash on delivery, no extra charge.', current = '', noindex = false, image = '/images/products/hero.jpg' } = Astro.props;
+const { title, description = 'Export-standard T-shirts and everyday knitwear from Tiruppur. Shop Wordle, our own label — pay securely online by UPI, card or netbanking.', current = '', noindex = false, image = '/images/products/hero.jpg' } = Astro.props;
 const fullTitle = title.includes('Veeess') ? title : `${title} | Veeess Knits`;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const nav = [
@@ -33,7 +33,7 @@ const nav = [
 </head>
 <body class="has-tabbar">
   <a class="skip" href="#main">Skip to content</a>
-  <div class="announce">Cash on delivery, no extra charge · Made in Tiruppur</div>
+  <div class="announce">Secure online payment · UPI, cards, netbanking · Made in Tiruppur</div>
   <header class="site-header">
     <div class="wrap bar">
       <button class="icon-btn menu-btn" type="button" aria-label="Menu" aria-expanded="false" aria-controls="mobile-menu" data-menu-toggle><Icon name="menu" /></button>
@@ -61,7 +61,7 @@ const nav = [
         <p style="font-size:14px;line-height:1.6;margin:12px 0">32-A, Padmavathi Puram 7th Street,<br />Gandhi Nagar, Tiruppur 641603</p>
         <a href="mailto:info.veeessknits@gmail.com" style="color:#fff">info.veeessknits@gmail.com</a>
         <a class="social" href="https://www.instagram.com/wordle_byveeess/" rel="noopener noreferrer" target="_blank" aria-label="Instagram: @wordle_byveeess (opens in a new tab)"><Icon name="instagram" size={18} />@wordle_byveeess</a>
-        <p class="more-queries">For more queries, visit <a href="https://www.veeessknits.com" rel="noopener">www.veeessknits.com</a></p>
+        <p class="more-queries">For more queries, visit <a href="https://infoveeessknits.wixsite.com/my-site-5" rel="noopener">infoveeessknits.wixsite.com/my-site-5</a></p>
       </div>
       <div>
         <h2>Shop</h2>
@@ -88,7 +88,7 @@ const nav = [
     </div>
     <div class="wrap legal">
       <span>© {new Date().getFullYear()} Veeess Knits. All rights reserved.</span>
-      <span>Secure payments by Razorpay · UPI · Cards · Netbanking · Cash on delivery</span>
+      <span>Secure payments by Razorpay · UPI · Cards · Netbanking</span>
     </div>
   </footer>
 

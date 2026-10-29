@@ -34,7 +34,6 @@ function method(): 'razorpay' | 'cod' {
 
 function updateButton() {
   const cod = method() === 'cod';
-  $('[data-cod-row]').hidden = !cod;
   submit.textContent = quote ? (cod ? `Place order · ${formatINR(quote.total)}` : `Pay ${formatINR(quote.total)}`) : cod ? 'Place order' : 'Pay securely';
 }
 
