@@ -88,7 +88,7 @@ Do every account step **with the company's email**, then add the developer as a 
    npx wrangler r2 bucket create veeess-media
    ```
 3. Edit `wrangler.jsonc` → `vars`: `SITE_URL`, `ADMIN_EMAILS` (the 3 admins, comma-separated), `ALERT_EMAIL_TO` (one or more inboxes, comma-separated), `SHIPPING_FEE_PAISE` / `FREE_SHIPPING_MIN_PAISE` (delivery charge; both `0` = free delivery), `RAZORPAY_KEY_ID`, `TURNSTILE_SITE_KEY`, `VAPID_PUBLIC_KEY`, `GITHUB_REPO`.
-4. Add a **custom domain** to the Worker (Workers → veeess-knits → Settings → Domains): `www.veeessknits.com`, plus a redirect from the bare domain.
+4. Add a **custom domain** to the Worker (Workers → veeess-knits → Settings → Domains): none for now: the store runs on its workers.dev address (www.veeessknits.com is the Wix portfolio site, D45).
 
 ### 2.2 Secrets (never in code)
 ```bash
@@ -104,7 +104,7 @@ The app refuses to take payments if a Razorpay secret is missing or still a plac
 
 ### 2.3 Admin login — Cloudflare Access (free up to 50 users)
 1. Zero Trust → Access → Applications → **Add self-hosted application**.
-2. Domain `www.veeessknits.com`, paths **`/admin`** and **`/api/admin`** (add both).
+2. Domain: the store address (now `veeess-knits.info-veeessknits.workers.dev`), paths **`/admin`** and **`/api/admin`** (add both).
 3. Policy: **Allow** → Emails → the 3 admin emails (exactly the same list as `ADMIN_EMAILS`). Login method: **One-time PIN**.
 4. Copy the application's **AUD tag** into `ACCESS_AUD` and your team domain (e.g. `veeess.cloudflareaccess.com`) into `ACCESS_TEAM_DOMAIN`.
 
@@ -115,11 +115,11 @@ The Worker also verifies the Access token itself and checks `ADMIN_EMAILS`, so a
 ### 2.4 Razorpay
 1. Complete KYC in the company's name (see the HLD for documents).
 2. **Settings → Payment capture → Automatic.** (Only captured payments mark orders paid.)
-3. **Settings → Webhooks → Add:** URL `https://www.veeessknits.com/api/webhooks/razorpay`, a strong secret (same as `RAZORPAY_WEBHOOK_SECRET`), events **payment.captured**, **order.paid**, **payment.failed**, **refund.processed**.
+3. **Settings → Webhooks → Add:** URL `https://veeess-knits.info-veeessknits.workers.dev/api/webhooks/razorpay`, a strong secret (same as `RAZORPAY_WEBHOOK_SECRET`), events **payment.captured**, **order.paid**, **payment.failed**, **refund.processed**.
 4. Start with **test keys**, run the checklist below, then switch `RAZORPAY_KEY_ID` and the secret to **live keys**.
 
 ### 2.5 Turnstile (bot protection)
-Cloudflare → Turnstile → Add widget for `www.veeessknits.com` (Managed). Put the site key in `TURNSTILE_SITE_KEY` and the secret in `TURNSTILE_SECRET_KEY`.
+Cloudflare → Turnstile → Add widget for the store address (Managed). Put the site key in `TURNSTILE_SITE_KEY` and the secret in `TURNSTILE_SECRET_KEY`.
 
 ### 2.6 Firewall rate limit (free plan: 1 rule)
 Security → WAF → Rate limiting rules → create:
@@ -135,7 +135,7 @@ Repository secrets: `CLOUDFLARE_API_TOKEN` (template "Edit Cloudflare Workers" +
 Create a free Resend account, verify the domain, set `EMAIL_FROM` and `RESEND_API_KEY`. Without it, orders still work and admins still get in-panel and push alerts, but no emails are sent.
 
 ### 2.9 Monitoring
-- UptimeRobot (free): monitor `https://www.veeessknits.com/`, a product page, and `https://www.veeessknits.com/api/health` every 5 minutes, alerting the directors.
+- UptimeRobot (free): monitor `https://veeess-knits.info-veeessknits.workers.dev/`, a product page, and `https://veeess-knits.info-veeessknits.workers.dev/api/health` every 5 minutes, alerting the directors.
 - Workers → Logs (enabled via `observability`) shows errors; optional Sentry later.
 
 ---

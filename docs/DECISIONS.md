@@ -274,3 +274,9 @@ Last updated: 24 Oct 2026 · Code version 0.2.0
 - Switch: `COD_ENABLED` in `wrangler.jsonc` ("0" off, "1" on). The Worker refuses a COD checkout before any database work; the checkout page no longer offers it. The admin panel still shows and handles any older COD orders.
 - Wording across the site now says "Secure online payment" / "No cash on delivery" (banner, home, shop, product, cart, checkout, shipping policy, terms).
 - Footer line "For more queries, visit …" links to the old Wix site, **infoveeessknits.wixsite.com/my-site-5**, until info.veeessknits.com is connected.
+
+### D45. www.veeessknits.com goes back to the Wix portfolio; store domain decided later (30 Oct 2026)
+- Supersedes the domain part of D43 and the footer part of D44. **veeessknits.com / www.veeessknits.com** = the Wix portfolio site again (Premium Core plan). Wix only connects a Wix-registered domain to a site when it uses **Wix nameservers**, so the nameservers were reset to Wix (ns12/ns13.wixdns.net); the Cloudflare zone no longer controls the domain.
+- That rules out a Cloudflare subdomain (store.veeessknits.com) while the domain is registered at Wix. Options for later: transfer the registration to Cloudflare (then Wix connects by DNS records and store.veeessknits.com works), or a separate domain for the store.
+- Until then the store runs on **https://veeess-knits.info-veeessknits.workers.dev** (`workers_dev: true`, no `routes`, `SITE_URL` = that address). Access app keeps the workers.dev `/admin` and `/api/admin` paths. The Razorpay test webhook must point to the workers.dev address.
+- Footer "For more queries, visit www.veeessknits.com" links to the portfolio again.

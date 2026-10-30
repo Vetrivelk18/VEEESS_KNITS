@@ -6,11 +6,9 @@
   "name": "veeess-knits",
   "main": "worker/index.ts",
   "compatibility_date": "2026-10-01",
-  // Custom domains (Phase B). Kept here so every deploy keeps them attached to this Worker.
-  "routes": [
-    { "pattern": "www.veeessknits.com", "custom_domain": true },
-    { "pattern": "veeessknits.com", "custom_domain": true }
-  ],
+  // No custom domain for now (D45): veeessknits.com is back on Wix (Wix nameservers), so the
+  // store runs on its workers.dev address until it gets its own domain.
+  "workers_dev": true,
   "assets": {
     "directory": "./dist",
     "binding": "ASSETS",
@@ -41,8 +39,8 @@
   // For local development, .dev.vars overrides these values.
   "vars": {
     "ENVIRONMENT": "production",
-    // Phase B (29 Oct 2026): the store's public address. veeessknits.com redirects here (Cloudflare Redirect Rule).
-    "SITE_URL": "https://www.veeessknits.com",
+    // The store's public address (D45): the workers.dev address until the store gets its own domain.
+    "SITE_URL": "https://veeess-knits.info-veeessknits.workers.dev",
     // Admins (2 now, a 3rd later). Must match the Cloudflare Access policy "Veeess admins" (README §2.3).
     "ADMIN_EMAILS": "vetrivelpandiank@gmail.com,info.veeessknits@gmail.com",
     "ACCESS_TEAM_DOMAIN": "veeessknits.cloudflareaccess.com",
