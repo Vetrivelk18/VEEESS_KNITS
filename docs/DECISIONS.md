@@ -280,3 +280,11 @@ Last updated: 24 Oct 2026 · Code version 0.2.0
 - That rules out a Cloudflare subdomain (store.veeessknits.com) while the domain is registered at Wix. Options for later: transfer the registration to Cloudflare (then Wix connects by DNS records and store.veeessknits.com works), or a separate domain for the store.
 - Until then the store runs on **https://veeess-knits.info-veeessknits.workers.dev** (`workers_dev: true`, no `routes`, `SITE_URL` = that address). Access app keeps the workers.dev `/admin` and `/api/admin` paths. The Razorpay test webhook must point to the workers.dev address.
 - Footer "For more queries, visit www.veeessknits.com" links to the portfolio again.
+
+### D46. store.veeessknits.com via Cloudflare for SaaS (31 Oct 2026)
+- Goal: the store at **store.veeessknits.com** while **www.veeessknits.com stays the Wix portfolio** and the domain stays registered at Wix with Wix nameservers (D45).
+- How: bought **veeessknits.store** at Cloudflare Registrar (behind-the-scenes zone, renews Oct 2027). On that zone: Cloudflare for SaaS enabled (free, 100 hostnames), fallback origin `fallback.veeessknits.store` (proxied A 192.0.2.1), Worker route `*/*` → `veeess-knits`, custom hostname `store.veeessknits.com` (TLS 1.2 minimum, TXT validation).
+- Wix DNS for veeessknits.com: CNAME `store` → `fallback.veeessknits.store`; TXT `_cf-custom-hostname.store` and two TXT `_acme-challenge.store` (certificate). Nothing else in Wix DNS changed.
+- Admin stays at **https://veeess-knits.info-veeessknits.workers.dev/admin** (Access protects that address; the store hostname is a SaaS custom hostname Access does not cover, and the Worker refuses admin calls without a valid Access token). New var `ADMIN_URL` makes admin alert links point there.
+- `SITE_URL` = `https://store.veeessknits.com`; `routes` lists the `*/*` route on veeessknits.store so deploys keep it. workers.dev stays on as a backup.
+- Email: Resend sends from `orders@veeessknits.com` (Tokyo region); its DKIM/SPF/DMARC records are in Wix DNS (`resend._domainkey`, `send`, `rsend`, `_dmarc`). `RESEND_API_KEY` is a Worker secret set by the owner.
