@@ -3,7 +3,7 @@ import { intVar, isLocalDevRequest, type Env } from '../lib/env';
 import { ApiError, clientIp, readJson } from '../lib/http';
 import { rateLimit } from '../lib/ratelimit';
 import { verifyTurnstile } from '../lib/turnstile';
-import { checkoutSchema, parse, verifyPaymentSchema } from '../lib/validation';
+import { checkoutSchema, orderLookupSchema, parse, verifyPaymentSchema } from '../lib/validation';
 import { z } from 'zod';
 import { createOrder, markPaid, quoteCart } from '../lib/orders';
 import { fetchPayment, isMock, verifyPaymentSignature, verifyWebhookSignature } from '../lib/razorpay';
@@ -91,6 +91,36 @@ publicApi.post('/checkout', async (c) => {
           }
         : null,
   });
+});
+
+/**
+ * Track your order (D48): order number + the phone number used at checkout → the same private
+ * order link the customer gets after paying. Order numbers are sequential, so the number alone
+ * is never enough. Protected by Turnstile and by rate limits per IP and per order number
+ * (5 tries an hour), so a phone number can't be guessed. The error never says which part was wrong.
+ */
+publicApi.post('/orders/lookup', async (c) => {
+  const ip = clientIp(c);
+  await rateLimit(c.env.DB, `lookup:ip:${ip}`, 10, 600);
+  const input = parse(orderLookupSchema, await readJson(c));
+  await rateLimit(c.env.DB, `lookup:order:${input.orderNumber}`, 5, 3600);
+
+  const testSecret = c.env.TURNSTILE_SECRET_KEY === '1x0000000000000000000000000000000AA';
+  if (!(isLocalDevRequest(c.env, c.req.raw) && testSecret)) {
+    await verifyTurnstile(c.env, input.turnstileToken, ip);
+  }
+
+  const row = await c.env.DB.prepare(
+    `SELECT o.id FROM orders o JOIN customers cu ON cu.id = o.customer_id
+      WHERE o.number = ?1 AND cu.phone = ?2`,
+  )
+    .bind(input.orderNumber, input.phone)
+    .first<{ id: string }>();
+  if (!row) {
+    throw new ApiError(404, 'order_not_found', "We couldn't find an order with that order number and phone number. Please check both and try again.");
+  }
+  const token = await signOrderToken(c.env.ORDER_LINK_SECRET, row.id);
+  return c.json({ orderId: row.id, token });
 });
 
 /** Called by the browser after Razorpay Checkout succeeds. Never trusted without the signature. */

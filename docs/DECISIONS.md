@@ -295,3 +295,11 @@ Last updated: 24 Oct 2026 · Code version 0.2.0
 - **WhatsApp button:** footer links turn white on hover/focus, which hid this white button's text; it now turns WhatsApp dark green (#075e54) with white text, with the usual marigold focus ring.
 - **Header search icon removed** (it only linked to /shop/; no search for now).
 - **Admin "Tap again to refund / cancel":** armed state is a light red button with red text and border; hover turns it solid red with white text (was solid red with black text).
+
+### D48. Track your order by order number + phone (1 Nov 2026)
+- The Track order page has a form: **order number** (VK-1042, vk1042, #1042 or 1042) + **the mobile number used at checkout**. A match opens the same private order page as after payment (`/order/?id=…&t=…`, a fresh 6-month signed link).
+- Order number alone is **not** enough: numbers are sequential, so anyone could read other customers' names, addresses and phones. The phone is the second check.
+- `POST /api/orders/lookup`: Turnstile (same as checkout), rate limits 10 tries / 10 min per IP and **5 tries / hour per order number** (stops guessing a phone for one order), same-origin only, and one generic "not found" message that never says which part was wrong.
+- Order page wording fixed for orders that are not paid (created / expired / failed / cancelled / refunded): it no longer says "Paid online… confirmation emailed" or highlights "Confirmed" for an unpaid order.
+- Phone inputs on checkout and track accept up to 17 characters, so "+91 98765 43210" fits.
+- Still parked: email/SMS one-time code lookup and customer accounts.

@@ -17,7 +17,27 @@ const LABELS: Record<string, string> = {
   created: 'Awaiting payment', paid: 'Order confirmed', cod_pending: 'Order placed', confirmed: 'Order confirmed', packed: 'Packed',
   shipped: 'Shipped', delivered: 'Delivered', cancelled: 'Cancelled', refunded: 'Refunded', expired: 'Payment not completed', failed: 'Payment not completed',
 };
-const STEP = (s: string) => (['created', 'cod_pending', 'paid', 'confirmed'].includes(s) ? 1 : s === 'packed' ? 2 : s === 'shipped' ? 3 : s === 'delivered' ? 4 : 0);
+const STEP = (s: string) => (['cod_pending', 'paid', 'confirmed'].includes(s) ? 1 : s === 'packed' ? 2 : s === 'shipped' ? 3 : s === 'delivered' ? 4 : 0);
+
+/** What to say about payment for each status (D48: unpaid orders can now be opened from Track order). */
+function paymentLine(status: string, cod: boolean, total: number): string {
+  const amt = formatINR(total);
+  switch (status) {
+    case 'created':
+      return `We haven't received your payment of ${amt} yet. If you've just paid, this page will update in a moment. If you didn't finish paying, no money was taken.`;
+    case 'expired':
+    case 'failed':
+      return `The payment of ${amt} wasn't completed, so this order wasn't placed and no money was taken. You're welcome to order again from the shop.`;
+    case 'cancelled':
+      return 'This order was cancelled. If you paid online, the refund goes back to your original payment method.';
+    case 'refunded':
+      return `Refunded: ${amt} goes back to your original payment method, usually within 5–7 working days.`;
+    default:
+      return cod
+        ? `Cash on delivery: please keep ${amt} ready when it arrives. A confirmation has been emailed to you.`
+        : `Paid online: ${amt}. A confirmation has been emailed to you.`;
+  }
+}
 
 function trackingBox(tracking: string, courierId: string | null): HTMLElement {
   const courier = courierById(courierId);
@@ -99,8 +119,7 @@ async function load(tries = 0) {
     el('div', { class: 'page-title' },
       el('span', { class: 'eyebrow' }, `Order ${o.label}`),
       el('h1', { class: 'display h2', style: 'margin-top:8px' }, isNew && step === 1 ? `Thank you, ${o.name.split(' ')[0]}! Your order is placed.` : LABELS[o.status] ?? o.status),
-      el('p', { class: 'muted' }, cod ? `Cash on delivery: please keep ${formatINR(o.total_paise)} ready when it arrives. No extra charge.` : `Paid online: ${formatINR(o.total_paise)}.`,
-        ' A confirmation has been emailed to you.'),
+      el('p', { class: 'muted' }, paymentLine(o.status, cod, o.total_paise)),
       el('div', { class: 'save-link' },
         el('span', { class: 'muted' }, LIVE.has(o.status) ? 'This page updates by itself. Save the link to check your order any time in the next 6 months.' : 'Save the link to look at this order any time in the next 6 months.'),
         copyLinkButton()),

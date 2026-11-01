@@ -56,6 +56,31 @@ export const checkoutSchema = z.object({
 });
 export type CheckoutInput = z.infer<typeof checkoutSchema>;
 
+/** "VK-1042", "vk 1042", "#1042" or "1042" → 1042. Anything else → null. */
+export function parseOrderNumber(input: string): number | null {
+  const m = /^\s*#?\s*(?:vk)?[\s#-]*(\d{1,9})\s*$/i.exec(input);
+  if (!m) return null;
+  const n = Number(m[1]);
+  return Number.isSafeInteger(n) && n > 0 ? n : null;
+}
+
+/** Track-your-order lookup (D48): order number + the phone used at checkout. */
+export const orderLookupSchema = z.object({
+  orderNumber: z
+    .string()
+    .max(20)
+    .transform((v, ctx) => {
+      const n = parseOrderNumber(v);
+      if (n === null) {
+        ctx.addIssue({ code: 'custom', message: 'Enter your order number, e.g. VK-1042' });
+        return z.NEVER;
+      }
+      return n;
+    }),
+  phone: phoneSchema,
+  turnstileToken: z.string().max(2048).optional(),
+});
+
 export const verifyPaymentSchema = z.object({
   orderId: z.string().uuid(),
   razorpay_order_id: z.string().regex(/^order_[A-Za-z0-9]{6,40}$/),
