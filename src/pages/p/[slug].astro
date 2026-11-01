@@ -93,7 +93,11 @@ const jsonLd = JSON.stringify({
       </div>
       {p.sizeChart ? (
         <>
-          <img class="size-dialog-img" src={p.sizeChart.src} alt={`Size chart: ${p.sizeChart.name}`} loading="lazy" decoding="async" />
+          <div class="size-chart-frame" data-size-chart-frame aria-busy="true">
+            <div class="size-chart-loader" role="status"><span class="spinner" aria-hidden="true"></span><span>Loading size chart…</span></div>
+            <p class="size-chart-error" hidden>Couldn't load the size chart. Check your connection and try again, or call us on <a href="tel:+919600577555">+91 96005 77555</a>.</p>
+            <img class="size-dialog-img" data-size-chart-img src={p.sizeChart.src} alt={`Size chart: ${p.sizeChart.name}`} loading="lazy" decoding="async" />
+          </div>
           <p class="muted small-note">{p.sizeChart.name}. All sales are final, so please check your size before ordering. Unsure? Call or WhatsApp <a href="tel:+919600577555">+91 96005 77555</a>.</p>
         </>
       ) : (

@@ -89,6 +89,9 @@ table.orders .newdot { display: inline-block; width: 8px; height: 8px; border-ra
 .inline-input { height: 40px; border: 1px solid var(--line-2); border-radius: 4px; padding: 0 10px; min-width: 0; }
 .danger { background: #a3261b; border-color: #a3261b; }
 .danger:hover { background: #861e15; }
+/* D47: "Tap again to refund / cancel" — a soft red warning state instead of solid red with black text. */
+.btn.is-armed, .btn-outline.is-armed { background: #fdecea; border-color: var(--danger); color: var(--danger); }
+.btn.is-armed:hover, .btn-outline.is-armed:hover { background: var(--danger); border-color: var(--danger); color: #fff; }
 .hist { font-size: 13px; color: var(--muted); display: flex; flex-direction: column; gap: 4px; }
 
 .prod { background: #fff; border: 1px solid var(--line); border-radius: 8px; }
