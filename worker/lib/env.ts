@@ -5,6 +5,8 @@ export interface Env {
 
   ENVIRONMENT: 'production' | 'development' | string;
   SITE_URL: string;
+  /** Where the admin panel lives (behind Cloudflare Access). Defaults to SITE_URL. */
+  ADMIN_URL?: string;
   ADMIN_EMAILS: string;
   DEV_ADMIN_EMAIL?: string;
   LOCAL_ADMIN_BYPASS?: string;

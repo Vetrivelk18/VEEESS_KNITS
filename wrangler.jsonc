@@ -6,9 +6,14 @@
   "name": "veeess-knits",
   "main": "worker/index.ts",
   "compatibility_date": "2026-10-01",
-  // No custom domain for now (D45): veeessknits.com is back on Wix (Wix nameservers), so the
-  // store runs on its workers.dev address until it gets its own domain.
+  // store.veeessknits.com (D46): veeessknits.com stays on Wix DNS; Wix has a CNAME
+  // store -> fallback.veeessknits.store, served through Cloudflare for SaaS on the
+  // veeessknits.store zone. This route sends every hostname on that zone to the store.
+  // The workers.dev address stays on as a backup and for testing.
   "workers_dev": true,
+  "routes": [
+    { "pattern": "*/*", "zone_name": "veeessknits.store" }
+  ],
   "assets": {
     "directory": "./dist",
     "binding": "ASSETS",
@@ -39,8 +44,12 @@
   // For local development, .dev.vars overrides these values.
   "vars": {
     "ENVIRONMENT": "production",
-    // The store's public address (D45): the workers.dev address until the store gets its own domain.
-    "SITE_URL": "https://veeess-knits.info-veeessknits.workers.dev",
+    // The store's public address (D46).
+    "SITE_URL": "https://store.veeessknits.com",
+    // Admin panel address (used in admin alert links). Cloudflare Access protects /admin on the
+    // workers.dev address; store.veeessknits.com is a SaaS custom hostname that Access does not cover,
+    // so admin requests there are refused by the Worker's own Access check (D46).
+    "ADMIN_URL": "https://veeess-knits.info-veeessknits.workers.dev",
     // Admins (2 now, a 3rd later). Must match the Cloudflare Access policy "Veeess admins" (README §2.3).
     "ADMIN_EMAILS": "vetrivelpandiank@gmail.com,info.veeessknits@gmail.com",
     "ACCESS_TEAM_DOMAIN": "veeessknits.cloudflareaccess.com",

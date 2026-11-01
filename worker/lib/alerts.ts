@@ -18,7 +18,7 @@ export async function dispatchNewOrder(env: Env, orderId: string): Promise<void>
 
   const tasks: Promise<unknown>[] = [pushToAdmins(env)];
 
-  const adminUrl = `${env.SITE_URL.replace(/\/$/, '')}/admin/?order=${encodeURIComponent(orderId)}`;
+  const adminUrl = `${(env.ADMIN_URL || env.SITE_URL).replace(/\/$/, '')}/admin/?order=${encodeURIComponent(orderId)}`;
   const a = adminBackupAlert(n.title, n.body, adminUrl);
   const alertTo = emailList(env.ALERT_EMAIL_TO);
   if (alertTo.length) tasks.push(sendEmail(env, alertTo, a.subject, a.html, a.text));
