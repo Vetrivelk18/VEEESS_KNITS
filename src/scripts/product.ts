@@ -131,7 +131,23 @@ api<{ variants: V[] }>(`/api/products/${encodeURIComponent(data.slug)}`)
 // Size chart popup (a native <dialog>: Esc closes it and focus returns to the button).
 const sizeDialog = q<HTMLDialogElement>('[data-size-chart]');
 const sizeOpen = q<HTMLButtonElement>('[data-size-chart-open]');
-sizeOpen?.addEventListener('click', () => sizeDialog?.showModal());
+// The chart image loads only when the popup opens, so show a loader until it arrives.
+const chartFrame = q<HTMLElement>('[data-size-chart-frame]');
+const chartImg = q<HTMLImageElement>('[data-size-chart-img]');
+const chartDone = (ok: boolean) => {
+  if (!chartFrame) return;
+  chartFrame.classList.toggle('is-loaded', ok);
+  chartFrame.classList.toggle('is-error', !ok);
+  chartFrame.removeAttribute('aria-busy');
+  const err = chartFrame.querySelector<HTMLElement>('.size-chart-error');
+  if (err) err.hidden = ok;
+};
+chartImg?.addEventListener('load', () => chartDone(true));
+chartImg?.addEventListener('error', () => chartDone(false));
+sizeOpen?.addEventListener('click', () => {
+  sizeDialog?.showModal();
+  if (chartImg?.complete && chartImg.naturalWidth > 0) chartDone(true);
+});
 q('[data-size-chart-close]')?.addEventListener('click', () => sizeDialog?.close());
 // Tap outside the chart (on the dark backdrop) to close.
 sizeDialog?.addEventListener('click', (e) => { if (e.target === sizeDialog) sizeDialog.close(); });

@@ -1,0 +1,22 @@
+---
+// Audience + category listing, e.g. /men/t-shirts/ (D47).
+import Base from '../../layouts/Base.astro';
+import ProductListing from '../../components/ProductListing.astro';
+import { catalog, products } from '../../lib/catalog';
+import { showsOn } from '../../../shared/audience';
+export function getStaticPaths() {
+  // Defined inside: getStaticPaths runs on its own and can't see other top-level values.
+  const AUDS = [
+    { aud: 'men', label: 'Men' }, { aud: 'women', label: 'Women' }, { aud: 'kids', label: 'Kids' },
+  ] as const;
+  return AUDS.flatMap(({ aud, label }) =>
+    catalog.categories.map((c) => ({ params: { aud, category: c.slug }, props: { aud, label, name: c.name } })),
+  );
+}
+const { aud, label, name } = Astro.props as { aud: 'men' | 'women' | 'kids'; label: string; name: string };
+const { category } = Astro.params;
+const items = products.filter((p) => p.category.slug === category && showsOn(aud, p.audience));
+---
+<Base title={`${name} for ${label}`} current={aud} description={`Shop Wordle ${name.toLowerCase()} for ${label.toLowerCase()}, made in our own unit in Tiruppur.`}>
+  <ProductListing title={`${name} · ${label}`} items={items} activeAudience={aud} activeCategory={category} />
+</Base>

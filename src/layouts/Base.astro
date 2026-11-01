@@ -42,7 +42,6 @@ const nav = [
         {nav.map((n) => <a href={n.href} aria-current={current === n.key ? 'page' : undefined}>{n.label}</a>)}
       </nav>
       <div class="header-actions">
-        <a class="icon-btn" href="/shop/" aria-label="Browse all products"><Icon name="search" /></a>
         <a class="icon-btn" href="/cart/" aria-label="Cart" data-cart-link><Icon name="bag" /><span class="badge" data-cart-count hidden>0</span></a>
       </div>
     </div>

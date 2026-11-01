@@ -288,3 +288,10 @@ Last updated: 24 Oct 2026 · Code version 0.2.0
 - Admin stays at **https://veeess-knits.info-veeessknits.workers.dev/admin** (Access protects that address; the store hostname is a SaaS custom hostname Access does not cover, and the Worker refuses admin calls without a valid Access token). New var `ADMIN_URL` makes admin alert links point there.
 - `SITE_URL` = `https://store.veeessknits.com`; `routes` lists the `*/*` route on veeessknits.store so deploys keep it. workers.dev stays on as a backup.
 - Email: Resend sends from `orders@veeessknits.com` (Tokyo region); its DKIM/SPF/DMARC records are in Wix DNS (`resend._domainkey`, `send`, `rsend`, `_dmarc`). `RESEND_API_KEY` is a Worker secret set by the owner.
+
+### D47. Storefront and admin polish (1 Nov 2026)
+- **Filters combine:** gender and category now work together. New static pages `/men/<category>/`, `/women/<category>/`, `/kids/<category>/`; category chips show on Men/Women/Kids pages (only categories that have products for that audience, hidden when there is just one); the gender chips keep the chosen category when it exists for that gender.
+- **Size chart loader:** the popup shows a spinner ("Loading size chart…") until the chart image loads, and a short message with the phone number if it fails.
+- **WhatsApp button:** footer links turn white on hover/focus, which hid this white button's text; it now turns WhatsApp dark green (#075e54) with white text, with the usual marigold focus ring.
+- **Header search icon removed** (it only linked to /shop/; no search for now).
+- **Admin "Tap again to refund / cancel":** armed state is a light red button with red text and border; hover turns it solid red with white text (was solid red with black text).

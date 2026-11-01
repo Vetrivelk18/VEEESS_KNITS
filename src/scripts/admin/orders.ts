@@ -113,8 +113,8 @@ function confirmButton(label: string, confirmLabel: string, cls: string, run: ()
     if (!armed) {
       armed = true;
       b.textContent = confirmLabel;
-      b.classList.add('danger');
-      setTimeout(() => { armed = false; b.textContent = label; b.classList.remove('danger'); }, 4000);
+      b.classList.add('is-armed');
+      setTimeout(() => { armed = false; b.textContent = label; b.classList.remove('is-armed'); }, 4000);
       return;
     }
     b.disabled = true;
