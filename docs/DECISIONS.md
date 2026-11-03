@@ -303,3 +303,8 @@ Last updated: 24 Oct 2026 · Code version 0.2.0
 - Order page wording fixed for orders that are not paid (created / expired / failed / cancelled / refunded): it no longer says "Paid online… confirmation emailed" or highlights "Confirmed" for an unpaid order.
 - Phone inputs on checkout and track accept up to 17 characters, so "+91 98765 43210" fits.
 - Still parked: email/SMS one-time code lookup and customer accounts.
+
+### D49. Razorpay live mode (3 Nov 2026)
+- KYC approved; the store uses the **live** key `rzp_live_TveVhjKlgGOAry` (`RAZORPAY_KEY_ID`). The live Key Secret and a new live webhook secret are Worker secrets (`RAZORPAY_KEY_SECRET`, `RAZORPAY_WEBHOOK_SECRET`) set by the owner; the test-mode values are replaced.
+- Live webhook: `https://store.veeessknits.com/api/webhooks/razorpay`, events payment.captured, payment.failed, order.paid, refund.processed. The test-mode webhook stays in Razorpay's test mode and is no longer used.
+- Earlier orders (VK-1001…) were test-mode payments; refunds for them must not be attempted with live keys.
