@@ -1,0 +1,25 @@
+---
+import Admin from '../../../layouts/Admin.astro';
+---
+<Admin title="Site text" current="sitetext">
+  <div class="admin-head">
+    <div>
+      <h1 class="display h2">Site text</h1>
+      <p class="muted" style="margin:6px 0 0;max-width:680px">Change the wording on the shop's home page and announcement bar. Save your changes, then press <strong>Publish storefront</strong>. The shop updates in about 2 minutes.</p>
+    </div>
+    <div class="card" style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+      <span class="small muted" data-publish-info>—</span>
+      <button type="button" class="btn btn-sm" data-publish>Publish storefront</button>
+    </div>
+  </div>
+  <form data-site-text-form novalidate style="display:flex;flex-direction:column;gap:16px">
+    <div data-groups style="display:flex;flex-direction:column;gap:16px"><p class="muted">Loading…</p></div>
+    <div class="st-savebar">
+      <span class="small" data-dirty-note>No unsaved changes.</span>
+      <button type="submit" class="btn" data-save disabled>Save changes</button>
+    </div>
+  </form>
+  <script>
+    import '../../../scripts/admin/site-text';
+  </script>
+</Admin>

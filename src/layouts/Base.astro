@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import { siteText } from '../lib/siteText';
 import Icon from '../components/Icon.astro';
 interface Props { title: string; description?: string; current?: string; noindex?: boolean; image?: string }
 const { title, description = 'Export-standard T-shirts and everyday knitwear from Tiruppur. Shop Wordle, our own label — pay securely online by UPI, card or netbanking.', current = '', noindex = false, image = '/images/products/hero.jpg' } = Astro.props;
@@ -33,7 +34,7 @@ const nav = [
 </head>
 <body class="has-tabbar">
   <a class="skip" href="#main">Skip to content</a>
-  <div class="announce">Secure online payment · UPI, cards, netbanking · Made in Tiruppur</div>
+  <div class="announce">{siteText['announce.text']}</div>
   <header class="site-header">
     <div class="wrap bar">
       <button class="icon-btn menu-btn" type="button" aria-label="Menu" aria-expanded="false" aria-controls="mobile-menu" data-menu-toggle><Icon name="menu" /></button>

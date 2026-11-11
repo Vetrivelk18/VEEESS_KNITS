@@ -131,7 +131,10 @@ Also turn on **Bot Fight Mode**, but add a WAF **Skip** rule for URI Path `/api/
 ### 2.7 GitHub Actions deploys
 Repository secrets: `CLOUDFLARE_API_TOKEN` (template "Edit Cloudflare Workers" + D1 edit) and `CLOUDFLARE_ACCOUNT_ID`. Every push to `main` — and every **Publish storefront** click in the admin panel — tests, migrates, rebuilds the catalogue pages and deploys.
 
-### 2.8 Email (optional, recommended)
+#### Changing shop texts
+Admin → **Site text** edits the announcement bar and the home page's top section, "New drop" tile and "Made in our own unit" section. Save, then press **Publish storefront**; the shop updates in about 2 minutes. "Reset to default" brings back the original wording. See D50.
+
+## 2.8 Email (optional, recommended)
 Create a free Resend account, verify the domain, set `EMAIL_FROM` and `RESEND_API_KEY`. Without it, orders still work and admins still get in-panel and push alerts, but no emails are sent.
 
 ### 2.9 Monitoring

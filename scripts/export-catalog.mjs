@@ -8,6 +8,7 @@ import { writeFileSync, existsSync, mkdirSync } from 'node:fs';
 const source = process.env.CATALOG_SOURCE ?? (process.env.CLOUDFLARE_API_TOKEN ? 'remote' : 'local');
 const mediaBase = (process.env.PUBLIC_MEDIA_BASE ?? '/media').replace(/\/$/, '');
 const out = new URL('../src/data/catalog.json', import.meta.url);
+const siteTextOut = new URL('../src/data/site-text.json', import.meta.url);
 
 function q(sql) {
   const raw = execFileSync('npx', ['wrangler', 'd1', 'execute', 'veeess_db', `--${source}`, '--json', '--command', sql], {
@@ -76,4 +77,18 @@ try {
     console.error('catalog export failed and no existing catalog.json');
     throw err;
   }
+}
+
+// Shop texts edited in admin (D50). Separate from the catalogue so a problem here can never
+// stop products from publishing. Only changed texts are stored; the shop fills in defaults.
+try {
+  const rows = q('SELECT key, value FROM site_texts ORDER BY key');
+  const saved = Object.fromEntries(rows.map((r) => [r.key, r.value]));
+  mkdirSync(new URL('../src/data/', import.meta.url), { recursive: true });
+  writeFileSync(siteTextOut, JSON.stringify(saved, null, 2) + '\n');
+  console.log(`site text: ${rows.length} custom text(s) from ${source} D1`);
+} catch (err) {
+  console.warn(`site text export from ${source} D1 failed; ${existsSync(siteTextOut) ? 'keeping existing' : 'using default'} src/data/site-text.json`);
+  console.warn(String(err.stderr ?? err.message).slice(0, 300));
+  if (!existsSync(siteTextOut)) writeFileSync(siteTextOut, '{}\n');
 }

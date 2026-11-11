@@ -18,6 +18,7 @@ import { orderLabel } from '../lib/money';
 import { refundPayment } from '../lib/razorpay';
 import { sendShippedEmail } from '../lib/alerts';
 import { isAllowedPushEndpoint, pushToAdmins } from '../lib/webpush';
+import { checkSiteText, cleanSiteText, siteTextField } from '../../shared/siteText';
 
 type AdminEnv = { Bindings: Env; Variables: AdminVars };
 export const adminApi = new Hono<AdminEnv>();
@@ -564,6 +565,64 @@ adminApi.post('/publish', async (c) => {
     auditStmt(c.env.DB, admin, 'storefront.publish', 'site', 'storefront', {}, clientIp(c)),
   ]);
   return c.json({ ok: true, message: 'Publishing started. The shop updates in about 2 minutes.' });
+});
+
+// ---------------------------------------------------------------- site text (D50)
+/** Saved shop texts (only the ones changed from the default) and when they were last changed. */
+adminApi.get('/site-text', async (c) => {
+  const [rows, pub] = await Promise.all([
+    c.env.DB.prepare('SELECT key, value, updated_by, updated_at FROM site_texts').all<{ key: string; value: string; updated_by: string; updated_at: string }>(),
+    c.env.DB.prepare("SELECT value, updated_at FROM settings WHERE key = 'last_publish'").first<{ value: string; updated_at: string }>(),
+  ]);
+  return c.json({ saved: rows.results, lastPublish: pub ?? null });
+});
+
+const siteTextSchema = z.object({
+  // key -> new text, or null to go back to the default wording
+  values: z.record(z.string().max(60), z.union([z.string().max(2000), z.null()])),
+});
+
+adminApi.put('/site-text', async (c) => {
+  const admin = c.get('adminEmail');
+  await rateLimit(c.env.DB, `site-text:${admin}`, 60, 3600);
+  const { values } = parse(siteTextSchema, await readJson(c));
+  const entries = Object.entries(values);
+  if (!entries.length) throw new ApiError(400, 'invalid_input', 'Nothing to save.');
+  if (entries.length > 40) throw new ApiError(400, 'invalid_input', 'Too many changes at once.');
+
+  const errors: { path: string; message: string }[] = [];
+  const stmts: D1PreparedStatement[] = [];
+  const changed: string[] = [];
+  for (const [key, raw] of entries) {
+    const field = siteTextField(key);
+    if (!field) {
+      errors.push({ path: key, message: `Unknown text "${key}".` });
+      continue;
+    }
+    const value = raw === null ? null : cleanSiteText(raw);
+    if (value === null || value === field.def) {
+      // Back to the default: nothing to store.
+      stmts.push(c.env.DB.prepare('DELETE FROM site_texts WHERE key = ?1').bind(key));
+    } else {
+      const err = checkSiteText(field, value);
+      if (err) {
+        errors.push({ path: key, message: err });
+        continue;
+      }
+      stmts.push(
+        c.env.DB.prepare(
+          `INSERT INTO site_texts (key, value, updated_by, updated_at) VALUES (?1, ?2, ?3, ${NOW})
+           ON CONFLICT (key) DO UPDATE SET value = excluded.value, updated_by = excluded.updated_by, updated_at = excluded.updated_at`,
+        ).bind(key, value, admin),
+      );
+    }
+    changed.push(key);
+  }
+  const first = errors[0];
+  if (first) throw new ApiError(400, 'invalid_input', first.message, { fields: errors });
+  stmts.push(auditStmt(c.env.DB, admin, 'site_text.update', 'site', 'text', { keys: changed }, clientIp(c)));
+  await c.env.DB.batch(stmts);
+  return c.json({ ok: true, changed });
 });
 
 adminApi.get('/audit', async (c) => {
