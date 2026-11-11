@@ -1,0 +1,7 @@
+---
+// Renders admin-edited text, turning its line breaks into <br />. Astro escapes the text itself.
+import { lines } from '../lib/siteText';
+interface Props { k: string }
+const parts = lines(Astro.props.k);
+---
+{parts.map((l, i) => <>{i > 0 && <br />}{l}</>)}

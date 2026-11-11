@@ -308,3 +308,10 @@ Last updated: 24 Oct 2026 · Code version 0.2.0
 - KYC approved; the store uses the **live** key `rzp_live_TveVhjKlgGOAry` (`RAZORPAY_KEY_ID`). The live Key Secret and a new live webhook secret are Worker secrets (`RAZORPAY_KEY_SECRET`, `RAZORPAY_WEBHOOK_SECRET`) set by the owner; the test-mode values are replaced.
 - Live webhook: `https://store.veeessknits.com/api/webhooks/razorpay`, events payment.captured, payment.failed, order.paid, refund.processed. The test-mode webhook stays in Razorpay's test mode and is no longer used.
 - Earlier orders (VK-1001…) were test-mode payments; refunds for them must not be attempted with live keys.
+
+### D50. Admins can edit shop texts ("Site text") (12 Nov 2026)
+- New admin tab **Site text** (`/admin/site-text/`) for 22 texts: the announcement bar (every page); home page top section (small tag, headline, intro); the "New drop" tile (label, title); and the "Made in our own unit" section (label, headline, paragraph, button label, six steps × title/description).
+- The list of texts, their limits, allowed line breaks and default wording live in `shared/siteText.ts`, used by the admin page, the API and the shop.
+- Stored in D1 `site_texts` (migration 0007), **only when different from the default**; "Reset to default" deletes the row. Changes go live on **Publish storefront** (same as products): `scripts/export-catalog.mjs` writes `src/data/site-text.json`, and the home page / `Base.astro` render it. A failed text export never blocks the product export; the shop falls back to defaults.
+- Plain text only: `<` and `>` refused, control/invisible characters stripped, length limits per text, line breaks only where allowed (rendered as `<br>`; Astro escapes the text). Bad or missing saved values fall back to the default at build time too.
+- `GET/PUT /api/admin/site-text`, admin-only (Access + `requireAdmin`), rate-limited, every save in the audit log (`site_text.update` with the keys changed). All admins can edit.

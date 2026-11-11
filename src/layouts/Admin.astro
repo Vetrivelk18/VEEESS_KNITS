@@ -2,11 +2,12 @@
 import '../styles/global.css';
 import '../styles/admin.css';
 import Icon from '../components/Icon.astro';
-interface Props { title: string; current: 'orders' | 'products' | 'alerts' }
+interface Props { title: string; current: 'orders' | 'products' | 'sitetext' | 'alerts' }
 const { title, current } = Astro.props;
 const nav = [
   { href: '/admin/', label: 'Orders', key: 'orders' },
   { href: '/admin/products/', label: 'Products', key: 'products' },
+  { href: '/admin/site-text/', label: 'Site text', key: 'sitetext' },
   { href: '/admin/alerts/', label: 'Alert settings', key: 'alerts' },
 ];
 ---

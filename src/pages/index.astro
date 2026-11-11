@@ -1,26 +1,22 @@
 ---
 import Base from '../layouts/Base.astro';
+import Lines from '../components/Lines.astro';
+import { siteText } from '../lib/siteText';
 import Icon from '../components/Icon.astro';
 import ProductCard from '../components/ProductCard.astro';
 import { catalog, products, categoryImage } from '../lib/catalog';
 const newArrivals = products.filter((p) => p.is_new).slice(0, 4);
 const featured = newArrivals.length >= 4 ? newArrivals : products.slice(0, 4);
 const wordle = catalog.brands.find((b) => b.slug === 'wordle');
-const steps = [
-  ['Fabric sourcing', 'Knitted fabric sourced and inspected roll by roll.'],
-  ['Pattern & grading', 'Professional patterns and size grading for a consistent fit.'],
-  ['Cutting & stitching', 'Precision cutting and stitching in our own unit.'],
-  ['Dyeing & finishing', 'Controlled garment dyeing and finishing.'],
-  ['GSM & shrinkage tests', 'Fabric weight and shrinkage checked to spec.'],
-  ['QC & packing', 'Measurement checks, final inspection, careful packing.'],
-];
+// Editable in admin → Site text (D50).
+const steps = [1, 2, 3, 4, 5, 6].map((n) => [siteText[`about.step${n}.title`], siteText[`about.step${n}.text`]]);
 ---
 <Base title="Veeess Knits — T-shirts and knitwear from Tiruppur" current="home">
   <section class="wrap hero">
     <div>
-      <span class="pill">Tiruppur knitwear · 15+ years</span>
-      <h1 class="display h1" style="margin-top:24px">From production to brand perfection.</h1>
-      <p class="lead">Export-standard T-shirts and everyday knitwear, made in our own unit. Shop Wordle, our own label, straight from the factory. Pay securely online by UPI, card or netbanking.</p>
+      <span class="pill">{siteText['hero.tag']}</span>
+      <h1 class="display h1" style="margin-top:24px"><Lines k="hero.headline" /></h1>
+      <p class="lead"><Lines k="hero.intro" /></p>
       <div style="display:flex;flex-wrap:wrap;gap:12px">
         <a class="btn" href="/shop/">Shop Wordle</a>
         <a class="btn btn-outline" href="#about">How we make them</a>
@@ -29,8 +25,8 @@ const steps = [
     <div class="hero-grid">
       <a class="tall" href="/p/wordle-heavyweight-oversized-tee/" aria-label="Wordle heavyweight oversized tee"><img src="/images/products/hero.jpg" alt="Black Wordle oversized tee" width="1000" height="1300" fetchpriority="high" /></a>
       <a class="drop" href="/shop/t-shirts/" style="text-decoration:none">
-        <span style="font-size:13px;letter-spacing:.1em;text-transform:uppercase;opacity:.85">New drop</span>
-        <span class="big">Heavyweight<br />oversized tees</span>
+        <span style="font-size:13px;letter-spacing:.1em;text-transform:uppercase;opacity:.85">{siteText['drop.label']}</span>
+        <span class="big"><Lines k="drop.title" /></span>
       </a>
       <img src="/images/products/fabric.jpg" alt="Close-up of indigo knit fabric" width="1000" height="1000" style="min-height:254px" />
     </div>
@@ -85,10 +81,10 @@ const steps = [
   <section id="about" class="band">
     <div class="wrap">
       <div>
-        <span class="eyebrow">Made in our own unit</span>
-        <h2 class="display" style="font-size:clamp(32px,4vw,48px);margin:16px 0 20px">Every piece made and checked in Tiruppur.</h2>
-        <p>Every Wordle piece is cut, stitched, finished and inspected in our own unit, to the export standard we have kept for 15+ years.</p>
-        <a class="btn btn-accent" href="/shop/" style="margin-top:12px">Shop the collection</a>
+        <span class="eyebrow">{siteText['about.eyebrow']}</span>
+        <h2 class="display" style="font-size:clamp(32px,4vw,48px);margin:16px 0 20px"><Lines k="about.headline" /></h2>
+        <p><Lines k="about.body" /></p>
+        <a class="btn btn-accent" href="/shop/" style="margin-top:12px">{siteText['about.button']}</a>
       </div>
       <ol class="steps">
         {steps.map(([t, d], i) => <li><span class="n">0{i + 1}</span><span class="t">{t}</span><span class="d">{d}</span></li>)}
