@@ -23,12 +23,13 @@ const steps = [1, 2, 3, 4, 5, 6].map((n) => [siteText[`about.step${n}.title`], s
       </div>
     </div>
     <div class="hero-grid">
-      <a class="tall" href="/p/cr7-oversized-tee/" aria-label="CR7 oversized tee"><img src="/images/products/hero.jpg" alt="Black Wordle oversized tee" width="1000" height="1300" fetchpriority="high" /></a>
-      <a class="drop" href="/shop/t-shirts/" style="text-decoration:none">
-        <span style="font-size:13px;letter-spacing:.1em;text-transform:uppercase;opacity:.85">{siteText['drop.label']}</span>
+      <a class="tall" href="/p/cr7-oversized-tee/" aria-label="CR7 oversized tee"><img src="/images/home/hero-model.jpg" alt="Man in a blue oversized printed tee, sitting in a vintage convertible" width="854" height="1280" fetchpriority="high" style="object-position:center 30%" /></a>
+      <a class="drop drop-photo" href="/shop/t-shirts/">
+        <img src="/images/home/drop-shoulder-rack.jpg" alt="" width="904" height="701" style="object-position:30% center" />
+        <span class="drop-label">{siteText['drop.label']}</span>
         <span class="big"><Lines k="drop.title" /></span>
       </a>
-      <img src="/images/products/fabric.jpg" alt="Close-up of indigo knit fabric" width="1000" height="1000" style="min-height:254px" />
+      <img src="/images/home/folded-polos.jpg" alt="Folded jacquard polo T-shirts on the rack of a bicycle" width="903" height="844" style="min-height:254px" />
     </div>
   </section>
 
@@ -56,6 +57,27 @@ const steps = [1, 2, 3, 4, 5, 6].map((n) => [siteText[`about.step${n}.title`], s
     </div>
   </section>
 
+  <section class="wrap section" aria-labelledby="fit-h">
+    <div class="section-head">
+      <h2 id="fit-h" class="display h2">Find your fit</h2>
+      <a href="/shop/t-shirts/">All T-shirts →</a>
+    </div>
+    <div class="fit-grid">
+      <a class="fit-card" href="/shop/t-shirts/">
+        <img src="/images/home/fit-fullsleeve.jpg" alt="Four friends on a mountain trail in full-sleeve textured tees" width="900" height="1130" loading="lazy" />
+        <span class="fit-copy"><span class="fit-title">Full-sleeve textured tees</span><span class="fit-link">Shop now →</span></span>
+      </a>
+      <a class="fit-card" href="/shop/t-shirts/">
+        <img src="/images/home/fit-tiedye.jpg" alt="Three friends in tie-dye graphic tees around a red car" width="900" height="1178" loading="lazy" />
+        <span class="fit-copy"><span class="fit-title">Tie-dye graphic tees</span><span class="fit-link">Shop now →</span></span>
+      </a>
+      <a class="fit-card" href="/shop/t-shirts/">
+        <img src="/images/home/fit-acidwash.jpg" alt="Four men in acid-wash oversized tees leaning on a car" width="900" height="1092" loading="lazy" />
+        <span class="fit-copy"><span class="fit-title">Acid-wash oversized tees</span><span class="fit-link">Shop now →</span></span>
+      </a>
+    </div>
+  </section>
+
   <section class="wrap section" aria-labelledby="brand-h">
     <h2 id="brand-h" class="sr-only">Our label: Wordle</h2>
     <a class="wordle-feature" href="/shop/">
@@ -75,6 +97,40 @@ const steps = [1, 2, 3, 4, 5, 6].map((n) => [siteText[`about.step${n}.title`], s
     </div>
     <div class="product-grid">
       {featured.map((p) => <ProductCard product={p} />)}
+    </div>
+  </section>
+
+  <section class="wrap section" aria-labelledby="story-h">
+    <div class="story">
+      <a class="story-main" href="/shop/t-shirts/">
+        <img src="/images/home/story-mountain.jpg" alt="Man in an oversized varsity-print tee looking over misty mountains" width="1600" height="1161" loading="lazy" />
+        <span class="story-copy">
+          <span class="eyebrow">Oversized fits</span>
+          <h2 id="story-h" class="display story-title">Made to go further.</h2>
+          <span class="tag">Shop T-shirts</span>
+        </span>
+      </a>
+      <div class="story-side">
+        <img src="/images/home/story-prints.jpg" alt="Close-up of folded tees with bold varsity prints" width="1000" height="765" loading="lazy" />
+        <div class="story-note">
+          <h3>Bold prints, soft cotton</h3>
+          <p>Wear them on their own or layer them under a shirt or jacket for a different look every day.</p>
+          <a href="/shop/">Shop all →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap section" aria-labelledby="look-h">
+    <div class="section-head">
+      <h2 id="look-h" class="display h2">Wear it your way</h2>
+      <a href="/shop/">Shop the look →</a>
+    </div>
+    <div class="lookbook">
+      <a href="/shop/t-shirts/"><img src="/images/home/look-1.jpg" alt="Friends in printed crew-neck tees with paddle boards" width="432" height="533" loading="lazy" /></a>
+      <a href="/shop/"><img src="/images/home/look-2.jpg" alt="Group in polo T-shirts on a sofa" width="378" height="533" loading="lazy" /></a>
+      <a href="/shop/t-shirts/"><img src="/images/home/look-3.jpg" alt="Men in graphic tees sitting on steps" width="382" height="533" loading="lazy" /></a>
+      <a href="/shop/t-shirts/"><img src="/images/home/look-4.jpg" alt="Man in an oversized printed tee with a duffel bag" width="388" height="533" loading="lazy" /></a>
     </div>
   </section>
 

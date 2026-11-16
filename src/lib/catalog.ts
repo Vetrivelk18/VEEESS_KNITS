@@ -29,8 +29,9 @@ export function discountPct(price: number, mrp: number | null): number {
 export function inStock(p: Product): boolean { return p.variants.some((v) => v.available > 0); }
 export function categoryImage(slug: string): string {
   const map: Record<string, string> = {
-    't-shirts': '/images/products/cat-tshirts.jpg', shirts: '/images/products/cat-shirts.jpg', shorts: '/images/products/cat-shorts.jpg',
-    'track-pants': '/images/products/cat-trackpants.jpg', sleeveless: '/images/products/cat-sleeveless.jpg', kidswear: '/images/products/cat-kids.jpg',
+    // Real photos (D53); kidswear keeps the illustration until a photo is supplied. Old cat-*.jpg files are kept.
+    't-shirts': '/images/categories/t-shirts.jpg', shirts: '/images/categories/shirts.jpg', shorts: '/images/categories/shorts.jpg',
+    'track-pants': '/images/categories/track-pants.jpg', sleeveless: '/images/categories/sleeveless.jpg', kidswear: '/images/products/cat-kids.jpg',
   };
   return map[slug] ?? '/images/products/p1.jpg';
 }
