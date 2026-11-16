@@ -315,3 +315,9 @@ Last updated: 24 Oct 2026 · Code version 0.2.0
 - Stored in D1 `site_texts` (migration 0007), **only when different from the default**; "Reset to default" deletes the row. Changes go live on **Publish storefront** (same as products): `scripts/export-catalog.mjs` writes `src/data/site-text.json`, and the home page / `Base.astro` render it. A failed text export never blocks the product export; the shop falls back to defaults.
 - Plain text only: `<` and `>` refused, control/invisible characters stripped, length limits per text, line breaks only where allowed (rendered as `<br>`; Astro escapes the text). Bad or missing saved values fall back to the default at build time too.
 - `GET/PUT /api/admin/site-text`, admin-only (Access + `requireAdmin`), rate-limited, every save in the audit log (`site_text.update` with the keys changed). All admins can edit.
+
+### D51. Home page photo links to CR7 (16 Nov 2026)
+
+- Demo products were removed (never-ordered ones deleted; the Wordle Heavyweight Tee and the ₹1 test product hidden because they have orders).
+- The big T-shirt photo on the home page linked to the now-hidden Heavyweight Tee (404). It now links to `/p/cr7-oversized-tee/`. The photo itself (`/images/products/hero.jpg`) is unchanged.
+- This link is hard-coded in `src/pages/index.astro`; if CR7 is ever hidden or renamed (its slug changes), update it.
