@@ -335,3 +335,8 @@ Last updated: 24 Oct 2026 · Code version 0.2.0
 
 - T-shirts, Shirts, Shorts, Track pants and Sleeveless now use hanger photos (`public/images/categories/*.jpg`, 800×1000, cropped to the 4:5 tile). Kidswear keeps the illustration until a photo is supplied.
 - The old illustrated `public/images/products/cat-*.jpg` files are kept (not deleted), so any can be switched back in `categoryImage()` (`src/lib/catalog.ts`).
+
+### D54. "Inside the studio" removed from the home page (16 Nov 2026)
+
+- The five illustrated studio tiles no longer show on the home page; the Instagram link stays in the footer.
+- The image files (`public/images/products/studio-*.jpg`) and the `.gallery` style are kept, so the section can be brought back.
