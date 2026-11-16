@@ -330,3 +330,8 @@ Last updated: 24 Oct 2026 · Code version 0.2.0
 - "Find your fit": three large captioned photos (full-sleeve, tie-dye, acid-wash) after "Shop by category", all linking to T-shirts until those get their own categories.
 - "Made to go further." editorial block after "New arrivals": mountain photo with overlay text + folded-prints close-up and a short note (both cut from one composite image). The lookbook strip now sits after it.
 - Category tiles still use the illustrated images until real category photos are supplied.
+
+### D53. Real photos for the category tiles (16 Nov 2026)
+
+- T-shirts, Shirts, Shorts, Track pants and Sleeveless now use hanger photos (`public/images/categories/*.jpg`, 800×1000, cropped to the 4:5 tile). Kidswear keeps the illustration until a photo is supplied.
+- The old illustrated `public/images/products/cat-*.jpg` files are kept (not deleted), so any can be switched back in `categoryImage()` (`src/lib/catalog.ts`).
