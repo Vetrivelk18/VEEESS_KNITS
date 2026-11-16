@@ -15,7 +15,7 @@ export interface SiteTextField {
 export const SITE_TEXT_GROUPS = [
   { id: 'announce', title: 'Announcement bar', note: 'The strip at the very top of every page.' },
   { id: 'hero', title: 'Home page · top section', note: 'The first thing visitors see on the home page.' },
-  { id: 'drop', title: 'Home page · “New drop” tile', note: 'The dark blue tile next to the big T-shirt photo.' },
+  { id: 'drop', title: 'Home page · “New drop” tile', note: 'The photo tile next to the big photo (text sits on a dark fade at the bottom).' },
   { id: 'about', title: 'Home page · “Made in our own unit” section', note: 'The dark blue section with the six steps.' },
 ] as const;
 export type SiteTextGroup = (typeof SITE_TEXT_GROUPS)[number]['id'];

@@ -110,6 +110,17 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .hero-grid img, .cover { width: 100%; height: 100%; object-fit: cover; border-radius: var(--radius); background: var(--placeholder); }
 .drop { background: var(--indigo); border-radius: var(--radius); min-height: 254px; padding: 20px; color: #fff; display: flex; flex-direction: column; justify-content: space-between; }
 .drop .big { font-family: var(--display); font-stretch: 112%; font-weight: 800; font-size: 32px; line-height: 1; }
+.drop-label { font-size: 13px; letter-spacing: .1em; text-transform: uppercase; opacity: .9; }
+.drop-photo { position: relative; overflow: hidden; text-decoration: none; isolation: isolate; }
+.drop-photo img { position: absolute; inset: 0; z-index: -2; transition: transform .6s ease; }
+.drop-photo::after { content: ''; position: absolute; inset: 0; z-index: -1; background: linear-gradient(to top, rgba(17, 24, 64, .88) 0%, rgba(17, 24, 64, .35) 45%, rgba(17, 24, 64, .1) 70%, rgba(17, 24, 64, .45) 100%); }
+.drop-photo:hover img { transform: scale(1.04); }
+.lookbook { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.lookbook a { display: block; overflow: hidden; border-radius: var(--radius); background: var(--placeholder); aspect-ratio: 3 / 4; }
+.lookbook img { width: 100%; height: 100%; object-fit: cover; object-position: center top; transition: transform .6s ease; }
+.lookbook a:hover img { transform: scale(1.04); }
+@media (max-width: 760px) { .lookbook { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (prefers-reduced-motion: reduce) { .drop-photo img, .lookbook img { transition: none; } }
 @media (max-width: 640px) {
   .hero { padding-block: 16px 32px; gap: 24px; }
   .hero-grid .tall { min-height: 300px; }

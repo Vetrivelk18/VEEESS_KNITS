@@ -321,3 +321,10 @@ Last updated: 24 Oct 2026 · Code version 0.2.0
 - Demo products were removed (never-ordered ones deleted; the Wordle Heavyweight Tee and the ₹1 test product hidden because they have orders).
 - The big T-shirt photo on the home page linked to the now-hidden Heavyweight Tee (404). It now links to `/p/cr7-oversized-tee/`. The photo itself (`/images/products/hero.jpg`) is unchanged.
 - This link is hard-coded in `src/pages/index.astro`; if CR7 is ever hidden or renamed (its slug changes), update it.
+
+### D52. Real photos on the home page (16 Nov 2026)
+
+- Hero: the big photo is now a model shot (`public/images/home/hero-model.jpg`, still links to CR7); the "New drop" tile shows the drop-shoulder rack photo with the editable text on a dark fade (`.drop-photo`); the knit-fabric square is now the folded polos on a bicycle.
+- New "Wear it your way" lookbook strip after "Shop by category": four photos split from one collage (`look-1…4.jpg`), linking to the shop.
+- Photos come from supplier catalogue pages; only the photo area is kept (logo, style number, sizes and fabric text cropped off). Resized to ≤1000 px wide, JPEG q82.
+- Category tiles still use the illustrated images until real category photos are supplied.
