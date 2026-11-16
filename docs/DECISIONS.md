@@ -327,4 +327,6 @@ Last updated: 24 Oct 2026 · Code version 0.2.0
 - Hero: the big photo is now a model shot (`public/images/home/hero-model.jpg`, still links to CR7); the "New drop" tile shows the drop-shoulder rack photo with the editable text on a dark fade (`.drop-photo`); the knit-fabric square is now the folded polos on a bicycle.
 - New "Wear it your way" lookbook strip after "Shop by category": four photos split from one collage (`look-1…4.jpg`), linking to the shop.
 - Photos come from supplier catalogue pages; only the photo area is kept (logo, style number, sizes and fabric text cropped off). Resized to ≤1000 px wide, JPEG q82.
+- "Find your fit": three large captioned photos (full-sleeve, tie-dye, acid-wash) after "Shop by category", all linking to T-shirts until those get their own categories.
+- "Made to go further." editorial block after "New arrivals": mountain photo with overlay text + folded-prints close-up and a short note (both cut from one composite image). The lookbook strip now sits after it.
 - Category tiles still use the illustrated images until real category photos are supplied.
